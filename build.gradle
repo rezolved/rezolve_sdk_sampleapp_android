@@ -3,6 +3,10 @@
 buildscript {
     ext {
         rezolveSdkVersion = "2.0.1"
+        jjwtVersion = "0.10.5"
+        rxJavaVersion = "2.2.8"
+        rxAndroidVersion = "2.1.1"
+        retrofitVersion = "2.5.0"
     }
 
     repositories {
