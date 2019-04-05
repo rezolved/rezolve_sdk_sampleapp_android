@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">sdk_sample</string>
+    <string name="authentication_in_progress">Authentication in Progress...</string>
 </resources>
