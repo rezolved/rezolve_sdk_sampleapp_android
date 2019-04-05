@@ -1,5 +1,6 @@
 package com.rezolve.sdk_sample;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,29 +17,28 @@ import com.rezolve.sdk_sample.utils.TokenUtils;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String mEntityId;
-    private String mPartnerId;
-    private String mDeviceId;
+    private String entityId;
+    private String partnerId;
+    private String deviceId;
 
-    private AuthenticationService mAuthenticationService;
-
-    private RezolveSDK mRezolveSDK;
+    private AuthenticationService authenticationService;
+    private RezolveSDK rezolveSDK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAuthenticationService = new AuthenticationService();
+        authenticationService = new AuthenticationService();
         registerUser();
     }
 
     private void registerUser() {
-        mAuthenticationService.register(new AuthenticationInterface() {
+        authenticationService.register(new AuthenticationInterface() {
             @Override
             public void onRegistrationSuccess(RegistrationResponse response) {
-                mEntityId = response.getEntityId();
-                mPartnerId = response.getPartnerId();
+                entityId = response.getEntityId();
+                partnerId = response.getPartnerId();
 
                 createSession();
             }
@@ -51,20 +51,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createSession() {
-        mDeviceId = DeviceUtils.getDeviceId(this);
-        String accessToken = TokenUtils.createAccessToken(mEntityId, mPartnerId, mDeviceId);
+        deviceId = DeviceUtils.getDeviceId(this);
+        String accessToken = TokenUtils.createAccessToken(entityId, partnerId, deviceId);
 
-        mRezolveSDK = new RezolveSDK.Builder()
+        rezolveSDK = new RezolveSDK.Builder()
                 .setApiKey(BuildConfig.REZOLVE_SDK_API_KEY)
                 .setEnv(BuildConfig.REZOLVE_SDK_ENVIRONMENT)
                 .build();
 
-        mRezolveSDK.setAuthToken(accessToken);
+        rezolveSDK.setAuthToken(accessToken);
 
-        mRezolveSDK.createSession(accessToken, mEntityId, mPartnerId, new RezolveInterface() {
+        rezolveSDK.createSession(accessToken, entityId, partnerId, new RezolveInterface() {
             @Override
             public void onInitializationSuccess(RezolveSession rezolveSession, String entityId, String partnerId) {
-                mRezolveSDK.setDeviceIdHeader(mDeviceId);
+                rezolveSDK.setDeviceIdHeader(deviceId);
+                navigateToScanView();
             }
 
             @Override
@@ -72,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
                 // TODO AlertDialog call
             }
         });
+    }
 
+    private void navigateToScanView() {
+        Intent intent = new Intent(MainActivity.this, ScanActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

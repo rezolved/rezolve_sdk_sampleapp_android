@@ -7,6 +7,8 @@ buildscript {
         rxJavaVersion = "2.2.8"
         rxAndroidVersion = "2.1.1"
         retrofitVersion = "2.5.0"
+        permissionsVersion = "3.8"
+        glideVersion = "4.9.0"
     }
 
     repositories {

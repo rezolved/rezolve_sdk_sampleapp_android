@@ -1,0 +1,96 @@
+package com.rezolve.sdk_sample;
+
+import android.Manifest;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
+import com.rezolve.sdk.RezolveSDK;
+import com.rezolve.sdk.core.interfaces.ScanManagerInterface;
+import com.rezolve.sdk.core.managers.ScanManager;
+import com.rezolve.sdk.model.foreign.RezolveScanResult;
+import com.rezolve.sdk.model.network.RezolveError;
+import com.rezolve.sdk.model.shop.Category;
+import com.rezolve.sdk.model.shop.Product;
+import com.rezolve.sdk.views.RezolveScanView;
+
+public class ScanActivity extends AppCompatActivity implements ScanManagerInterface {
+
+    private RezolveSDK rezolveSdk;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_scan);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        rezolveSdk = RezolveSDK.peekInstance();
+
+        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
+        Permissions.check(this, permissions, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                initializeScanner();
+            }
+        });
+    }
+
+    private void initializeScanner() {
+        RezolveScanView scanView = findViewById(R.id.scanView);
+        ScanManager scanManager = rezolveSdk.getRezolveSession().getScanManager(this, true, true);
+
+        scanView.refresh();
+        scanManager.stopVideoScan();
+        scanManager.destroy();
+        scanManager.startVideoScan(this, scanView);
+    }
+
+    @Override
+    public void onProductResult(Product product) {
+        navigateToProductDetailsView(product);
+    }
+
+    @Override
+    public void onCategoryResult(Category category, String s) {
+    }
+
+    @Override
+    public void onRezolveResult(RezolveScanResult rezolveScanResult) {
+    }
+
+    @Override
+    public void onScanError(String s, String s1) {
+    }
+
+    @Override
+    public void processingStarted() {
+    }
+
+    @Override
+    public void processingFinished() {
+    }
+
+    @Override
+    public void onError(@NonNull RezolveError rezolveError) {
+    }
+
+    private void navigateToProductDetailsView(Product product) {
+        Intent intent = new Intent(ScanActivity.this, ProductDetailsActivity.class);
+
+        // TODO Passing whole Product object
+        Bundle bundle = new Bundle();
+        bundle.putString("title", product.getTitle());
+        bundle.putFloat("price", product.getPrice());
+        bundle.putString("previewImage", product.getImages().get(0));
+        intent.putExtras(bundle);
+
+        startActivity(intent);
+    }
+}
