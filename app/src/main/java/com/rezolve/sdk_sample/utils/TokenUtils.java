@@ -21,6 +21,7 @@ public final class TokenUtils {
     private static final String KEY_DEVICE_ID = "device_id";
     private static final String TOKEN_PREFIX_BEARER = "Bearer ";
 
+    private static final int EXPIRATION_TIME_MIN = 30;
 
     public static String createRegistrationToken() {
         Map<String, Object> header = new HashMap<String, Object>() {{
@@ -29,7 +30,7 @@ public final class TokenUtils {
         }};
 
         long currentTime = DateUtils.getCurrentTimestampInSeconds();
-        long expirationTime = DateUtils.addMinutesToTimestamp(currentTime, 30);
+        long expirationTime = DateUtils.addMinutesToTimestamp(currentTime, EXPIRATION_TIME_MIN);
 
         String userIdentifier = DeviceUtils.generateUserIdentifier();
 
@@ -50,7 +51,7 @@ public final class TokenUtils {
         }};
 
         long currentTime = DateUtils.getCurrentTimestampInSeconds();
-        long expirationTime = DateUtils.addMinutesToTimestamp(currentTime, 30);
+        long expirationTime = DateUtils.addMinutesToTimestamp(currentTime, EXPIRATION_TIME_MIN);
 
         Map<String, Object> claims = new HashMap<String, Object>() {{
             put(KEY_REZOLVE_ENTITY_ID, entityId);

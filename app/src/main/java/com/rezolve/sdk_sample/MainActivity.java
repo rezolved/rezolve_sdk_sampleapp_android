@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onRegistrationFailure() {
-                // AlertDialog call
+                // TODO AlertDialog call
             }
         });
     }
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onInitializationFailure(@NonNull RezolveError rezolveError) {
-                // AlertDialog call
+                // TODO AlertDialog call
             }
         });
 
