@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+
     defaultConfig {
         applicationId "com.rezolve.sdk_sample"
         minSdkVersion 22
@@ -9,12 +10,23 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField 'String', "REZOLVE_SDK_API_URL", REZOLVE_SDK_API_URL
+        buildConfigField 'String', "REZOLVE_SDK_ENVIRONMENT", REZOLVE_SDK_ENVIRONMENT
+        buildConfigField 'String', "REZOLVE_SDK_API_KEY", REZOLVE_SDK_API_KEY
+        buildConfigField 'String', "REZOLVE_SDK_JWT_SECRET", REZOLVE_SDK_JWT_SECRET
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -22,4 +34,23 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
+    // Rezolve SDK
+    implementation "com.rezolve:sdk-android:$rezolveSdkVersion"
+
+    // JJWT (Json Web Token library)
+    api "io.jsonwebtoken:jjwt-api:$jjwtVersion"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:$jjwtVersion"
+    runtimeOnly("io.jsonwebtoken:jjwt-orgjson:$jjwtVersion") {
+        exclude group: "org.json", module: "json"
+    }
+
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 }
