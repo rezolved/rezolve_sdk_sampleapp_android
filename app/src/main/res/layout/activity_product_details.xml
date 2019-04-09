@@ -1,50 +1,327 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/previewImageView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previewImageView" />
+        <com.synnapps.carouselview.CarouselView
+            android:id="@+id/previewCarouselView"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            app:autoPlay="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/priceTitleView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/large"
+            android:layout_marginEnd="@dimen/large"
+            android:gravity="center"
+            android:text="Product Name"
+            android:textSize="@dimen/text_size_medium_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/previewCarouselView" />
+
+        <TextView
+            android:id="@+id/priceTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginEnd="@dimen/large"
+            android:gravity="center"
+            android:text="$120"
+            android:textSize="@dimen/text_size_medium_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+
+        <View
+            android:id="@+id/descriptionSeparatorView"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginEnd="@dimen/large"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/priceTextView" />
+
+        <TextView
+            android:id="@+id/quantityTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginEnd="@dimen/medium"
+            android:text="@string/quantity"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_medium_small"
+            android:textAllCaps="true"
+            app:layout_constraintEnd_toStartOf="@+id/quantityIncreaseButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/descriptionSeparatorView" />
+
+        <Button
+            android:id="@+id/quantityIncreaseButton"
+            android:layout_width="30dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_arrow_up"
+            app:layout_constraintBottom_toBottomOf="@+id/quantityTextView"
+            app:layout_constraintEnd_toStartOf="@+id/quantityDecreaseButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/quantityTextView"
+            app:layout_constraintTop_toTopOf="@+id/quantityTextView" />
+
+        <Button
+            android:id="@+id/quantityDecreaseButton"
+            android:layout_width="30dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/small"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_arrow_down"
+            app:layout_constraintBottom_toBottomOf="@+id/quantityTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/quantityIncreaseButton"
+            app:layout_constraintTop_toTopOf="@+id/quantityTextView" />
+
+        <View
+            android:id="@+id/quantitySeparatorView"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginEnd="@dimen/large"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/quantityTextView" />
+
+        <ImageView
+            android:id="@+id/paymentImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quantitySeparatorView"
+            app:srcCompat="@drawable/ic_payment" />
+
+        <TextView
+            android:id="@+id/paymentDetailsDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/payment_details"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toEndOf="@+id/paymentImageView"
+            app:layout_constraintTop_toTopOf="@+id/paymentImageView" />
+
+        <TextView
+            android:id="@+id/paymentDetailsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="TextView"
+            android:textColor="@color/gray"
+            app:layout_constraintStart_toEndOf="@+id/paymentImageView"
+            app:layout_constraintTop_toBottomOf="@+id/paymentDetailsDescriptionTextView" />
+
+        <ImageView
+            android:id="@+id/deliveryImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paymentImageView"
+            app:srcCompat="@drawable/ic_location" />
+
+        <TextView
+            android:id="@+id/deliveryDetailsDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/delivery_details"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toEndOf="@+id/deliveryImageView"
+            app:layout_constraintTop_toTopOf="@+id/deliveryImageView" />
+
+        <TextView
+            android:id="@+id/deliveryDetailsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="TextView"
+            android:textColor="@color/gray"
+            app:layout_constraintStart_toEndOf="@+id/deliveryImageView"
+            app:layout_constraintTop_toBottomOf="@+id/deliveryDetailsDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/summaryDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/large"
+            android:text="@string/summary"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deliveryImageView" />
+
+        <View
+            android:id="@+id/summarySeparatorView"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginEnd="@dimen/large"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/summaryDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/subtotalPriceDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/subtotal"
+            app:layout_constraintStart_toStartOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/summarySeparatorView" />
+
+        <TextView
+            android:id="@+id/subtotalPriceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="$120"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/summarySeparatorView" />
+
+        <TextView
+            android:id="@+id/taxDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/tax"
+            app:layout_constraintStart_toStartOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/subtotalPriceDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/taxTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="$24"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/subtotalPriceTextView" />
+
+        <TextView
+            android:id="@+id/shippingDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/shipping"
+            app:layout_constraintStart_toStartOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/taxDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/shippingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="$8"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/taxTextView" />
+
+        <TextView
+            android:id="@+id/discountDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/discount"
+            app:layout_constraintStart_toStartOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/shippingDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/discountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="$0"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/shippingTextView" />
+
+        <View
+            android:id="@+id/summaryTotalSeparatorView"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/large"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/discountTextView" />
+
+        <TextView
+            android:id="@+id/totalPriceDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/total"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@+id/summaryTotalSeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/summaryTotalSeparatorView" />
+
+        <TextView
+            android:id="@+id/totalPriceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="$152"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/summaryTotalSeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/summaryTotalSeparatorView" />
+
+        <Button
+            android:id="@+id/instantBuyButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/large"
+            android:layout_marginEnd="@dimen/large"
+            android:layout_marginBottom="@dimen/medium"
+            android:background="@color/blue"
+            android:text="@string/instant_buy"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/totalPriceDescriptionTextView" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>
