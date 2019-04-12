@@ -9,6 +9,8 @@ import java.util.List;
 
 @Parcel
 public class ProductDetails {
+    String id;
+    String merchantId;
     String title;
     String description;
     Float price;
@@ -17,11 +19,20 @@ public class ProductDetails {
     public ProductDetails() {}
 
     public ProductDetails(Product product) {
+        id = product.getId();
+        merchantId = product.getMerchantId();
         title = product.getTitle();
         description = product.getDescription();
         price = product.getPrice();
         images = product.getImages();
+    }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getMerchantId() {
+        return merchantId;
     }
 
     public String getTitle() {

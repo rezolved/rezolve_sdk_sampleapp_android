@@ -129,10 +129,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/small"
+            android:layout_marginTop="4dp"
             android:text="@string/payment_details"
-            android:textStyle="bold"
             android:textAllCaps="true"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/paymentImageView"
             app:layout_constraintTop_toTopOf="@+id/paymentImageView" />
 
@@ -141,7 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="TextView"
+            android:text="VISA 4000 2211 1111 1111"
             android:textColor="@color/gray"
             app:layout_constraintStart_toEndOf="@+id/paymentImageView"
             app:layout_constraintTop_toBottomOf="@+id/paymentDetailsDescriptionTextView" />
@@ -161,10 +161,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/small"
+            android:layout_marginTop="4dp"
             android:text="@string/delivery_details"
-            android:textStyle="bold"
             android:textAllCaps="true"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/deliveryImageView"
             app:layout_constraintTop_toTopOf="@+id/deliveryImageView" />
 
@@ -173,7 +173,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="TextView"
+            android:text="87 Guild Street LONDON"
             android:textColor="@color/gray"
             app:layout_constraintStart_toEndOf="@+id/deliveryImageView"
             app:layout_constraintTop_toBottomOf="@+id/deliveryDetailsDescriptionTextView" />
@@ -216,7 +216,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small"
-            android:text="$120"
             app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
             app:layout_constraintTop_toBottomOf="@+id/summarySeparatorView" />
 
@@ -234,7 +233,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small"
-            android:text="$24"
             app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
             app:layout_constraintTop_toBottomOf="@+id/subtotalPriceTextView" />
 
@@ -252,7 +250,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small"
-            android:text="$8"
             app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
             app:layout_constraintTop_toBottomOf="@+id/taxTextView" />
 
@@ -270,7 +267,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small"
-            android:text="$0"
             app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
             app:layout_constraintTop_toBottomOf="@+id/shippingTextView" />
 
@@ -303,7 +299,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small"
-            android:text="$152"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/summaryTotalSeparatorView"
             app:layout_constraintTop_toBottomOf="@+id/summaryTotalSeparatorView" />

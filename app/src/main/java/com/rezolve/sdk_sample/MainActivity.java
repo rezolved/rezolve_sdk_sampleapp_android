@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         rezolveSDK.createSession(accessToken, entityId, partnerId, new RezolveInterface() {
             @Override
-            public void onInitializationSuccess(RezolveSession rezolveSession, String entityId, String partnerId) {
+            public void onInitializationSuccess(RezolveSession rezolveSession, String partnerId, String entityId) {
                 rezolveSDK.setDeviceIdHeader(deviceId);
                 navigateToScanView();
             }
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onInitializationFailure(@NonNull RezolveError rezolveError) {
                 // TODO AlertDialog call
+                String test = "";
             }
         });
     }
