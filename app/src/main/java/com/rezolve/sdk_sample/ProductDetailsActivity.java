@@ -8,11 +8,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.rezolve.sdk.model.cart.Order;
 import com.rezolve.sdk.model.cart.PriceBreakdown;
+import com.rezolve.sdk.model.customer.Address;
+import com.rezolve.sdk.model.customer.PaymentCard;
 import com.rezolve.sdk.model.shop.OrderSummary;
 import com.rezolve.sdk_sample.model.ProductDetails;
 import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.CheckoutService;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
+import com.rezolve.sdk_sample.utils.CustomerUtils;
 import com.synnapps.carouselview.CarouselView;
 
 import org.parceler.Parcels;
@@ -33,6 +36,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TextView quantityTextView;
     private Button quantityIncreaseButton;
     private Button quantityDecreaseButton;
+    private TextView paymentDetailsTextView;
+    private TextView deliveryDetailsTextView;
     private TextView subtotalPriceTextView;
     private TextView taxTextView;
     private TextView shippingTextView;
@@ -58,6 +63,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         quantityTextView = findViewById(R.id.quantityTextView);
         quantityIncreaseButton = findViewById(R.id.quantityIncreaseButton);
         quantityDecreaseButton = findViewById(R.id.quantityDecreaseButton);
+        paymentDetailsTextView = findViewById(R.id.paymentDetailsTextView);
+        deliveryDetailsTextView = findViewById(R.id.deliveryDetailsTextView);
         subtotalPriceTextView = findViewById(R.id.subtotalPriceTextView);
         taxTextView = findViewById(R.id.taxTextView);
         shippingTextView = findViewById(R.id.shippingTextView);
@@ -76,7 +83,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         checkoutService = CheckoutService.peekInstance();
         productDetails = Parcels.unwrap(getIntent().getParcelableExtra("product_details"));
+
         displayProductDetails();
+        displayCustomerDetails();
     }
 
     private void displayProductDetails() {
@@ -92,6 +101,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         displayQuantity();
         checkoutProduct();
+    }
+
+    private void displayCustomerDetails() {
+        Address customerAddress = CustomerUtils.getCustomerAddress();
+        PaymentCard customerPaymentCard = CustomerUtils.getCustomerPaymentCard(customerAddress.getId());
+
+        paymentDetailsTextView.setText(customerPaymentCard.getBrand() + " " + customerPaymentCard.getPan4());
+        deliveryDetailsTextView.setText(customerAddress.getLine1() + " " + customerAddress.getCity());
     }
 
     private void increaseQuantity() {
