@@ -10,7 +10,7 @@ import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.RezolveSession;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk_sample.model.RegistrationResponse;
-import com.rezolve.sdk_sample.services.AuthenticationInterface;
+import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
 import com.rezolve.sdk_sample.utils.TokenUtils;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        authenticationService.register(new AuthenticationInterface() {
+        authenticationService.register(new AuthenticationCallback() {
             @Override
             public void onRegistrationSuccess(RegistrationResponse response) {
                 entityId = response.getEntityId();
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onInitializationFailure(@NonNull RezolveError rezolveError) {
                 // TODO AlertDialog call
-                String test = "";
             }
         });
     }

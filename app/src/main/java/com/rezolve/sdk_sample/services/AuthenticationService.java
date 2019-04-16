@@ -2,6 +2,7 @@ package com.rezolve.sdk_sample.services;
 
 import com.rezolve.sdk_sample.BuildConfig;
 import com.rezolve.sdk_sample.providers.AuthenticationProvider;
+import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
 import com.rezolve.sdk_sample.utils.TokenUtils;
 
@@ -30,7 +31,7 @@ public class AuthenticationService {
         mAuthenticationProvider = retrofit.create(AuthenticationProvider.class);
     }
 
-    public void register(AuthenticationInterface authenticationInterface) {
+    public void register(AuthenticationCallback authenticationCallback) {
         String token = TokenUtils.createRegistrationToken();
         String userEmail = DeviceUtils.userIdentifier + EXAMPLE_EMAIL_SUFFIX;
 
@@ -41,7 +42,7 @@ public class AuthenticationService {
         mAuthenticationProvider.registerUser(token, BuildConfig.REZOLVE_SDK_API_KEY, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> authenticationInterface.onRegistrationSuccess(response),
-                           error -> authenticationInterface.onRegistrationFailure());
+                .subscribe(response -> authenticationCallback.onRegistrationSuccess(response),
+                           error -> authenticationCallback.onRegistrationFailure());
     }
 }

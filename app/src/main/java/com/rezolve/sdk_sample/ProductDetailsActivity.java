@@ -1,42 +1,18 @@
 package com.rezolve.sdk_sample;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.rezolve.sdk.RezolveSDK;
-import com.rezolve.sdk.RezolveSession;
-import com.rezolve.sdk.core.callbacks.AddressbookCallback;
-import com.rezolve.sdk.core.callbacks.CheckoutV2Callback;
-import com.rezolve.sdk.core.callbacks.PhonebookCallback;
-import com.rezolve.sdk.core.callbacks.WalletCallback;
-import com.rezolve.sdk.core.interfaces.CheckoutV2Interface;
-import com.rezolve.sdk.core.interfaces.PaymentOptionInterface;
-import com.rezolve.sdk.core.interfaces.PhonebookInterface;
-import com.rezolve.sdk.core.managers.AddressbookManager;
-import com.rezolve.sdk.core.managers.CheckoutManagerV2;
-import com.rezolve.sdk.core.managers.PaymentOptionManager;
-import com.rezolve.sdk.core.managers.PhonebookManager;
-import com.rezolve.sdk.core.managers.WalletManager;
-import com.rezolve.sdk.model.cart.CheckoutBundleV2;
-import com.rezolve.sdk.model.cart.CheckoutProduct;
 import com.rezolve.sdk.model.cart.Order;
-import com.rezolve.sdk.model.cart.PaymentRequest;
 import com.rezolve.sdk.model.cart.PriceBreakdown;
-import com.rezolve.sdk.model.customer.Address;
-import com.rezolve.sdk.model.customer.PaymentCard;
-import com.rezolve.sdk.model.customer.Phone;
-import com.rezolve.sdk.model.network.RezolveError;
-import com.rezolve.sdk.model.shop.DeliveryUnit;
 import com.rezolve.sdk.model.shop.OrderSummary;
-import com.rezolve.sdk.model.shop.PaymentOption;
-import com.rezolve.sdk.model.shop.SupportedDeliveryMethod;
-import com.rezolve.sdk.model.shop.SupportedPaymentMethod;
 import com.rezolve.sdk_sample.model.ProductDetails;
-import com.rezolve.sdk_sample.utils.CustomerUtils;
+import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
+import com.rezolve.sdk_sample.services.CheckoutService;
+import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
 import com.synnapps.carouselview.CarouselView;
 
 import org.parceler.Parcels;
@@ -46,6 +22,10 @@ import java.util.List;
 public class ProductDetailsActivity extends AppCompatActivity {
 
     private final String PRICE_PREFIX = "$";
+    private final String PRICE_BREAKDOWN_SUBTOTAL = "unit";
+    private final String PRICE_BREAKDOWN_TAX = "tax";
+    private final String PRICE_BREAKDOWN_SHIPPING = "shipping";
+    private final String PRICE_BREAKDOWN_DISCOUNT = "discount";
 
     private CarouselView previewCarouselView;
     private TextView titleTextView;
@@ -58,24 +38,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TextView shippingTextView;
     private TextView discountTextView;
     private TextView totalPriceTextView;
-
-    private RezolveSession rezolveSession;
-
-    private AddressbookManager addressbookManager;
-    private PhonebookManager phonebookManager;
-    private CheckoutManagerV2 checkoutManager;
+    private Button instantBuyButton;
 
     private ProductDetails productDetails;
-    private CheckoutProduct checkout;
-    private PaymentOption payment;
-
-    private Address deliveryAddress;
-    private Phone customerPhone;
-    private WalletManager walletManager;
-    private PaymentCard customerPaymentCard;
-    private CheckoutBundleV2 checkoutBundle;
+    private CheckoutService checkoutService;
 
     private int productQuantity = 1;
+    private String orderId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,23 +63,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
         shippingTextView = findViewById(R.id.shippingTextView);
         discountTextView = findViewById(R.id.discountTextView);
         totalPriceTextView = findViewById(R.id.totalPriceTextView);
+        instantBuyButton = findViewById(R.id.instantBuyButton);
 
         quantityIncreaseButton.setOnClickListener(view -> increaseQuantity());
         quantityDecreaseButton.setOnClickListener(view -> decreaseQuantity());
+        instantBuyButton.setOnClickListener(view -> buyProduct());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        rezolveSession = RezolveSDK.peekInstance().getRezolveSession();
-        addressbookManager = rezolveSession.getAddressbookManager();
-        phonebookManager = rezolveSession.getPhonebookManager();
-        walletManager = rezolveSession.getWalletManager();
-        checkoutManager = rezolveSession.getCheckoutManagerV2();
-
+        checkoutService = CheckoutService.peekInstance();
         productDetails = Parcels.unwrap(getIntent().getParcelableExtra("product_details"));
-
         displayProductDetails();
     }
 
@@ -126,40 +91,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
         priceTextView.setText(PRICE_PREFIX + productDetails.getPrice());
 
         displayQuantity();
-
-        getPaymentOptionManager();
-    }
-
-    private void getPaymentOptionManager() {
-        PaymentOptionManager paymentOptionManager = RezolveSDK.peekInstance().getRezolveSession().getPaymentOptionManager();
-
-        checkout = new CheckoutProduct();
-        checkout.setId(Integer.parseInt(productDetails.getId()));
-        checkout.setQty(1);
-
-        String merchantId = productDetails.getMerchantId();
-        paymentOptionManager.getProductOptions(checkout, merchantId, new PaymentOptionInterface() {
-            @Override
-            public void onProductOptionsSuccess(PaymentOption paymentOption) {
-                payment = paymentOption;
-                initializeCheckout();
-            }
-
-            @Override
-            public void onCartOptionsSuccess(List<PaymentOption> list) {
-
-            }
-
-            @Override
-            public void onError(@NonNull RezolveError rezolveError) {
-
-            }
-        });
+        checkoutProduct();
     }
 
     private void increaseQuantity() {
         productQuantity++;
         displayQuantity();
+        // checkout needs to be refreshed with new quantity value
+        checkoutProduct();
     }
 
     private void decreaseQuantity() {
@@ -169,6 +108,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         productQuantity--;
         displayQuantity();
+        // checkout needs to be refreshed with new quantity value
+        checkoutProduct();
     }
 
     private void displayQuantity() {
@@ -176,117 +117,58 @@ public class ProductDetailsActivity extends AppCompatActivity {
         quantityTextView.setText(quantityPrefix + " " + productQuantity);
     }
 
-    private void initializeCheckout() {
-        setDeliveryAddress();
-    }
-
-    private void setDeliveryAddress() {
-        if (deliveryAddress != null) {
-            setCustomerPhone();
-        }
-
-        Address address = CustomerUtils.getCustomerAddress();
-        addressbookManager.create(address, new AddressbookCallback() {
-            @Override
-            public void onAddressbookCreateSuccess(Address address) {
-                deliveryAddress = address;
-                setCustomerPhone();
-            }
-        });
-    }
-
-    private void setCustomerPhone() {
-        if (customerPhone != null) {
-            setCustomerPaymentCard();
-        }
-
-        Phone phone = CustomerUtils.getCustomerPhone();
-        phonebookManager.create(phone, new PhonebookCallback() {
-            @Override
-            public void onPhonebookCreateSuccess(Phone phone) {
-                customerPhone = phone;
-                setCustomerPaymentCard();
-            }
-        });
-    }
-
-    private void setCustomerPaymentCard() {
-        if (customerPaymentCard != null) {
-            checkoutProduct();
-        }
-
-        PaymentCard paymentCard = CustomerUtils.getCustomerPaymentCard();
-        walletManager.create(paymentCard, new WalletCallback() {
-            @Override
-            public void onWalletCreateSuccess(PaymentCard paymentCard) {
-                customerPaymentCard = paymentCard;
-                checkoutProduct();
-            }
-
-            @Override
-            public void onError(@NonNull RezolveError rezolveError) {
-                super.onError(rezolveError);
-            }
-        });
-    }
-
     private void checkoutProduct() {
-        // Gets first supported payment method
-        SupportedPaymentMethod paymentMethod = payment.getSupportedPaymentMethods().get(0);
-
-        DeliveryUnit deliveryUnit = new DeliveryUnit(paymentMethod, deliveryAddress.getId());
-        CheckoutBundleV2 checkoutBundle = CheckoutBundleV2.createProductCheckoutBundleV2(productDetails.getMerchantId(), payment.getId(), checkout, customerPhone.getId(), paymentMethod, deliveryUnit);
-
-        checkoutManager.checkoutProductOption(checkoutBundle, new CheckoutV2Callback() {
+        checkoutService.checkoutProduct(productDetails, productQuantity, new CheckoutCallback() {
             @Override
-            public void onProductOptionCheckoutSuccess(Order order) {
-                super.onProductOptionCheckoutSuccess(order);
-
-                updateCheckoutPriceDetails(order.getBreakdowns());
-                updateCheckoutTotalPrice(order.getFinalPrice());
+            public void onCheckoutSuccess(Order order) {
+                orderId = order.getOrderId();
+                displayCheckoutPriceDetails(order.getBreakdowns());
+                displayCheckoutTotalPrice(order.getFinalPrice());
             }
 
             @Override
-            public void onError(@NonNull RezolveError rezolveError) {
-                super.onError(rezolveError);
+            public void onCheckoutFailure() {
+                // TODO Display failure dialog
             }
         });
     }
 
-    private void updateCheckoutPriceDetails(List<PriceBreakdown> priceBreakdowns) {
+    private void displayCheckoutPriceDetails(List<PriceBreakdown> priceBreakdowns) {
         for (PriceBreakdown priceBreakdown : priceBreakdowns) {
             String price = PRICE_PREFIX + String.valueOf(priceBreakdown.getAmount());
 
             switch (priceBreakdown.getType()) {
-                case "unit":
+                case PRICE_BREAKDOWN_SUBTOTAL:
                     subtotalPriceTextView.setText(price);
                     break;
-                case "tax":
+                case PRICE_BREAKDOWN_TAX:
                     taxTextView.setText(price);
                     break;
-                case "shipping":
+                case PRICE_BREAKDOWN_SHIPPING:
                     shippingTextView.setText(price);
                     break;
-                case "discount":
+                case PRICE_BREAKDOWN_DISCOUNT:
                     discountTextView.setText(price);
                     break;
             }
         }
     }
 
-    private void updateCheckoutTotalPrice(Float totalPrice) {
+    private void displayCheckoutTotalPrice(Float totalPrice) {
         String price = PRICE_PREFIX + String.valueOf(totalPrice);
         totalPriceTextView.setText(price);
     }
 
     private void buyProduct() {
-        String ccv = CustomerUtils.getCustomerPaymentCardCCV();
-        PaymentRequest paymentRequest = checkoutManager.createPaymentRequest(customerPaymentCard, ccv);
-
-        checkoutManager.buyProduct(paymentRequest, checkoutBundle, null, null, new CheckoutV2Callback() {
+        checkoutService.buyProduct(orderId, new PaymentCallback() {
             @Override
-            public void onProductOptionBuySuccess(OrderSummary order) {
+            public void onPurchaseSuccess(OrderSummary orderSummary) {
                 // TODO Navigate to summary page
+            }
+
+            @Override
+            public void onPurchaseFailure() {
+                // TODO Display failure dialog
             }
         });
     }

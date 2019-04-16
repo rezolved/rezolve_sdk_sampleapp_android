@@ -66,5 +66,5 @@ dependencies {
     annotationProcessor "org.parceler:parceler:$parcelerVersion"
 
     // CarouselView library
-    compile "com.synnapps:carouselview:$carouselViewVersion"
+    implementation "com.synnapps:carouselview:$carouselViewVersion"
 }
