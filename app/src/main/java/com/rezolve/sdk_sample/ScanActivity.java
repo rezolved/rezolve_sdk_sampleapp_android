@@ -3,6 +3,7 @@ package com.rezolve.sdk_sample;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -16,6 +17,10 @@ import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.views.RezolveScanView;
+import com.rezolve.sdk_sample.model.ProductDetails;
+
+import org.parceler.Parcel;
+import org.parceler.Parcels;
 
 public class ScanActivity extends AppCompatActivity implements ScanManagerInterface {
 
@@ -83,12 +88,10 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     private void navigateToProductDetailsView(Product product) {
         Intent intent = new Intent(ScanActivity.this, ProductDetailsActivity.class);
-
-        // TODO Passing whole Product object
         Bundle bundle = new Bundle();
-        bundle.putString("title", product.getTitle());
-        bundle.putFloat("price", product.getPrice());
-        bundle.putString("previewImage", product.getImages().get(0));
+
+        Parcelable productDetails = Parcels.wrap(new ProductDetails(product));
+        bundle.putParcelable("product_details", productDetails);
         intent.putExtras(bundle);
 
         startActivity(intent);
