@@ -53,7 +53,7 @@ public class CheckoutService {
 
     private static CheckoutService instance;
 
-    public static CheckoutService peekInstance() {
+    public static CheckoutService getInstance() {
         if (instance == null) {
             instance = new CheckoutService();
         }

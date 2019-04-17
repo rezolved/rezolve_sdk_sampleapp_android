@@ -75,13 +75,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         quantityIncreaseButton.setOnClickListener(view -> increaseQuantity());
         quantityDecreaseButton.setOnClickListener(view -> decreaseQuantity());
         instantBuyButton.setOnClickListener(view -> buyProduct());
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        checkoutService = CheckoutService.peekInstance();
+        checkoutService = CheckoutService.getInstance();
         productDetails = Parcels.unwrap(getIntent().getParcelableExtra("product_details"));
 
         displayProductDetails();

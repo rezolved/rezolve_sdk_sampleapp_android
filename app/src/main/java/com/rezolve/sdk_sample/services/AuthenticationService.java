@@ -1,7 +1,7 @@
 package com.rezolve.sdk_sample.services;
 
 import com.rezolve.sdk_sample.BuildConfig;
-import com.rezolve.sdk_sample.providers.AuthenticationProvider;
+import com.rezolve.sdk_sample.api.AuthenticationRequest;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
 import com.rezolve.sdk_sample.utils.TokenUtils;
@@ -19,7 +19,7 @@ public class AuthenticationService {
     private final String KEY_REGISTRATION_EMAIL = "email";
     private final String EXAMPLE_EMAIL_SUFFIX = "@example.com";
 
-    private final AuthenticationProvider mAuthenticationProvider;
+    private final AuthenticationRequest authenticationRequest;
 
     public AuthenticationService() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -28,7 +28,7 @@ public class AuthenticationService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
-        mAuthenticationProvider = retrofit.create(AuthenticationProvider.class);
+        authenticationRequest = retrofit.create(AuthenticationRequest.class);
     }
 
     public void register(AuthenticationCallback authenticationCallback) {
@@ -39,7 +39,7 @@ public class AuthenticationService {
             put(KEY_REGISTRATION_EMAIL, userEmail);
         }};
 
-        mAuthenticationProvider.registerUser(token, BuildConfig.REZOLVE_SDK_API_KEY, body)
+        authenticationRequest.registerUser(token, BuildConfig.REZOLVE_SDK_API_KEY, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> authenticationCallback.onRegistrationSuccess(response),
