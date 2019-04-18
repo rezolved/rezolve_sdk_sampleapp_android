@@ -11,4 +11,8 @@
     <string name="discount">Discount</string>
     <string name="total">Total:</string>
     <string name="instant_buy">Instant Buy</string>
+    <string name="your_order">Your Order</string>
+    <string name="continue_shopping">Continue Shopping</string>
+    <string name="dialog_error">Error</string>
+    <string name="dialog_ok">OK</string>
 </resources>

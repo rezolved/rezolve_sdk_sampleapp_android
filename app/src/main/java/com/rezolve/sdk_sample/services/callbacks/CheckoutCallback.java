@@ -4,5 +4,5 @@ import com.rezolve.sdk.model.cart.Order;
 
 public interface CheckoutCallback {
     void onCheckoutSuccess(Order order);
-    void onCheckoutFailure();
+    void onCheckoutFailure(String message);
 }

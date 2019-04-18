@@ -4,5 +4,5 @@ import com.rezolve.sdk_sample.model.RegistrationResponse;
 
 public interface AuthenticationCallback {
     void onRegistrationSuccess(RegistrationResponse response);
-    void onRegistrationFailure();
+    void onRegistrationFailure(String message);
 }

@@ -58,6 +58,10 @@ public final class CustomerUtils {
         return paymentCard;
     }
 
+    public static String getCustomerPaymentCardPan() {
+        return CUSTOMER_CARD_PAN;
+    }
+
     public static String getCustomerPaymentCardCCV() {
         return CUSTOMER_CARD_CCV;
     }
