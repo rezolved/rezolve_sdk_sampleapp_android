@@ -52,6 +52,7 @@ public class OrderSummaryActivity extends AppCompatActivity {
                 for(OrderDetails order : orderHistoryObject.getOrders()) {
                     if(order.getOrderId().equals(orderId)){
                         displayOrderDetails(order);
+                        break;
                     }
                 }
             }
