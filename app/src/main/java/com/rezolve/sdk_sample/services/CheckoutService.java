@@ -101,7 +101,7 @@ public class CheckoutService {
 
             @Override
             public void onError(@NonNull RezolveError rezolveError) {
-                paymentCallback.onPurchaseFailure();
+                paymentCallback.onPurchaseFailure(rezolveError.getMessage());
             }
         });
     }
@@ -167,7 +167,7 @@ public class CheckoutService {
 
             @Override
             public void onError(@NonNull RezolveError rezolveError) {
-                checkoutCallback.onCheckoutFailure();
+                checkoutCallback.onCheckoutFailure(rezolveError.getMessage());
             }
         });
     }

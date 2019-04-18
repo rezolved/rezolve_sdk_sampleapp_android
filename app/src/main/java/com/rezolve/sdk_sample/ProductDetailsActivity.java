@@ -1,21 +1,31 @@
 package com.rezolve.sdk_sample;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.rezolve.sdk.core.callbacks.UserActivityCallback;
+import com.rezolve.sdk.core.managers.UserActivityManager;
 import com.rezolve.sdk.model.cart.Order;
 import com.rezolve.sdk.model.cart.PriceBreakdown;
 import com.rezolve.sdk.model.customer.Address;
 import com.rezolve.sdk.model.customer.PaymentCard;
+import com.rezolve.sdk.model.history.OrderDetails;
+import com.rezolve.sdk.model.history.OrderHistoryObject;
 import com.rezolve.sdk.model.shop.OrderSummary;
+import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.model.ProductDetails;
+import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.CheckoutService;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
 import com.rezolve.sdk_sample.utils.CustomerUtils;
+import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.synnapps.carouselview.CarouselView;
 
 import org.parceler.Parcels;
@@ -102,7 +112,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         Address customerAddress = CustomerUtils.getCustomerAddress();
         PaymentCard customerPaymentCard = CustomerUtils.getCustomerPaymentCard(customerAddress.getId());
 
-        paymentDetailsTextView.setText(customerPaymentCard.getBrand() + " " + customerPaymentCard.getPan4());
+        paymentDetailsTextView.setText(customerPaymentCard.getBrand() + " " + CustomerUtils.getCustomerPaymentCardPan());
         deliveryDetailsTextView.setText(customerAddress.getLine1() + " " + customerAddress.getCity());
     }
 
@@ -139,8 +149,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCheckoutFailure() {
-                // TODO Display failure dialog
+            public void onCheckoutFailure(String message) {
+                DialogUtils.showError(getApplicationContext(), message);
             }
         });
     }
@@ -175,13 +185,24 @@ public class ProductDetailsActivity extends AppCompatActivity {
         checkoutService.buyProduct(orderId, new PaymentCallback() {
             @Override
             public void onPurchaseSuccess(OrderSummary orderSummary) {
-                // TODO Navigate to summary page
+                navigateToOrderSummaryView(orderSummary);
             }
 
             @Override
-            public void onPurchaseFailure() {
-                // TODO Display failure dialog
+            public void onPurchaseFailure(String message) {
+                DialogUtils.showError(ProductDetailsActivity.this, message);
             }
         });
+    }
+
+    private void navigateToOrderSummaryView(OrderSummary orderSummary) {
+        Intent intent = new Intent(ProductDetailsActivity.this, OrderSummaryActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("order_id", orderSummary.getOrderId());
+        intent.putExtras(bundle);
+
+        startActivity(intent);
     }
 }

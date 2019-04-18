@@ -43,6 +43,6 @@ public class AuthenticationService {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> authenticationCallback.onRegistrationSuccess(response),
-                           error -> authenticationCallback.onRegistrationFailure());
+                           error -> authenticationCallback.onRegistrationFailure(error.getMessage()));
     }
 }

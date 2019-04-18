@@ -4,5 +4,5 @@ import com.rezolve.sdk.model.shop.OrderSummary;
 
 public interface PaymentCallback {
     void onPurchaseSuccess(OrderSummary orderSummary);
-    void onPurchaseFailure();
+    void onPurchaseFailure(String message);
 }

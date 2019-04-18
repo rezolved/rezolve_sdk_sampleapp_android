@@ -15,6 +15,7 @@ import com.rezolve.sdk_sample.services.CheckoutService;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
+import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.TokenUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onRegistrationFailure() {
-                // TODO AlertDialog call
+            public void onRegistrationFailure(String message) {
+                DialogUtils.showError(MainActivity.this, message);
             }
         });
     }
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onInitializationFailure(@NonNull RezolveError rezolveError) {
-                // TODO AlertDialog call
+                DialogUtils.showError(MainActivity.this, rezolveError.getMessage());
             }
         });
     }
