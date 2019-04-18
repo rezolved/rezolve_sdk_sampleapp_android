@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">sdk_sample</string>
     <string name="authentication_in_progress">Authentication in Progress...</string>
+    <string name="quantity">Quantity:</string>
+    <string name="payment_details">Payment Details</string>
+    <string name="delivery_details">Delivery Details</string>
+    <string name="summary">Summary</string>
+    <string name="subtotal">Subtotal (excluding Tax)</string>
+    <string name="tax">Tax</string>
+    <string name="shipping">Shipping</string>
+    <string name="discount">Discount</string>
+    <string name="total">Total:</string>
+    <string name="instant_buy">Instant Buy</string>
+    <string name="your_order">Your Order</string>
+    <string name="continue_shopping">Continue Shopping</string>
+    <string name="dialog_error">Error</string>
+    <string name="dialog_ok">OK</string>
 </resources>

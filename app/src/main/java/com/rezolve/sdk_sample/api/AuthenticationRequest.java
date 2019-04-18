@@ -1,4 +1,4 @@
-package com.rezolve.sdk_sample.providers;
+package com.rezolve.sdk_sample.api;
 
 import com.rezolve.sdk_sample.model.RegistrationResponse;
 
@@ -10,7 +10,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface AuthenticationProvider {
+public interface AuthenticationRequest {
     @Headers("Content-Type: application/json")
     @POST("/api/v1/authentication/register")
     Observable<RegistrationResponse> registerUser(@Header("Authorization") String token,

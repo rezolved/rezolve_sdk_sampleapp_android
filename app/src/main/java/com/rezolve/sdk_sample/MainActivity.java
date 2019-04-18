@@ -10,9 +10,12 @@ import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.RezolveSession;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk_sample.model.RegistrationResponse;
-import com.rezolve.sdk_sample.services.AuthenticationInterface;
+import com.rezolve.sdk_sample.providers.SdkProvider;
+import com.rezolve.sdk_sample.services.CheckoutService;
+import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
+import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.TokenUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        authenticationService.register(new AuthenticationInterface() {
+        authenticationService.register(new AuthenticationCallback() {
             @Override
             public void onRegistrationSuccess(RegistrationResponse response) {
                 entityId = response.getEntityId();
@@ -44,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onRegistrationFailure() {
-                // TODO AlertDialog call
+            public void onRegistrationFailure(String message) {
+                DialogUtils.showError(MainActivity.this, message);
             }
         });
     }
@@ -60,17 +63,18 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         rezolveSDK.setAuthToken(accessToken);
+        rezolveSDK.setDeviceIdHeader(deviceId);
+        SdkProvider.getInstance().init(rezolveSDK);
 
         rezolveSDK.createSession(accessToken, entityId, partnerId, new RezolveInterface() {
             @Override
-            public void onInitializationSuccess(RezolveSession rezolveSession, String entityId, String partnerId) {
-                rezolveSDK.setDeviceIdHeader(deviceId);
+            public void onInitializationSuccess(RezolveSession rezolveSession, String partnerId, String entityId) {
                 navigateToScanView();
             }
 
             @Override
             public void onInitializationFailure(@NonNull RezolveError rezolveError) {
-                // TODO AlertDialog call
+                DialogUtils.showError(MainActivity.this, rezolveError.getMessage());
             }
         });
     }

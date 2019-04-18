@@ -9,6 +9,8 @@ buildscript {
         retrofitVersion = "2.5.0"
         permissionsVersion = "3.8"
         glideVersion = "4.9.0"
+        parcelerVersion = "1.1.12"
+        carouselViewVersion = "0.1.5"
     }
 
     repositories {
