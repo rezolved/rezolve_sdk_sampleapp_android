@@ -12,6 +12,9 @@
     <string name="total">Total:</string>
     <string name="instant_buy">Instant Buy</string>
     <string name="your_order">Your Order</string>
+    <string name="payment_complete">Payment complete</string>
+    <string name="your_order_ref">Your order ref</string>
+    <string name="contact_merchant">Contact Merchant</string>
     <string name="continue_shopping">Continue Shopping</string>
     <string name="dialog_error">Error</string>
     <string name="dialog_ok">OK</string>

@@ -1,95 +1,310 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/yourOrderDescriptionTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/large"
-        android:layout_marginTop="@dimen/large"
-        android:layout_marginEnd="@dimen/large"
-        android:layout_marginBottom="@dimen/small"
-        android:gravity="center"
-        android:text= "@string/your_order"
-        android:textSize="@dimen/text_size_large"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/orderIdTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/orderIdTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/large"
-        android:layout_marginEnd="@dimen/large"
-        android:gravity="center"
-        android:visibility="gone"
-        android:textSize="@dimen/text_size_small"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/yourOrderDescriptionTextView" />
+        <ImageView
+            android:id="@+id/paymentDoneImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="@dimen/small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_done" />
 
-    <TextView
-        android:id="@+id/statusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small"
-        android:layout_marginTop="@dimen/large"
-        android:layout_marginEnd="@dimen/small"
-        android:layout_marginBottom="@dimen/large"
-        android:textAllCaps="true"
-        android:textSize="@dimen/text_size_large"
-        app:layout_constraintBottom_toTopOf="@+id/titleTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderIdTextView" />
+        <TextView
+            android:id="@+id/paymentCompleteDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginEnd="@dimen/small"
+            android:text="@string/payment_complete"
+            android:textAllCaps="true"
+            android:textSize="@dimen/text_size_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paymentDoneImageView" />
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/large"
-        android:layout_marginTop="@dimen/medium"
-        android:layout_marginEnd="@dimen/large"
-        android:layout_marginBottom="@dimen/medium"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_medium_small"
-        app:layout_constraintBottom_toTopOf="@+id/priceTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statusTextView" />
+        <ImageView
+            android:id="@+id/productImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/large"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/orderIdTextView"
+            app:srcCompat="@drawable/ic_bag" />
 
-    <TextView
-        android:id="@+id/priceTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/large"
-        android:layout_marginTop="@dimen/medium"
-        android:layout_marginEnd="@dimen/large"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_medium_small"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        <TextView
+            android:id="@+id/productNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small"
+            android:layout_marginTop="@dimen/very_small"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/productImageView"
+            app:layout_constraintTop_toTopOf="@+id/productImageView" />
 
-    <Button
-        android:id="@+id/continueShoppingButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/large"
-        android:layout_marginEnd="@dimen/large"
-        android:layout_marginBottom="@dimen/large"
-        android:background="@color/blue"
-        android:text="@string/continue_shopping"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/productQuantityTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            app:layout_constraintStart_toStartOf="@+id/productNameTextView"
+            app:layout_constraintTop_toBottomOf="@+id/productNameTextView" />
+
+        <ImageView
+            android:id="@+id/paymentImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/small"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productImageView"
+            app:srcCompat="@drawable/ic_payment" />
+
+        <TextView
+            android:id="@+id/paymentDetailsDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small"
+            android:layout_marginTop="@dimen/very_small"
+            android:text="@string/payment_details"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/paymentImageView"
+            app:layout_constraintTop_toTopOf="@+id/paymentImageView" />
+
+        <TextView
+            android:id="@+id/paymentDetailsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            app:layout_constraintStart_toStartOf="@+id/paymentDetailsDescriptionTextView"
+            app:layout_constraintTop_toBottomOf="@+id/paymentDetailsDescriptionTextView" />
+
+        <ImageView
+            android:id="@+id/deliveryImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paymentImageView"
+            app:srcCompat="@drawable/ic_location" />
+
+        <TextView
+            android:id="@+id/deliveryDetailsDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small"
+            android:layout_marginTop="@dimen/very_small"
+            android:text="@string/delivery_details"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/deliveryImageView"
+            app:layout_constraintTop_toTopOf="@+id/deliveryImageView" />
+
+        <TextView
+            android:id="@+id/deliveryDetailsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small"
+            android:textColor="@color/gray"
+            app:layout_constraintStart_toEndOf="@+id/deliveryImageView"
+            app:layout_constraintTop_toBottomOf="@+id/deliveryDetailsDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/summaryDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/large"
+            android:text="@string/summary"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deliveryImageView" />
+
+        <View
+            android:id="@+id/summarySeparatorView"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginEnd="@dimen/large"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/summaryDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/subtotalPriceDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/subtotal"
+            app:layout_constraintStart_toStartOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/summarySeparatorView" />
+
+        <TextView
+            android:id="@+id/subtotalPriceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/summarySeparatorView" />
+
+        <TextView
+            android:id="@+id/taxDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/tax"
+            app:layout_constraintStart_toStartOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/subtotalPriceDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/taxTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/subtotalPriceTextView" />
+
+        <TextView
+            android:id="@+id/shippingDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/shipping"
+            app:layout_constraintStart_toStartOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/taxDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/shippingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/taxTextView" />
+
+        <TextView
+            android:id="@+id/totalPriceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/totalPriceDescriptionTextView"
+            app:layout_constraintEnd_toEndOf="@+id/summarySeparatorView" />
+
+        <View
+            android:id="@+id/summaryTotalSeparatorView"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginEnd="@dimen/large"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shippingDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/totalPriceDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/total"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@+id/summaryTotalSeparatorView"
+            app:layout_constraintTop_toBottomOf="@+id/summaryTotalSeparatorView" />
+
+        <TextView
+            android:id="@+id/orderIdDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginEnd="@dimen/small"
+            android:text="@string/your_order_ref"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paymentCompleteDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/orderIdTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/very_small"
+            android:layout_marginEnd="@dimen/large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/orderIdDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/merchantDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/large"
+            android:text="@string/contact_merchant"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/totalPriceDescriptionTextView"
+            app:layout_constraintTop_toBottomOf="@+id/totalPriceDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/merchantEmailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/very_small"
+            app:layout_constraintStart_toStartOf="@+id/merchantDescriptionTextView"
+            app:layout_constraintTop_toBottomOf="@+id/merchantDescriptionTextView" />
+
+        <TextView
+            android:id="@+id/merchantNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small"
+            app:layout_constraintStart_toStartOf="@+id/merchantEmailTextView"
+            app:layout_constraintTop_toBottomOf="@+id/merchantEmailTextView" />
+
+        <TextView
+            android:id="@+id/merchantPhoneTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/very_small"
+            app:layout_constraintStart_toStartOf="@+id/merchantNameTextView"
+            app:layout_constraintTop_toBottomOf="@+id/merchantNameTextView" />
+
+        <Button
+            android:id="@+id/continueShoppingButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/large"
+            android:layout_marginEnd="@dimen/large"
+            android:layout_marginBottom="@dimen/medium"
+            android:background="@color/blue"
+            android:text="@string/continue_shopping"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/merchantPhoneTextView" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

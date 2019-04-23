@@ -1,44 +1,31 @@
 package com.rezolve.sdk_sample;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.rezolve.sdk.core.callbacks.UserActivityCallback;
-import com.rezolve.sdk.core.managers.UserActivityManager;
 import com.rezolve.sdk.model.cart.Order;
 import com.rezolve.sdk.model.cart.PriceBreakdown;
 import com.rezolve.sdk.model.customer.Address;
 import com.rezolve.sdk.model.customer.PaymentCard;
-import com.rezolve.sdk.model.history.OrderDetails;
-import com.rezolve.sdk.model.history.OrderHistoryObject;
 import com.rezolve.sdk.model.shop.OrderSummary;
-import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.model.ProductDetails;
-import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.CheckoutService;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
 import com.rezolve.sdk_sample.utils.CustomerUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.synnapps.carouselview.CarouselView;
+import static com.rezolve.sdk_sample.utils.PriceConstants.*;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
-
-    private final String PRICE_PREFIX = "$";
-    private final String PRICE_BREAKDOWN_SUBTOTAL = "unit";
-    private final String PRICE_BREAKDOWN_TAX = "tax";
-    private final String PRICE_BREAKDOWN_SHIPPING = "shipping";
-    private final String PRICE_BREAKDOWN_DISCOUNT = "discount";
 
     private CarouselView previewCarouselView;
     private TextView titleTextView;
