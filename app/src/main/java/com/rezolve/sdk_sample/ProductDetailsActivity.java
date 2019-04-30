@@ -169,6 +169,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void buyProduct() {
+        if(orderId == null){
+            return;
+        }
+
         checkoutService.buyProduct(orderId, new PaymentCallback() {
             @Override
             public void onPurchaseSuccess(OrderSummary orderSummary) {
@@ -177,7 +181,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onPurchaseFailure(String message) {
-                DialogUtils.showError(ProductDetailsActivity.this, message);
+                DialogUtils.showError(getApplicationContext(), message);
             }
         });
     }
