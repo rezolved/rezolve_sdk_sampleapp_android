@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.rezolve.sdk_sample">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,6 +16,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name="com.digimarc.dms.internal.SdkInitProvider"
+            android:authorities="${applicationId}.sdkinitprovider"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:authorities"/>
+        <provider
+            android:name="com.digimarc.dms.helpers.camerahelper.CameraInitProvider"
+            android:authorities="${applicationId}.camerainitprovider"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:authorities"/>
+        <provider
+            android:name="com.digimarc.dms.helpers.audiohelper.AudioInitProvider"
+            android:authorities="${applicationId}.audioinitprovider"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:authorities"/>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
