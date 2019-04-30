@@ -16,11 +16,9 @@ import com.rezolve.sdk.model.foreign.RezolveScanResult;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Product;
-import com.rezolve.sdk.views.RezolveAudioVizualizationView;
 import com.rezolve.sdk.views.RezolveScanView;
 import com.rezolve.sdk_sample.model.ProductDetails;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 public class ScanActivity extends AppCompatActivity implements ScanManagerInterface {
