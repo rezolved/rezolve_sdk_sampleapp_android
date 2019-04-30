@@ -26,7 +26,6 @@ import org.parceler.Parcels;
 public class ScanActivity extends AppCompatActivity implements ScanManagerInterface {
 
     private RezolveSDK rezolveSdk;
-    private RezolveAudioVizualizationView rezolveAudioVizualizationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
         scanManager.stopVideoScan();
         scanManager.destroy();
         scanManager.startVideoScan(this, scanView);
-        scanManager.startAudioScan(this, rezolveAudioVizualizationView);
+        scanManager.startAudioScan(this, null);
 
     }
 
