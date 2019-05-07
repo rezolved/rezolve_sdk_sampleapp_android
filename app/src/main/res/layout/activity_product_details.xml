@@ -17,7 +17,7 @@
             <com.synnapps.carouselview.CarouselView
                 android:id="@+id/previewCarouselView"
                 android:layout_width="0dp"
-                android:layout_height="300dp"
+                android:layout_height="@dimen/header_image"
                 app:autoPlay="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,8 +118,8 @@
 
             <ImageView
                 android:id="@+id/paymentImageView"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/medium_image"
+                android:layout_height="@dimen/medium_image"
                 android:layout_marginStart="@dimen/large"
                 android:layout_marginTop="@dimen/medium"
                 app:layout_constraintStart_toStartOf="parent"
@@ -148,8 +148,8 @@
 
             <ImageView
                 android:id="@+id/deliveryImageView"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/medium_image"
+                android:layout_height="@dimen/medium_image"
                 android:layout_marginStart="@dimen/large"
                 android:layout_marginTop="@dimen/medium"
                 app:layout_constraintStart_toStartOf="parent"

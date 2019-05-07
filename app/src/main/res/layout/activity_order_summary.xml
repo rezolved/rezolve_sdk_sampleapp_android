@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -12,8 +11,8 @@
 
         <ImageView
             android:id="@+id/paymentDoneImageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/large_image"
+            android:layout_height="@dimen/large_image"
             android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="@dimen/small"
@@ -38,8 +37,8 @@
 
         <ImageView
             android:id="@+id/productImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/medium_image"
+            android:layout_height="@dimen/medium_image"
             android:layout_marginStart="@dimen/large"
             android:layout_marginTop="@dimen/large"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,8 +66,8 @@
 
         <ImageView
             android:id="@+id/paymentImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/medium_image"
+            android:layout_height="@dimen/medium_image"
             android:layout_marginStart="@dimen/large"
             android:layout_marginTop="@dimen/small"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,8 +96,8 @@
 
         <ImageView
             android:id="@+id/deliveryImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/medium_image"
+            android:layout_height="@dimen/medium_image"
             android:layout_marginStart="@dimen/large"
             android:layout_marginTop="@dimen/medium"
             app:layout_constraintStart_toStartOf="parent"

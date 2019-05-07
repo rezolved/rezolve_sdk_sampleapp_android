@@ -5,6 +5,10 @@
     <dimen name="medium">16dp</dimen>
     <dimen name="large">32dp</dimen>
 
+    <dimen name="medium_image">50dp</dimen>
+    <dimen name="large_image">100dp</dimen>
+    <dimen name="header_image">300dp</dimen>
+
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_medium_small">20sp</dimen>
     <dimen name="text_size_medium">24sp</dimen>
