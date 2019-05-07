@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.rezolve.sdk.RezolveSDK;
@@ -60,6 +64,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     @Override
     public void onProductResult(Product product) {
+        displayLoadingIndicator();
         navigateToProductDetailsView(product);
     }
 
@@ -77,6 +82,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     @Override
     public void processingStarted() {
+        displayLoadingIndicator();
     }
 
     @Override
@@ -85,6 +91,11 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     @Override
     public void onError(@NonNull RezolveError rezolveError) {
+    }
+
+    private void displayLoadingIndicator() {
+        SpinKitView loadingSpinView = findViewById(R.id.loadingSpinView);
+        loadingSpinView.setVisibility(View.VISIBLE);
     }
 
     private void navigateToProductDetailsView(Product product) {

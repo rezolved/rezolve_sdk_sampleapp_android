@@ -11,6 +11,7 @@ buildscript {
         glideVersion = "4.9.0"
         parcelerVersion = "1.1.12"
         carouselViewVersion = "0.1.5"
+        loadingAnimationVersion = "1.2.0"
     }
 
     repositories {
