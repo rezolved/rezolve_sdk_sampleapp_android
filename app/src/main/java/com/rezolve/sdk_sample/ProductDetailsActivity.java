@@ -29,7 +29,7 @@ import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
-    SpinKitView loadingSpinView;
+    private SpinKitView loadingSpinView;
     private CarouselView previewCarouselView;
     private TextView titleTextView;
     private TextView priceTextView;
