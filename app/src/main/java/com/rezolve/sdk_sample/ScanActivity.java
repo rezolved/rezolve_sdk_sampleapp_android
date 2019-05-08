@@ -66,7 +66,6 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     @Override
     public void onProductResult(Product product) {
-        displayLoadingIndicator();
         navigateToProductDetailsView(product);
     }
 
