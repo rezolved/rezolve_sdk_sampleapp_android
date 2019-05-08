@@ -67,4 +67,9 @@ dependencies {
 
     // CarouselView library
     implementation "com.synnapps:carouselview:$carouselViewVersion"
+
+    // Loading Animations
+    implementation "com.github.ybq:Android-SpinKit:$loadingAnimationVersion"
+
+
 }

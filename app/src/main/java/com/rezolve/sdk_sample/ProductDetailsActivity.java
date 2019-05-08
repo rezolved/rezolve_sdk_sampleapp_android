@@ -3,10 +3,12 @@ package com.rezolve.sdk_sample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.rezolve.sdk.model.cart.Order;
 import com.rezolve.sdk.model.cart.PriceBreakdown;
 import com.rezolve.sdk.model.customer.Address;
@@ -27,6 +29,7 @@ import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
+    private SpinKitView loadingSpinView;
     private CarouselView previewCarouselView;
     private TextView titleTextView;
     private TextView priceTextView;
@@ -54,6 +57,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
         // Bind views
+        loadingSpinView = findViewById(R.id.loadingSpinView);
         previewCarouselView = findViewById(R.id.previewCarouselView);
         titleTextView = findViewById(R.id.titleTextView);
         priceTextView = findViewById(R.id.priceTextView);
@@ -127,9 +131,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void checkoutProduct() {
+        displayLoadingIndicator();
+
         checkoutService.checkoutProduct(productDetails, productQuantity, new CheckoutCallback() {
             @Override
             public void onCheckoutSuccess(Order order) {
+                hideLoadingIndicator();
+
                 orderId = order.getOrderId();
                 displayCheckoutPriceDetails(order.getBreakdowns());
                 displayCheckoutTotalPrice(order.getFinalPrice());
@@ -137,6 +145,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onCheckoutFailure(String message) {
+                hideLoadingIndicator();
                 DialogUtils.showError(getApplicationContext(), message);
             }
         });
@@ -173,6 +182,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
             return;
         }
 
+        displayLoadingIndicator();
+
         checkoutService.buyProduct(orderId, new PaymentCallback() {
             @Override
             public void onPurchaseSuccess(OrderSummary orderSummary) {
@@ -181,9 +192,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onPurchaseFailure(String message) {
+                hideLoadingIndicator();
                 DialogUtils.showError(getApplicationContext(), message);
             }
         });
+    }
+
+    private void displayLoadingIndicator() {
+        loadingSpinView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingIndicator() {
+        loadingSpinView.setVisibility(View.INVISIBLE);
     }
 
     private void navigateToOrderSummaryView(OrderSummary orderSummary) {
