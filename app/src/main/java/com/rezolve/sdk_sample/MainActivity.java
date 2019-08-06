@@ -1,6 +1,7 @@
 package com.rezolve.sdk_sample;
 
 import android.content.Intent;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -59,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
         rezolveSDK = new RezolveSDK.Builder()
                 .setApiKey(BuildConfig.REZOLVE_SDK_API_KEY)
                 .setEnv(BuildConfig.REZOLVE_SDK_ENVIRONMENT)
+                .setAuthRequestProvider(() -> {
+                    if (Looper.myLooper() == Looper.getMainLooper()) {
+                        throw new IllegalStateException("You can't run this method from main thread");
+                    }
+                    return RezolveSDK.GetAuthRequest.authorizationHeader(accessToken);
+                })
                 .build();
 
         rezolveSDK.setAuthToken(accessToken);

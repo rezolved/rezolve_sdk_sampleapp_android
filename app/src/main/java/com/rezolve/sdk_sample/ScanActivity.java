@@ -78,7 +78,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     }
 
     @Override
-    public void onScanError(String s, String s1) {
+    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String s) {
     }
 
     @Override
