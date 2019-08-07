@@ -16,6 +16,7 @@ import com.rezolve.sdk.core.managers.PhonebookManager;
 import com.rezolve.sdk.core.managers.WalletManager;
 import com.rezolve.sdk.model.cart.CheckoutBundleV2;
 import com.rezolve.sdk.model.cart.CheckoutProduct;
+import com.rezolve.sdk.model.cart.CustomConfigurableOption;
 import com.rezolve.sdk.model.cart.Order;
 import com.rezolve.sdk.model.cart.PaymentRequest;
 import com.rezolve.sdk.model.customer.Address;
@@ -29,7 +30,10 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.model.shop.SupportedPaymentMethod;
 import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
+import com.rezolve.sdk_sample.utils.CheckoutUtils;
 import com.rezolve.sdk_sample.utils.CustomerUtils;
+
+import java.util.List;
 
 public class CheckoutService {
 
@@ -69,13 +73,18 @@ public class CheckoutService {
         checkoutManager = rezolveSession.getCheckoutManagerV2();
     }
 
-    public void checkoutProduct(Product product, int quantity, CheckoutCallback checkoutCallback) {
+    public void checkoutProduct(Product product, int quantity, List<CustomConfigurableOption> customConfigurableOptionList, CheckoutCallback checkoutCallback) {
         this.product = product;
         this.checkoutCallback = checkoutCallback;
 
         checkout = new CheckoutProduct();
         checkout.setId(Integer.parseInt(product.getId()));
         checkout.setQty(quantity);
+        if (customConfigurableOptionList != null) {
+            for (CustomConfigurableOption customConfigurableOption : customConfigurableOptionList) {
+                CheckoutUtils.addCustomConfigurableOption(checkout, customConfigurableOption);
+            }
+        }
 
         String merchantId = product.getMerchantId();
         paymentOptionManager.getProductOptions(checkout, merchantId, new PaymentOptionCallback() {
@@ -157,6 +166,10 @@ public class CheckoutService {
     }
 
     private void addProductToCheckout() {
+        if (payment.getSupportedPaymentMethods().size() == 0) {
+            checkoutCallback.onCheckoutFailure("Missing supported payment methods");
+            return;
+        }
         // Gets first supported payment method
         SupportedPaymentMethod paymentMethod = payment.getSupportedPaymentMethods().get(0);
         DeliveryUnit deliveryUnit = new DeliveryUnit(paymentMethod, deliveryAddress.getId());

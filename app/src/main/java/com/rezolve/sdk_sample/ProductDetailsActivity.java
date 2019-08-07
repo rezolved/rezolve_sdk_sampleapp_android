@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.rezolve.sdk.model.cart.CustomConfigurableOption;
 import com.rezolve.sdk.model.cart.Order;
 import com.rezolve.sdk.model.cart.PriceBreakdown;
 import com.rezolve.sdk.model.customer.Address;
@@ -18,6 +19,7 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.services.CheckoutService;
 import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
+import com.rezolve.sdk_sample.utils.CheckoutUtils;
 import com.rezolve.sdk_sample.utils.CustomerUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.synnapps.carouselview.CarouselView;
@@ -51,6 +53,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private CheckoutService checkoutService;
 
     private int productQuantity = 1;
+    private List<CustomConfigurableOption> customConfigurableOptionList;
     private String orderId;
 
     @Override
@@ -87,6 +90,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
             product = null;
         }
+        customConfigurableOptionList = CheckoutUtils.getDefaultCustomConfigurableOptionList(product);
 
         displayProductDetails();
         displayCustomerDetails();
@@ -141,7 +145,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void checkoutProduct() {
         displayLoadingIndicator();
 
-        checkoutService.checkoutProduct(product, productQuantity, new CheckoutCallback() {
+        checkoutService.checkoutProduct(product, productQuantity, customConfigurableOptionList, new CheckoutCallback() {
             @Override
             public void onCheckoutSuccess(Order order) {
                 hideLoadingIndicator();
