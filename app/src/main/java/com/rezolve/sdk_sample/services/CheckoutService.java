@@ -25,8 +25,8 @@ import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.DeliveryUnit;
 import com.rezolve.sdk.model.shop.OrderSummary;
 import com.rezolve.sdk.model.shop.PaymentOption;
+import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.model.shop.SupportedPaymentMethod;
-import com.rezolve.sdk_sample.model.ProductDetails;
 import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
 import com.rezolve.sdk_sample.utils.CustomerUtils;
@@ -39,7 +39,7 @@ public class CheckoutService {
     private CheckoutManagerV2 checkoutManager;
     private PaymentOptionManager paymentOptionManager;
 
-    private ProductDetails productDetails;
+    private Product product;
     private CheckoutProduct checkout;
     private PaymentOption payment;
 
@@ -69,15 +69,15 @@ public class CheckoutService {
         checkoutManager = rezolveSession.getCheckoutManagerV2();
     }
 
-    public void checkoutProduct(ProductDetails product, int quantity, CheckoutCallback callback) {
-        productDetails = product;
-        checkoutCallback = callback;
+    public void checkoutProduct(Product product, int quantity, CheckoutCallback checkoutCallback) {
+        this.product = product;
+        this.checkoutCallback = checkoutCallback;
 
         checkout = new CheckoutProduct();
-        checkout.setId(Integer.parseInt(productDetails.getId()));
+        checkout.setId(Integer.parseInt(product.getId()));
         checkout.setQty(quantity);
 
-        String merchantId = productDetails.getMerchantId();
+        String merchantId = product.getMerchantId();
         paymentOptionManager.getProductOptions(checkout, merchantId, new PaymentOptionCallback() {
             @Override
             public void onProductOptionsSuccess(PaymentOption paymentOption) {
@@ -161,7 +161,7 @@ public class CheckoutService {
         SupportedPaymentMethod paymentMethod = payment.getSupportedPaymentMethods().get(0);
         DeliveryUnit deliveryUnit = new DeliveryUnit(paymentMethod, deliveryAddress.getId());
 
-        checkoutBundle = CheckoutBundleV2.createProductCheckoutBundleV2(productDetails.getMerchantId(), payment.getId(),
+        checkoutBundle = CheckoutBundleV2.createProductCheckoutBundleV2(product.getMerchantId(), payment.getId(),
                 checkout, customerPhone.getId(), paymentMethod, deliveryUnit);
 
         checkoutManager.checkoutProductOption(checkoutBundle, new CheckoutV2Callback() {

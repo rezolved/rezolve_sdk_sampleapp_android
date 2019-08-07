@@ -3,7 +3,6 @@ package com.rezolve.sdk_sample;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -19,9 +18,6 @@ import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.model.shop.ScannedData;
 import com.rezolve.sdk.views.RezolveScanView;
-import com.rezolve.sdk_sample.model.ProductDetails;
-
-import org.parceler.Parcels;
 
 public class ScanActivity extends AppCompatActivity implements ScanManagerInterface {
 
@@ -104,8 +100,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
         Intent intent = new Intent(ScanActivity.this, ProductDetailsActivity.class);
         Bundle bundle = new Bundle();
 
-        Parcelable productDetails = Parcels.wrap(new ProductDetails(product));
-        bundle.putParcelable("product_details", productDetails);
+        bundle.putString(ProductDetailsActivity.PARAM_PRODUCT_KEY, product.entityToJson().toString());
         intent.putExtras(bundle);
 
         startActivity(intent);

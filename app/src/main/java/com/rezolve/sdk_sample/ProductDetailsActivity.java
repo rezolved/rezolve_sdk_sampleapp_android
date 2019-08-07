@@ -14,7 +14,7 @@ import com.rezolve.sdk.model.cart.PriceBreakdown;
 import com.rezolve.sdk.model.customer.Address;
 import com.rezolve.sdk.model.customer.PaymentCard;
 import com.rezolve.sdk.model.shop.OrderSummary;
-import com.rezolve.sdk_sample.model.ProductDetails;
+import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.services.CheckoutService;
 import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
@@ -23,12 +23,14 @@ import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.synnapps.carouselview.CarouselView;
 import static com.rezolve.sdk_sample.utils.PriceConstants.*;
 
-import org.parceler.Parcels;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
+    public static final String PARAM_PRODUCT_KEY = "product_json_string";
     private SpinKitView loadingSpinView;
     private CarouselView previewCarouselView;
     private TextView titleTextView;
@@ -45,7 +47,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TextView totalPriceTextView;
     private Button instantBuyButton;
 
-    private ProductDetails productDetails;
+    private Product product;
     private CheckoutService checkoutService;
 
     private int productQuantity = 1;
@@ -78,22 +80,28 @@ public class ProductDetailsActivity extends AppCompatActivity {
         instantBuyButton.setOnClickListener(view -> buyProduct());
 
         checkoutService = CheckoutService.getInstance();
-        productDetails = Parcels.unwrap(getIntent().getParcelableExtra("product_details"));
+        try {
+            JSONObject productJson = new JSONObject(getIntent().getStringExtra(PARAM_PRODUCT_KEY));
+            product = Product.jsonToEntity(productJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            product = null;
+        }
 
         displayProductDetails();
         displayCustomerDetails();
     }
 
     private void displayProductDetails() {
-        previewCarouselView.setPageCount(productDetails.getImages().size());
+        previewCarouselView.setPageCount(product.getImages().size());
 
         previewCarouselView.setImageListener((position, imageView) -> {
-            String imageUrl = productDetails.getImages().get(position);
+            String imageUrl = product.getImages().get(position);
             Glide.with(this).load(imageUrl).into(imageView);
         });
 
-        titleTextView.setText(productDetails.getTitle());
-        priceTextView.setText(PRICE_PREFIX + productDetails.getPrice());
+        titleTextView.setText(product.getTitle());
+        priceTextView.setText(PRICE_PREFIX + product.getPrice());
 
         displayQuantity();
         checkoutProduct();
@@ -133,7 +141,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void checkoutProduct() {
         displayLoadingIndicator();
 
-        checkoutService.checkoutProduct(productDetails, productQuantity, new CheckoutCallback() {
+        checkoutService.checkoutProduct(product, productQuantity, new CheckoutCallback() {
             @Override
             public void onCheckoutSuccess(Order order) {
                 hideLoadingIndicator();
