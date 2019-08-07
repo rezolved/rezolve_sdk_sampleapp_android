@@ -84,6 +84,11 @@ public class CheckoutService {
                 payment = paymentOption;
                 createDeliveryAddress();
             }
+
+            @Override
+            public void onError(@NonNull RezolveError rezolveError) {
+                checkoutCallback.onCheckoutFailure(rezolveError.getMessage());
+            }
         });
     }
 
@@ -93,7 +98,7 @@ public class CheckoutService {
         String ccv = CustomerUtils.getCustomerPaymentCardCCV();
         PaymentRequest paymentRequest = checkoutManager.createPaymentRequest(customerPaymentCard, ccv);
 
-        checkoutManager.buyProduct(paymentRequest, checkoutBundle,  orderId, null, new CheckoutV2Callback() {
+        checkoutManager.buyProduct(paymentRequest, checkoutBundle, orderId, null, new CheckoutV2Callback() {
             @Override
             public void onProductOptionBuySuccess(OrderSummary orderSummary) {
                 paymentCallback.onPurchaseSuccess(orderSummary);

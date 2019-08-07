@@ -15,8 +15,8 @@ import com.rezolve.sdk.model.customer.Address;
 import com.rezolve.sdk.model.customer.PaymentCard;
 import com.rezolve.sdk.model.shop.OrderSummary;
 import com.rezolve.sdk_sample.model.ProductDetails;
-import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.CheckoutService;
+import com.rezolve.sdk_sample.services.callbacks.CheckoutCallback;
 import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
 import com.rezolve.sdk_sample.utils.CustomerUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
@@ -146,7 +146,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             @Override
             public void onCheckoutFailure(String message) {
                 hideLoadingIndicator();
-                DialogUtils.showError(getApplicationContext(), message);
+                DialogUtils.showError(ProductDetailsActivity.this, message);
             }
         });
     }
@@ -178,7 +178,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void buyProduct() {
-        if(orderId == null){
+        if (orderId == null) {
             return;
         }
 
@@ -193,7 +193,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             @Override
             public void onPurchaseFailure(String message) {
                 hideLoadingIndicator();
-                DialogUtils.showError(getApplicationContext(), message);
+                DialogUtils.showError(ProductDetailsActivity.this, message);
             }
         });
     }
