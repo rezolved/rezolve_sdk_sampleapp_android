@@ -32,10 +32,10 @@ allprojects {
         google()
         jcenter()
         maven {
-            url REZOLVE_SDK_REPOSITORY_URL
+            url NEXUS_REZOLVE_REPO_URL_PUBLIC
             credentials {
-                username REZOLVE_SDK_REPOSITORY_USERNAME
-                password REZOLVE_SDK_REPOSITORY_PASSWORD
+                username NEXUS_REZOLVE_READ_USERNAME
+                password NEXUS_REZOLVE_READ_PASSWORD
             }
         }
     }

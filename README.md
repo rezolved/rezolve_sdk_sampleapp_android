@@ -4,11 +4,11 @@ Sample app to show case the minimum implementation of SDK to get a developer up 
 #### Configuration
 Paste following code into ***~/.gradle/gradle.properties*** and fill with your credentials data.
 ```
-REZOLVE_SDK_REPOSITORY_URL=https://nexus.rezo.lv/repository/maven-public
-REZOLVE_SDK_REPOSITORY_USERNAME=""
-REZOLVE_SDK_REPOSITORY_PASSWORD=""
+NEXUS_REZOLVE_REPO_URL_PUBLIC=https://nexus.rezo.lv/repository/maven-public
+NEXUS_REZOLVE_READ_USERNAME=<proper username here>
+NEXUS_REZOLVE_READ_PASSWORD=<proper password here>
 REZOLVE_SDK_API_URL="https://sandbox-api-tw.rzlvtest.co/"
 REZOLVE_SDK_ENVIRONMENT="https://sandbox-api-tw.rzlvtest.co/api"
-REZOLVE_SDK_API_KEY=""
-REZOLVE_SDK_JWT_SECRET=""
+REZOLVE_SDK_API_KEY="<proper API key here>"
+REZOLVE_SDK_JWT_SECRET="<proper JWT secrtet here>"
 ```
