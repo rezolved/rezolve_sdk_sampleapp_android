@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -78,7 +77,8 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     }
 
     @Override
-    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String s) {
+    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg, ScannedData scannedData) {
+        hideLoadingIndicator();
     }
 
     @Override
@@ -88,10 +88,6 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     @Override
     public void processingFinished() {
-    }
-
-    @Override
-    public void onError(@NonNull RezolveError rezolveError) {
         hideLoadingIndicator();
     }
 
