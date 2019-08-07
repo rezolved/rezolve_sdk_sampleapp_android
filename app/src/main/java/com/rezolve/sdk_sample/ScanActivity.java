@@ -17,6 +17,7 @@ import com.rezolve.sdk.model.foreign.RezolveScanResult;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Product;
+import com.rezolve.sdk.model.shop.ScannedData;
 import com.rezolve.sdk.views.RezolveScanView;
 import com.rezolve.sdk_sample.model.ProductDetails;
 
