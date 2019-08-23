@@ -3,6 +3,7 @@ package com.rezolve.sdk_sample;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -24,6 +25,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     private RezolveSDK rezolveSdk;
 
     private SpinKitView loadingSpinView;
+    private FloatingActionButton fabMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,18 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
         setContentView(R.layout.activity_scan);
 
         loadingSpinView = findViewById(R.id.loadingSpinView);
+
+        initFab();
+
+    }
+
+    private void initFab() {
+        fabMain = findViewById(R.id.fabMain);
+        if (fabMain != null) {
+            fabMain.setOnClickListener(view -> {
+                navigateToProductListView();
+            });
+        }
     }
 
     @Override
@@ -103,6 +117,11 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
         bundle.putString(ProductDetailsActivity.PARAM_PRODUCT_KEY, product.entityToJson().toString());
         intent.putExtras(bundle);
 
+        startActivity(intent);
+    }
+
+    private void navigateToProductListView() {
+        Intent intent = new Intent(ScanActivity.this, ProductListActivity.class);
         startActivity(intent);
     }
 }

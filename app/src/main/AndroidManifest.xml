@@ -46,6 +46,7 @@
         <activity android:name=".ScanActivity"/>
         <activity android:name=".ProductDetailsActivity"/>
         <activity android:name=".OrderSummaryActivity"/>
+        <activity android:name=".ProductListActivity" />
     </application>
 
 </manifest>

@@ -32,4 +32,7 @@
             style="@style/SpinKitView.Large.DoubleBounce"
             app:SpinKit_Color="@color/colorAccent" />
     </RelativeLayout>
+
+    <include layout="@layout/activity_scan_overlay_fab" />
+
 </RelativeLayout>
