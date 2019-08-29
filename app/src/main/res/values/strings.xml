@@ -18,7 +18,10 @@
     <string name="continue_shopping">Continue Shopping</string>
     <string name="dialog_error">Error</string>
     <string name="dialog_ok">OK</string>
+    <string name="merchant_choicer_title">Choice merchant</string>
     <string name="merchant_banner_description">merchant banner</string>
     <string name="missing_merchants">missing merchants!!!</string>
+    <string name="missing_category">missing category!!!</string>
     <string name="rezolve_error_format">[RezolveError] T: %s, M: %s\n(%s)</string>
+    <string name="empty_list">empty list</string>
 </resources>

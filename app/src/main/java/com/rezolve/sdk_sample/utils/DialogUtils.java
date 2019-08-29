@@ -1,10 +1,17 @@
 package com.rezolve.sdk_sample.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.rezolve.sdk_sample.R;
+import com.rezolve.sdk_sample.adapter.RecyclerViewAdapter;
+
+import java.util.List;
 
 public final class DialogUtils {
 
@@ -18,11 +25,32 @@ public final class DialogUtils {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 
         dialog.setTitle(title)
-              .setIcon(R.drawable.default_notification_icon)
-              .setMessage(message)
-              .setPositiveButton(resources.getText(R.string.dialog_ok), (dialogInterface, i) -> {
-                  // nothing to implement here
-              })
-              .show();
+                .setIcon(R.drawable.default_notification_icon)
+                .setMessage(message)
+                .setPositiveButton(resources.getText(R.string.dialog_ok), (dialogInterface, i) -> {
+                    // nothing to implement here
+                })
+                .show();
+    }
+
+    public static <T> void showChoicer(Activity activity, String title, @NonNull List<T> choices, RecyclerViewAdapter.OnItemClickListener<T> onItemClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+        final Spinner spinner = new Spinner(activity);
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, choices);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        builder.setView(spinner);
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            try {
+                //noinspection unchecked
+                onItemClickListener.onItemClick(spinner, (T) spinner.getSelectedItem());
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+            dialog.dismiss();
+        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.show();
     }
 }
