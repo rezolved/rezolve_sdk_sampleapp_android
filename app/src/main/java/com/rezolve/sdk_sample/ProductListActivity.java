@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.DisplayProduct;
 import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk_sample.adapter.DisplayProductAdapter;
+import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
 import com.rezolve.sdk_sample.utils.sdk.ProductManagerUtils;
 import com.rezolve.sdk_sample.utils.sdk.RezolveSdkUtils;
@@ -80,11 +82,7 @@ public class ProductListActivity extends AppCompatActivity {
 
         // load data
         loadBanner(merchantBannerView, merchant);
-        if (category == null) {
-            loadProducts(merchant);
-        } else {
-            loadProducts(category);
-        }
+        loadProducts(merchant, category);
     }
 
     // TODO: code duplication:
@@ -107,25 +105,52 @@ public class ProductListActivity extends AppCompatActivity {
 
     }
 
-    private void loadProducts(@NonNull Category category) {
-        displayProductList(ProductManagerUtils.getProductFromCategory(category));
-    }
-
-    private void loadProducts(Merchant merchant) {
-        if (merchant == null) {
-            displayError("Cannot load product without merchant ID");
+    private void loadProducts(Merchant merchant, @Nullable Category category, boolean isRecurrentCall) {
+        if (category == null) {
+            // We don't have category so we need to request of it
+            if (merchant != null && !isRecurrentCall) {
+                requestCategory(merchant, null);
+            } else {
+                // We are not possible to achieve category
+                displayError("Not possible to achieve category");
+            }
             return;
         }
+
+        List<DisplayProduct> displayProductList = ProductManagerUtils.getProductFromCategory(category);
+        if (displayProductList != null) {
+            displayProductList(displayProductList);
+        }
+
+        // Choice category
+        List<Category> categoryList = ProductManagerUtils.getCategoryList(category);
+        if (categoryList != null && categoryList.size() > 0) {
+            DialogUtils.showChoicer(
+                    ProductListActivity.this,
+                    getString(R.string.category_choicer_title),
+                    categoryList,
+                    (spinnerView, item) -> requestCategory(merchant, item)
+            );
+        }
+    }
+
+    private void loadProducts(Merchant merchant, Category category) {
+        loadProducts(merchant, category, false);
+    }
+
+    private void requestCategory(@NonNull Merchant merchant, @Nullable Category category) {
         ProductManagerUtils.getCategory(
                 productManager,
                 merchant.getId(),
+                category,
                 new BaseGetCategoryCallback() {
                     @Override
                     public void onSuccess(Category category) {
                         if (category == null) {
                             displayError("Missing category for merchant " + merchant.toString());
                         } else {
-                            loadProducts(category);
+                            // Recurrence
+                            loadProducts(merchant, category, true);
                         }
                     }
                 }
@@ -133,7 +158,7 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     private void displayProductList(List<DisplayProduct> displayProductList) {
-        if (displayProductList.isEmpty()) {
+        if (displayProductList == null || displayProductList.isEmpty()) {
             displayMessage(getString(R.string.empty_list));
         } else {
             tvMessage.setVisibility(View.GONE);

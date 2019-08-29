@@ -49,10 +49,10 @@ public class ProductManagerUtils {
     }
 
     public static List<DisplayProduct> getProductFromCategory(Category category) {
-        ArrayList<DisplayProduct> result = new ArrayList<>();
         if (category == null) {
-            return result;
+            return null;
         }
+        ArrayList<DisplayProduct> result = new ArrayList<>();
         if (category.hasProducts()) {
             try {
                 result.addAll(category.getProductPageResult().getItems());
@@ -60,23 +60,25 @@ public class ProductManagerUtils {
                 npe.printStackTrace();
             }
         }
+        return result;
+    }
+
+    public static List<Category> getCategoryList(Category category) {
+        if (category == null) {
+            return null;
+        }
+        ArrayList<Category> result = new ArrayList<>();
         if (category.hasCategories()) {
             try {
-                for (Category subCategory : category.getCategoryPageResult().getItems()) {
-                    result.addAll(getProductFromCategory(subCategory));
-                }
+                result.addAll(category.getCategoryPageResult().getItems());
             } catch (NullPointerException npe) {
                 npe.printStackTrace();
             }
-
             try {
-                for (Category subCategory : category.getCategories()) {
-                    result.addAll(getProductFromCategory(subCategory));
-                }
+                result.addAll(category.getCategories());
             } catch (NullPointerException npe) {
                 npe.printStackTrace();
             }
-
         }
         return result;
     }
