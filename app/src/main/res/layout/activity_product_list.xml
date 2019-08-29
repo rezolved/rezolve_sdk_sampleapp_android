@@ -7,7 +7,7 @@
     tools:context=".ProductListActivity">
 
     <ImageView
-        android:id="@+id/ivMerchantBanner"
+        android:id="@+id/ivBanner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/merchant_banner_description"
@@ -24,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivMerchantBanner"
+        app:layout_constraintTop_toBottomOf="@+id/ivBanner"
         tools:itemCount="5"
         tools:layoutManager="android.support.v7.widget.GridLayoutManager"
         tools:listitem="@layout/recycler_item_product"
@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivMerchantBanner" />
+        app:layout_constraintTop_toBottomOf="@+id/ivBanner" />
 
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/loadingSpinView"

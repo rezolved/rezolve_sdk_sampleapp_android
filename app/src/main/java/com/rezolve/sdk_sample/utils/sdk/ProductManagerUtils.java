@@ -83,19 +83,30 @@ public class ProductManagerUtils {
         return result;
     }
 
-    public static String getImage(DisplayProduct displayProduct) {
-        if (displayProduct == null) {
-            return null;
-        }
-        List<String> imageThumbs = displayProduct.getImageThumbs();
+    private static String getImage(List<String> imageThumbs, String image) {
         if (imageThumbs != null && imageThumbs.size() > 0) {
             for (String imageThumb : imageThumbs) {
-                if (!"".equals(imageThumb)) {
+                if (imageThumb != null && imageThumb.length() != 0) {
                     return imageThumb;
                 }
             }
         }
-        return displayProduct.getImage();
+        return image;
+    }
+
+    public static <T> String getImage(T object) {
+        if (object == null) {
+            return null;
+        }
+        String result;
+        if (object instanceof DisplayProduct) {
+            result = getImage(((DisplayProduct) object).getImageThumbs(), ((DisplayProduct) object).getImage());
+        } else if (object instanceof Category) {
+            result = getImage(((Category) object).getImageThumbs(), ((Category) object).getImage());
+        } else {
+            result = null;
+        }
+        return result;
     }
 
     //

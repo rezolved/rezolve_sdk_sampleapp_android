@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class ProductListActivity extends AppCompatActivity {
     public static final String PARAM_CATEGORY_JSON_KEY = "categoryJson";
     private SpinKitView loadingSpinView; // TODO: code duplication
     private FloatingActionButton fabMain;
+    private ImageView ivBanner;
     private RecyclerView recyclerView;
     private TextView tvMessage;
     private ProductManager productManager;
@@ -74,18 +76,18 @@ public class ProductListActivity extends AppCompatActivity {
 
         // Bind views
         loadingSpinView = findViewById(R.id.loadingSpinView); // TODO: code duplication
-        ImageView merchantBannerView = findViewById(R.id.ivMerchantBanner);
+        fabMain = findViewById(R.id.fabMain);
+        ivBanner = findViewById(R.id.ivBanner);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(new DisplayProductAdapter());
         tvMessage = findViewById(R.id.tvMessage);
-        fabMain = findViewById(R.id.fabMain);
 
         // global
         productManager = RezolveSdkUtils.getProductManager(RezolveSDK.peekInstance());
 
         // load data
-        loadBanner(merchantBannerView, merchant);
+        loadBanner(merchant, category);
 
         if (category == null && merchant != null) {
             initialRequestCategory(merchant); // initialRequestCategory -> initFab -> loadProducts
@@ -111,14 +113,21 @@ public class ProductListActivity extends AppCompatActivity {
     }
     // TODO: code duplication ^^^
 
-    private void loadBanner(ImageView merchantBannerView, Merchant merchant) {
+    private void loadBanner(String bannerUrl) {
         Glide.with(this)
-                .load(MerchantManagerUtils.getBanner(merchant))
+                .load(bannerUrl)
                 .placeholder(R.drawable.ic_slider_head)
                 .error(android.R.drawable.stat_notify_error)
                 .dontTransform()
-                .into(merchantBannerView);
+                .into(ivBanner);
+    }
 
+    private void loadBanner(Merchant merchant, Category category) {
+        String bannerUrl = ProductManagerUtils.getImage(category);
+        if (TextUtils.isEmpty(bannerUrl)) {
+            bannerUrl = MerchantManagerUtils.getBanner(merchant);
+        }
+        loadBanner(bannerUrl);
     }
 
     private void loadProducts(@Nullable Merchant merchant, @Nullable Category category) {
@@ -191,6 +200,7 @@ public class ProductListActivity extends AppCompatActivity {
 
     // Just reduce code duplication
     private void onRequestCategorySuccess(@NonNull Merchant merchant, @Nullable Category category) {
+        loadBanner(merchant, category);
         if (category == null) {
             displayError("Missing category for merchant " + merchant.toString());// TODO: StringRes
         } else {
