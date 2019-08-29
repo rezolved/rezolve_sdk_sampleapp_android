@@ -5,12 +5,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -37,6 +39,7 @@ public class ProductListActivity extends AppCompatActivity {
     public static final String PARAM_MERCHANT_JSON_KEY = "merchantJson";
     public static final String PARAM_CATEGORY_JSON_KEY = "categoryJson";
     private SpinKitView loadingSpinView; // TODO: code duplication
+    private FloatingActionButton fabMain;
     private RecyclerView recyclerView;
     private TextView tvMessage;
     private ProductManager productManager;
@@ -76,13 +79,26 @@ public class ProductListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(new DisplayProductAdapter());
         tvMessage = findViewById(R.id.tvMessage);
+        fabMain = findViewById(R.id.fabMain);
 
         // global
         productManager = RezolveSdkUtils.getProductManager(RezolveSDK.peekInstance());
 
         // load data
         loadBanner(merchantBannerView, merchant);
-        loadProducts(merchant, category);
+
+        if (category == null && merchant != null) {
+            initialRequestCategory(merchant); // initialRequestCategory -> initFab -> loadProducts
+        } else {
+            initFab(merchant, category);
+            loadProducts(merchant, category);
+        }
+    }
+
+    private void initFab(Merchant merchant, Category category) {
+        if (fabMain != null) {
+            fabMain.setOnClickListener(view -> showCategoryChoicer(merchant, category));
+        }
     }
 
     // TODO: code duplication:
@@ -105,23 +121,26 @@ public class ProductListActivity extends AppCompatActivity {
 
     }
 
-    private void loadProducts(Merchant merchant, @Nullable Category category, boolean isRecurrentCall) {
-        if (category == null) {
-            // We don't have category so we need to request of it
-            if (merchant != null && !isRecurrentCall) {
-                requestCategory(merchant, null);
-            } else {
-                // We are not possible to achieve category
-                displayError("Not possible to achieve category");
-            }
-            return;
-        }
+    private void loadProducts(@Nullable Merchant merchant, @Nullable Category category) {
+        loadProducts(category);
+        showCategoryChoicer(merchant, category);
+    }
 
+    private void loadProducts(@Nullable Category category) {
         List<DisplayProduct> displayProductList = ProductManagerUtils.getProductFromCategory(category);
-        if (displayProductList != null) {
+        if (displayProductList == null) {
+            displayError("Problem witch getting DisplayProductList from Category");// TODO: StringRes
+        } else {
             displayProductList(displayProductList);
         }
+    }
 
+    private void showCategoryChoicer(@Nullable Merchant merchant, @Nullable Category category) {
+        if (merchant == null) {
+            // We are not possible to achieve category
+            displayError("Not possible to achieve category"); // TODO: StringRes
+            return;
+        }
         // Choice category
         List<Category> categoryList = ProductManagerUtils.getCategoryList(category);
         if (categoryList != null && categoryList.size() > 0) {
@@ -131,30 +150,52 @@ public class ProductListActivity extends AppCompatActivity {
                     categoryList,
                     (spinnerView, item) -> requestCategory(merchant, item)
             );
+        } else {
+            Toast.makeText(this, "No any categories", Toast.LENGTH_SHORT).show();// TODO: StringRes
         }
     }
 
-    private void loadProducts(Merchant merchant, Category category) {
-        loadProducts(merchant, category, false);
-    }
 
-    private void requestCategory(@NonNull Merchant merchant, @Nullable Category category) {
+    // Base request
+    private void requestCategory(@NonNull Merchant merchant,
+                                 @Nullable Category categoryParam,
+                                 @NonNull ProductManagerUtils.GetCategoryCallback callback) {
         ProductManagerUtils.getCategory(
                 productManager,
                 merchant.getId(),
-                category,
-                new BaseGetCategoryCallback() {
-                    @Override
-                    public void onSuccess(Category category) {
-                        if (category == null) {
-                            displayError("Missing category for merchant " + merchant.toString());
-                        } else {
-                            // Recurrence
-                            loadProducts(merchant, category, true);
-                        }
-                    }
-                }
+                categoryParam,
+                callback
         );
+    }
+
+    // Initial request
+    private void initialRequestCategory(@NonNull Merchant merchant) {
+        requestCategory(merchant, null, new BaseGetCategoryCallback() {
+            @Override
+            public void onSuccess(Category category) {
+                initFab(merchant, category);
+                onRequestCategorySuccess(merchant, category);
+            }
+        });
+    }
+
+    // Normal request
+    private void requestCategory(@NonNull Merchant merchant, @Nullable Category categoryParam) {
+        requestCategory(merchant, categoryParam, new BaseGetCategoryCallback() {
+            @Override
+            public void onSuccess(Category category) {
+                onRequestCategorySuccess(merchant, category);
+            }
+        });
+    }
+
+    // Just reduce code duplication
+    private void onRequestCategorySuccess(@NonNull Merchant merchant, @Nullable Category category) {
+        if (category == null) {
+            displayError("Missing category for merchant " + merchant.toString());// TODO: StringRes
+        } else {
+            loadProducts(merchant, category);
+        }
     }
 
     private void displayProductList(List<DisplayProduct> displayProductList) {

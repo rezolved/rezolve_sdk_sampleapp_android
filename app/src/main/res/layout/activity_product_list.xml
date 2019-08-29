@@ -54,4 +54,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include layout="@layout/activity_product_list_overlay_fab" />
+
 </android.support.constraint.ConstraintLayout>
