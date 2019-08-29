@@ -72,5 +72,4 @@ dependencies {
     // Loading Animations
     implementation "com.github.ybq:Android-SpinKit:$loadingAnimationVersion"
 
-
 }

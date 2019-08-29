@@ -43,7 +43,7 @@ public final class TokenUtils {
         return TOKEN_PREFIX_BEARER + createSignedToken(header, claims);
     }
 
-    public  static String createAccessToken(String entityId, String partnerId, String deviceId) {
+    public static String createAccessToken(String entityId, String partnerId, String deviceId) {
         Map<String, Object> header = new HashMap<String, Object>() {{
             put(KEY_AUTH, "v2");
             put(KEY_ALG, "HS512");

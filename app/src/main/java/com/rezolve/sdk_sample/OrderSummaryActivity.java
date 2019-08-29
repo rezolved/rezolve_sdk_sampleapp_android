@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.rezolve.sdk.core.callbacks.UserActivityCallback;
 import com.rezolve.sdk.core.managers.UserActivityManager;
 import com.rezolve.sdk.model.cart.PriceBreakdown;
@@ -73,8 +74,8 @@ public class OrderSummaryActivity extends AppCompatActivity {
             public void onGetOrdersSuccess(OrderHistoryObject orderHistoryObject) {
                 super.onGetOrdersSuccess(orderHistoryObject);
 
-                for(OrderDetails order : orderHistoryObject.getOrders()) {
-                    if(order.getOrderId().equals(orderId)){
+                for (OrderDetails order : orderHistoryObject.getOrders()) {
+                    if (order.getOrderId().equals(orderId)) {
                         displayOrderDetails(order);
                         break;
                     }
