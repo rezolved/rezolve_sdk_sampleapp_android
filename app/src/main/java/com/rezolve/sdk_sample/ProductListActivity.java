@@ -141,7 +141,7 @@ public class ProductListActivity extends AppCompatActivity {
     private void loadProducts(@Nullable Category category) {
         List<DisplayProduct> displayProductList = ProductManagerUtils.getProductFromCategory(category);
         if (displayProductList == null) {
-            displayError("Problem witch getting DisplayProductList from Category");// TODO: StringRes
+            displayError(getString(R.string.msg_missing_displayproductlist_in_category));
         } else {
             displayProductList(displayProductList);
         }
@@ -149,8 +149,8 @@ public class ProductListActivity extends AppCompatActivity {
 
     private void showCategoryChoicer(@Nullable Merchant merchant, @Nullable Category category) {
         if (merchant == null) {
-            // We are not possible to achieve category
-            displayError("Not possible to achieve category"); // TODO: StringRes
+            // We are not possible to fetch category
+            displayError(getString(R.string.msg_not_possible_to_fetch_categories));
             return;
         }
         // Choice category
@@ -163,7 +163,7 @@ public class ProductListActivity extends AppCompatActivity {
                     (spinnerView, item) -> requestCategory(merchant, item)
             );
         } else {
-            Toast.makeText(this, "No any categories", Toast.LENGTH_SHORT).show();// TODO: StringRes
+            Toast.makeText(this, R.string.msg_category_not_found, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -205,7 +205,7 @@ public class ProductListActivity extends AppCompatActivity {
     private void onRequestCategorySuccess(@NonNull Merchant merchant, @Nullable Category category) {
         loadBanner(merchant, category);
         if (category == null) {
-            displayError("Missing category for merchant " + merchant.toString());// TODO: StringRes
+            displayError(getString(R.string.msg_category_not_found_in_merchant, merchant.toString()));
         } else {
             loadProducts(merchant, category);
         }
