@@ -2,24 +2,47 @@ package com.rezolve.sdk_sample.utils.sdk;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.rezolve.sdk.RezolveSDK;
+import com.rezolve.sdk.RezolveSession;
 import com.rezolve.sdk.core.managers.MerchantManager;
 import com.rezolve.sdk.core.managers.ProductManager;
+import com.rezolve.sdk.core.managers.ScanManager;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk_sample.R;
 
 public class RezolveSdkUtils {
 
-    // Managers
-
-    public static MerchantManager getMerchantManager(@Nullable RezolveSDK rezolveSdk) {
-        return rezolveSdk == null ? null : rezolveSdk.getRezolveSession() == null ? null : rezolveSdk.getRezolveSession().getMerchantManager();
+    @NonNull
+    public static RezolveSDK getRezolveSdk() {
+        RezolveSDK result = RezolveSDK.peekInstance();
+        if (RezolveSDK.peekInstance() == null) {
+            throw new IllegalStateException("You need to initialize the RezolveSDK using `new RezolveSDK.Builder().build()` method!");
+        }
+        return result;
     }
 
-    public static ProductManager getProductManager(@Nullable RezolveSDK rezolveSdk) {
-        return rezolveSdk == null ? null : rezolveSdk.getRezolveSession() == null ? null : rezolveSdk.getRezolveSession().getProductManager();
+    @NonNull
+    public static RezolveSession getRezolveSession() {
+        RezolveSession result = getRezolveSdk().getRezolveSession();
+        if (result == null) {
+            throw new IllegalStateException("You need to create the Rezolve's session using `getRezolveSdk().createSession(...)` method!");
+        }
+        return result;
+    }
+
+    // Managers
+
+    public static MerchantManager getMerchantManager() {
+        return getRezolveSession().getMerchantManager();
+    }
+
+    public static ProductManager getProductManager() {
+        return getRezolveSession().getProductManager();
+    }
+
+    public static ScanManager getScanManager(Context context, boolean barcodeEnabled, boolean enableVideo) {
+        return getRezolveSession().getScanManager(context, barcodeEnabled, enableVideo);
     }
 
     // Errors

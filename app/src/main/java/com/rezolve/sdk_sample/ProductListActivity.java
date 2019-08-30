@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.core.managers.ProductManager;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
@@ -84,7 +83,7 @@ public class ProductListActivity extends AppCompatActivity {
         tvMessage = findViewById(R.id.tvMessage);
 
         // global
-        productManager = RezolveSdkUtils.getProductManager(RezolveSDK.peekInstance());
+        productManager = RezolveSdkUtils.getProductManager();
 
         // load data
         loadBanner(merchant, category);
@@ -109,7 +108,7 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     private void hideLoadingIndicator() {
-        loadingSpinView.setVisibility(View.INVISIBLE);
+        loadingSpinView.setVisibility(View.GONE);
     }
     // TODO: code duplication ^^^
 

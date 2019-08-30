@@ -17,7 +17,6 @@ import android.view.View;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
-import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.core.interfaces.ScanManagerInterface;
 import com.rezolve.sdk.core.managers.MerchantManager;
 import com.rezolve.sdk.core.managers.ScanManager;
@@ -36,7 +35,6 @@ import java.util.List;
 public class ScanActivity extends AppCompatActivity implements ScanManagerInterface {
 
     private static final String TAG = ScanActivity.class.getSimpleName();
-    private RezolveSDK rezolveSdk;
 
     private SpinKitView loadingSpinView;
     private FloatingActionButton fabMain;
@@ -56,8 +54,6 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     protected void onResume() {
         super.onResume();
 
-        rezolveSdk = RezolveSDK.peekInstance();
-
         String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
         Permissions.check(this, permissions, null, null, new PermissionHandler() {
             @Override
@@ -69,7 +65,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     private void initializeScanner() {
         RezolveScanView scanView = findViewById(R.id.scanView);
-        ScanManager scanManager = rezolveSdk.getRezolveSession().getScanManager(this, true, true);
+        ScanManager scanManager = RezolveSdkUtils.getScanManager(this, true, true);
 
         scanView.refresh();
         scanManager.stopVideoScan();
@@ -120,7 +116,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     }
 
     private void hideLoadingIndicator() {
-        loadingSpinView.setVisibility(View.INVISIBLE);
+        loadingSpinView.setVisibility(View.GONE);
     }
 
     private void navigateToProductDetailsView(Product product) {
@@ -144,7 +140,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
             return;
         }
         MerchantManagerUtils.getMerchants(
-                RezolveSdkUtils.getMerchantManager(rezolveSdk),
+                RezolveSdkUtils.getMerchantManager(),
                 getApplicationContext(),
                 MerchantManager.MerchantVisibility.ALL,
                 new BaseGetMerchantsCallback(view) {
@@ -208,7 +204,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     private void onFabMainClick(View view) {
         MerchantManagerUtils.getMerchants(
-                RezolveSdkUtils.getMerchantManager(rezolveSdk),
+                RezolveSdkUtils.getMerchantManager(),
                 getApplicationContext(),
                 MerchantManager.MerchantVisibility.ALL,
                 new BaseGetMerchantsCallback(view) {

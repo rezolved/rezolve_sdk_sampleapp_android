@@ -215,7 +215,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void hideLoadingIndicator() {
-        loadingSpinView.setVisibility(View.INVISIBLE);
+        loadingSpinView.setVisibility(View.GONE);
     }
 
     private void navigateToOrderSummaryView(OrderSummary orderSummary) {
