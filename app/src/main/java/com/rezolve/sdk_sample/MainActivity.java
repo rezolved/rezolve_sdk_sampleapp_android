@@ -1,10 +1,10 @@
 package com.rezolve.sdk_sample;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.rezolve.sdk.RezolveInterface;
 import com.rezolve.sdk.RezolveSDK;
@@ -12,8 +12,8 @@ import com.rezolve.sdk.RezolveSession;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk_sample.model.RegistrationResponse;
 import com.rezolve.sdk_sample.providers.SdkProvider;
-import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.services.AuthenticationService;
+import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.TokenUtils;

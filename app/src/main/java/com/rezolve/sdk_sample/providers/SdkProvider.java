@@ -1,6 +1,7 @@
 package com.rezolve.sdk_sample.providers;
 
 import android.support.annotation.NonNull;
+
 import com.rezolve.sdk.RezolveSDK;
 
 public class SdkProvider {
@@ -19,7 +20,8 @@ public class SdkProvider {
         this.rezolveSDK = rezolveSDK;
     }
 
-    public @NonNull RezolveSDK getSDK() {
+    @NonNull
+    public RezolveSDK getSDK() {
         return rezolveSDK;
     }
 }

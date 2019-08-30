@@ -15,26 +15,27 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <provider
             android:name="com.digimarc.dms.internal.SdkInitProvider"
             android:authorities="${applicationId}.sdkinitprovider"
             android:enabled="true"
             android:exported="false"
-            tools:replace="android:authorities"/>
+            tools:replace="android:authorities" />
         <provider
             android:name="com.digimarc.dms.helpers.camerahelper.CameraInitProvider"
             android:authorities="${applicationId}.camerainitprovider"
             android:enabled="true"
             android:exported="false"
-            tools:replace="android:authorities"/>
+            tools:replace="android:authorities" />
         <provider
             android:name="com.digimarc.dms.helpers.audiohelper.AudioInitProvider"
             android:authorities="${applicationId}.audioinitprovider"
             android:enabled="true"
             android:exported="false"
-            tools:replace="android:authorities"/>
+            tools:replace="android:authorities" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -43,9 +44,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScanActivity"/>
-        <activity android:name=".ProductDetailsActivity"/>
-        <activity android:name=".OrderSummaryActivity"/>
+        <activity android:name=".ScanActivity" />
+        <activity android:name=".ProductDetailsActivity" />
+        <activity android:name=".OrderSummaryActivity" />
+        <activity android:name=".ProductListActivity" />
     </application>
 
 </manifest>
