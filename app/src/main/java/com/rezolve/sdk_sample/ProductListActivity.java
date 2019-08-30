@@ -51,27 +51,9 @@ public class ProductListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_list);
 
         // Get external parameters
-        Merchant merchant = null;
-        Category category = null;
         Intent intent = getIntent();
-        if (intent != null) {
-            String merchantJson = intent.getStringExtra(PARAM_MERCHANT_JSON_KEY);
-            if (merchantJson != null) {
-                try {
-                    merchant = Merchant.jsonToEntity(new JSONObject(merchantJson));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            String categoryJson = intent.getStringExtra(PARAM_CATEGORY_JSON_KEY);
-            if (categoryJson != null) {
-                try {
-                    category = Category.jsonToEntity(new JSONObject(categoryJson));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        Merchant merchant = getMerchant(intent);
+        Category category = getCategory(intent);
 
         // Bind views
         loadingSpinView = findViewById(R.id.loadingSpinView); // TODO: code duplication
@@ -94,6 +76,28 @@ public class ProductListActivity extends AppCompatActivity {
             initFab(merchant, category);
             loadProducts(merchant, category);
         }
+    }
+
+    private JSONObject createJsonObject(Intent intent, String intentParamKey) throws JSONException {
+        return new JSONObject(intent == null ? null : intent.getStringExtra(intentParamKey));
+    }
+
+    private Merchant getMerchant(Intent intent) {
+        try {
+            return Merchant.jsonToEntity(createJsonObject(intent, PARAM_MERCHANT_JSON_KEY));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Category getCategory(Intent intent) {
+        try {
+            return Category.jsonToEntity(createJsonObject(intent, PARAM_CATEGORY_JSON_KEY));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void initFab(Merchant merchant, Category category) {
