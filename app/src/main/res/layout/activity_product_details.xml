@@ -323,15 +323,15 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" >
+        android:layout_centerInParent="true">
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/loadingSpinView"
+            style="@style/SpinKitView.Large.DoubleBounce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="invisible"
-            style="@style/SpinKitView.Large.DoubleBounce"
             app:SpinKit_Color="@color/colorAccent" />
     </RelativeLayout>
 </RelativeLayout>

@@ -8,6 +8,7 @@ import com.rezolve.sdk_sample.utils.TokenUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
@@ -43,6 +44,6 @@ public class AuthenticationService {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> authenticationCallback.onRegistrationSuccess(response),
-                           error -> authenticationCallback.onRegistrationFailure(error.getMessage()));
+                        error -> authenticationCallback.onRegistrationFailure(error.getMessage()));
     }
 }
