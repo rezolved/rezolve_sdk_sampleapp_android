@@ -2,6 +2,7 @@ package com.rezolve.sdk_sample.utils.sdk;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.rezolve.sdk.core.interfaces.ProductInterface;
 import com.rezolve.sdk.core.managers.ProductManager;
@@ -86,7 +87,7 @@ public class ProductManagerUtils {
     private static String getImage(List<String> imageThumbs, String image) {
         if (imageThumbs != null && imageThumbs.size() > 0) {
             for (String imageThumb : imageThumbs) {
-                if (imageThumb != null && imageThumb.length() != 0) {
+                if (!TextUtils.isEmpty(imageThumb)) {
                     return imageThumb;
                 }
             }

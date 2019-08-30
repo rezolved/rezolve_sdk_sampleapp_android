@@ -3,6 +3,7 @@ package com.rezolve.sdk_sample.utils.sdk;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.rezolve.sdk.core.interfaces.MerchantInterface;
 import com.rezolve.sdk.core.managers.MerchantManager;
@@ -37,7 +38,7 @@ public class MerchantManagerUtils {
         List<String> bannerThumbs = merchant.getBannerThumbs();
         if (bannerThumbs != null && bannerThumbs.size() > 0) {
             for (String bannerThumb : bannerThumbs) {
-                if (!"".equals(bannerThumb)) {
+                if (!TextUtils.isEmpty(bannerThumb)) {
                     return bannerThumb;
                 }
             }
