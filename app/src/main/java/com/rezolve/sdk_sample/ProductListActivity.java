@@ -78,14 +78,14 @@ public class ProductListActivity extends AppCompatActivity {
         }
     }
 
-    private JSONObject createJsonObject(Intent intent, String intentParamKey) throws JSONException {
+    private JSONObject createJsonObject(Intent intent, String intentParamKey) throws NullPointerException, JSONException {
         return new JSONObject(intent == null ? null : intent.getStringExtra(intentParamKey));
     }
 
     private Merchant getMerchant(Intent intent) {
         try {
             return Merchant.jsonToEntity(createJsonObject(intent, PARAM_MERCHANT_JSON_KEY));
-        } catch (JSONException e) {
+        } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
         return null;
@@ -94,6 +94,8 @@ public class ProductListActivity extends AppCompatActivity {
     private Category getCategory(Intent intent) {
         try {
             return Category.jsonToEntity(createJsonObject(intent, PARAM_CATEGORY_JSON_KEY));
+        } catch (NullPointerException npe) {
+            // DO NOTHING
         } catch (JSONException e) {
             e.printStackTrace();
         }
