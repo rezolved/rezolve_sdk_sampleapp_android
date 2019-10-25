@@ -25,6 +25,7 @@ import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk.model.shop.Product;
+import com.rezolve.sdk.model.shop.ScannedData;
 import com.rezolve.sdk.views.RezolveScanView;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
@@ -75,13 +76,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     }
 
     @Override
-    public void onError(@NonNull RezolveError rezolveError) {
-        hideLoadingIndicator();
-        DialogUtils.showError(this, RezolveSdkUtils.formatedRezolveError(this, rezolveError));
-    }
-
-    @Override
-    public void onProductResult(Product product) {
+    public void onProductResult(Product product, String categoryId) {
         navigateToProductDetailsView(product);
     }
 
@@ -96,7 +91,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     }
 
     @Override
-    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg) {
+    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg, ScannedData scannedData) {
         hideLoadingIndicator();
         DialogUtils.showError(this, rezolveErrorType.name() + "\n" + errorMsg);
     }
