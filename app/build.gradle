@@ -17,9 +17,23 @@ android {
         buildConfigField 'String', "REZOLVE_SDK_JWT_SECRET", REZOLVE_SDK_JWT_SECRET
     }
 
-    buildTypes {
+    signingConfigs {
         release {
+            storeFile file('sample.jks')
+            storePassword 'store1234'
+            keyAlias = 'com.rezolve.sdk_sample'
+            keyPassword 'key1234'
+        }
+    }
+
+    buildTypes {
+        debug {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
