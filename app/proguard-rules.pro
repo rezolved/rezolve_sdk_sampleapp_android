@@ -30,3 +30,6 @@
 -keep class org.bouncycastle.** { *; }
 -keepnames class org.bouncycastle.** { *; }
 -dontwarn org.bouncycastle.**
+
+-keep class com.synnapps.carouselview.** { *; }
+-keep public class com.digimarc.dms.internal.readers.audioreader.AudioNative { *; }
