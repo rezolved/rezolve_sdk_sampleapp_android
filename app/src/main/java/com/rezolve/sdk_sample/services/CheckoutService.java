@@ -172,7 +172,8 @@ public class CheckoutService {
         }
         // Gets first supported payment method
         SupportedPaymentMethod paymentMethod = payment.getSupportedPaymentMethods().get(0);
-        DeliveryUnit deliveryUnit = new DeliveryUnit(paymentMethod, deliveryAddress.getId());
+
+        DeliveryUnit deliveryUnit = getDeliveryUnit(paymentMethod);
 
         checkoutBundle = CheckoutBundleV2.createProductCheckoutBundleV2(product.getMerchantId(), payment.getId(),
                 checkout, customerPhone.getId(), paymentMethod, deliveryUnit);
@@ -190,5 +191,11 @@ public class CheckoutService {
         });
     }
 
-
+    private DeliveryUnit getDeliveryUnit(SupportedPaymentMethod paymentMethod) {
+        if (product.isAct() || product.isVirtual()) {
+            return new DeliveryUnit();
+        } else {
+            return new DeliveryUnit(paymentMethod, deliveryAddress.getId());
+        }
+    }
 }
