@@ -15,6 +15,9 @@ android {
         buildConfigField 'String', "REZOLVE_SDK_ENVIRONMENT", REZOLVE_SDK_ENVIRONMENT
         buildConfigField 'String', "REZOLVE_SDK_API_KEY", REZOLVE_SDK_API_KEY
         buildConfigField 'String', "REZOLVE_SDK_JWT_SECRET", REZOLVE_SDK_JWT_SECRET
+        buildConfigField 'String', "DEMO_AUTH_SERVER", DEMO_AUTH_SERVER
+        buildConfigField 'String', "DEMO_AUTH_USER", DEMO_AUTH_USER
+        buildConfigField 'String', "DEMO_AUTH_PASSWORD", DEMO_AUTH_PASSWORD
     }
 
     signingConfigs {
