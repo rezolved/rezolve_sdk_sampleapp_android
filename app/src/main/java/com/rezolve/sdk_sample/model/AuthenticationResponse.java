@@ -9,6 +9,12 @@ public class AuthenticationResponse {
     @SerializedName("email")
     private String email;
 
+    @SerializedName("sdkEntity")
+    private String entityId;
+
+    @SerializedName("sdkPartner")
+    private String partnerId;
+
     private String token;
 
     public String getUsername() {
@@ -25,5 +31,13 @@ public class AuthenticationResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public String getPartnerId() {
+        return partnerId;
     }
 }

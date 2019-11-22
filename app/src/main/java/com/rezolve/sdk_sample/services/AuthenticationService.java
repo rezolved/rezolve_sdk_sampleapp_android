@@ -20,7 +20,7 @@ public class AuthenticationService {
     private final String KEY_DEVICE_ID = "deviceId";
     private final String KEY_EMAIL = "email";
     private final String KEY_PASSWORD = "password";
-    private final String KEY_HEADER_TOKEN = "authentication";
+    private final String KEY_HEADER_TOKEN = "authorization";
 
     private final AuthenticationRequest authenticationRequest;
 
@@ -32,20 +32,6 @@ public class AuthenticationService {
                 .build();
 
         authenticationRequest = retrofit.create(AuthenticationRequest.class);
-    }
-
-    public void register(String email, String password, AuthenticationCallback authenticationCallback) {
-        Map<String, Object> body = new HashMap<String, Object>() {{
-            put(KEY_EMAIL, email);
-            put(KEY_PASSWORD, password);
-            put("phone", "+48791668815");
-        }};
-
-        authenticationRequest.registerUser(BuildConfig.REZOLVE_SDK_API_KEY, body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> authenticationCallback.onLoginSuccess(response),
-                        error -> authenticationCallback.onLoginFailure(error.getMessage()));
     }
 
     public void login(String email, String password, String deviceId, AuthenticationCallback callback) {

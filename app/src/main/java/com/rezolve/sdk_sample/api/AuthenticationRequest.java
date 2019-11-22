@@ -13,14 +13,7 @@ import retrofit2.http.POST;
 
 public interface AuthenticationRequest {
     @Headers("Content-Type: application/json")
-    @POST("/v2/credentials/register")
-    Observable<AuthenticationResponse> registerUser(@Header("x-rezolve-partner-apikey") String apiKey,
-                                                    @Body Map<String, Object> body);
-
-    @Headers("Content-Type: application/json")
     @POST("/v2/credentials/login")
     Observable<Response<AuthenticationResponse>> loginUser(@Header("x-rezolve-partner-apikey") String apiKey,
                                                           @Body Map<String, Object> body);
-
-
 }

@@ -22,8 +22,6 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String entityId;
-    private String partnerId;
     private String deviceId;
 
     private AuthenticationService authenticationService;
@@ -35,21 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         authenticationService = new AuthenticationService();
-        registerUser();
-    }
-
-    private void registerUser() {
-        authenticationService.register(BuildConfig.DEMO_AUTH_USER, BuildConfig.DEMO_AUTH_PASSWORD, new AuthenticationCallback() {
-            @Override
-            public void onLoginSuccess(AuthenticationResponse response) {
-                loginUser();
-            }
-
-            @Override
-            public void onLoginFailure(String message) {
-                DialogUtils.showError(MainActivity.this, message);
-            }
-        });
+        loginUser();
     }
 
     private void loginUser() {
@@ -83,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         rezolveSDK.setDeviceIdHeader(deviceId);
         SdkProvider.getInstance().init(rezolveSDK);
 
-        rezolveSDK.createSession(response.getToken(), entityId, partnerId, new RezolveInterface() {
+        rezolveSDK.createSession(response.getToken(), response.getEntityId(), response.getPartnerId(), new RezolveInterface() {
             @Override
             public void onInitializationSuccess(RezolveSession rezolveSession, String partnerId, String entityId) {
                 navigateToScanView();
