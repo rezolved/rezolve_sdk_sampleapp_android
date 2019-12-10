@@ -9,6 +9,7 @@ import com.rezolve.sdk.model.shop.CustomOptionValue;
 import com.rezolve.sdk.model.shop.Product;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CheckoutUtils {
@@ -18,7 +19,13 @@ public class CheckoutUtils {
         if (product != null) for (CustomOption customOption : product.getCustomOptions()) {
             CustomConfigurableOption customConfigurableOption = new CustomConfigurableOption();
             customConfigurableOption.setOptionId(customOption.getOptionId());
-            CustomOptionValue customOptionValue = customOption.getValues().size() > 0 ? customOption.getValues().get(0) : null;
+
+            // In case when values list for this custom option is null
+            CustomOptionValue customOptionValue = null;
+            if(customOption.getValues() != null) {
+                customOptionValue = customOption.getValues().size() > 0 ? customOption.getValues().get(0) : null;
+            }
+
             // TODO: improve default value according to type
             customConfigurableOption.setValue(new String[]{customOptionValue == null ? "NULL value" : customOptionValue.getValueId()});
             result.add(customConfigurableOption);

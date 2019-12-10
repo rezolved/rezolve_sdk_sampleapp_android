@@ -22,6 +22,7 @@ import com.rezolve.sdk_sample.services.callbacks.PaymentCallback;
 import com.rezolve.sdk_sample.utils.CheckoutUtils;
 import com.rezolve.sdk_sample.utils.CustomerUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
+import com.rezolve.sdk_sample.utils.ProductUtils;
 import com.synnapps.carouselview.CarouselView;
 import static com.rezolve.sdk_sample.utils.PriceConstants.*;
 
@@ -32,7 +33,6 @@ import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
-    public static final String PARAM_PRODUCT_KEY = "product_json_string";
     private SpinKitView loadingSpinView;
     private CarouselView previewCarouselView;
     private TextView titleTextView;
@@ -83,13 +83,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         instantBuyButton.setOnClickListener(view -> buyProduct());
 
         checkoutService = CheckoutService.getInstance();
-        try {
-            JSONObject productJson = new JSONObject(getIntent().getStringExtra(PARAM_PRODUCT_KEY));
-            product = Product.jsonToEntity(productJson);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            product = null;
-        }
+
+        product = ProductUtils.getProductFromArgs(getIntent().getExtras());
         customConfigurableOptionList = CheckoutUtils.getDefaultCustomConfigurableOptionList(product);
 
         displayProductDetails();
@@ -227,5 +222,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
         intent.putExtras(bundle);
 
         startActivity(intent);
+    }
+
+    private void navigateToScannerView() {
+        Intent intent = new Intent(ProductDetailsActivity.this, ScanActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        navigateToScannerView();
     }
 }
