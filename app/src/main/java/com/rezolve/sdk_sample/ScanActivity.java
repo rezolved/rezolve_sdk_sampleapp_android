@@ -68,8 +68,11 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     @Override
     protected void onPause() {
         super.onPause();
-        scanManager.stopVideoScan();
-        scanManager.stopAudioScan();
+
+        if(scanManager != null) {
+            scanManager.stopVideoScan();
+            scanManager.stopAudioScan();
+        }
     }
 
     private void initializeScanner() {
