@@ -3,8 +3,8 @@ package com.rezolve.sdk_sample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.rezolve.sdk.RezolveInterface;
 import com.rezolve.sdk.RezolveSDK;
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         authenticationService = new AuthenticationService();
         registerUser();

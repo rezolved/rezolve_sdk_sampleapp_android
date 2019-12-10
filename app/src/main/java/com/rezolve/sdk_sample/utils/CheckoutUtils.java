@@ -1,6 +1,6 @@
 package com.rezolve.sdk_sample.utils;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.rezolve.sdk.model.cart.CheckoutProduct;
 import com.rezolve.sdk.model.cart.CustomConfigurableOption;

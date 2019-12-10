@@ -1,7 +1,7 @@
 package com.rezolve.sdk_sample.utils.sdk;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.RezolveSession;
