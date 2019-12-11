@@ -14,17 +14,29 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+/*
+* This sample code comes configured to use a Rezolve-hosted authentication server, referred to by Rezolve as a RUA server (Rezolve User Authentication).
+* You SHOULD NOT use this server for production apps, it is for testing and Sandbox use only.
+* This sample auth configuration is provided so that:
+* 1) you may compile and test the sample code immediately upon receipt, without having to configure your own auth server, and
+* 2) so that the partner developer may see an example of how the SDK will utilize an external auth server to obtain permission to talk with the Rezolve APIs.
+* If you have an existing app with an existing authenticating user base, you will want to utilize YOUR auth server to issue JWT tokens, which the Rezolve API will accept.
+* Details on this process are available here: http://docs.rezolve.com/docs/#jwt-authentication
+* If you do not have an existing app, or do not have an existing app server, you have the option to either implement your own auth server and use JWT authentication as described above, or to have Rezolve install a RUA server for you (the same type auth server this sample code is configured to use).
+* Please discuss authentication options with your project lead and/or your Rezolve representative.
+*/
 public class AuthenticationService {
 
-    private final String KEY_REGISTRATION_EMAIL = "email";
-    private final String EXAMPLE_EMAIL_SUFFIX = "@example.com";
+    private final String KEY_DEVICE_ID = "deviceId";
+    private final String KEY_EMAIL = "email";
+    private final String KEY_PASSWORD = "password";
+    private final String KEY_HEADER_TOKEN = "authorization";
 
     private final AuthenticationRequest authenticationRequest;
 
     public AuthenticationService() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.REZOLVE_SDK_API_URL)
+                .baseUrl(BuildConfig.DEMO_AUTH_SERVER)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
@@ -32,18 +44,22 @@ public class AuthenticationService {
         authenticationRequest = retrofit.create(AuthenticationRequest.class);
     }
 
-    public void register(AuthenticationCallback authenticationCallback) {
-        String token = TokenUtils.createRegistrationToken();
-        String userEmail = DeviceUtils.userIdentifier + EXAMPLE_EMAIL_SUFFIX;
-
+    public void login(String email, String password, String deviceId, AuthenticationCallback callback) {
         Map<String, Object> body = new HashMap<String, Object>() {{
-            put(KEY_REGISTRATION_EMAIL, userEmail);
+            put(KEY_EMAIL, email);
+            put(KEY_PASSWORD, password);
+            put(KEY_DEVICE_ID, deviceId);
         }};
 
-        authenticationRequest.registerUser(token, BuildConfig.REZOLVE_SDK_API_KEY, body)
+        authenticationRequest.loginUser(BuildConfig.REZOLVE_SDK_API_KEY, body)
+                .map(response -> {
+                    String token = response.headers().get(KEY_HEADER_TOKEN);
+                    response.body().setToken(token);
+                    return response.body();
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> authenticationCallback.onRegistrationSuccess(response),
-                        error -> authenticationCallback.onRegistrationFailure(error.getMessage()));
+                .subscribe(response -> callback.onLoginSuccess(response),
+                        error -> callback.onLoginFailure(error.getMessage()));
     }
 }
