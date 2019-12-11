@@ -23,15 +23,13 @@ import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.NotificationHelper;
 import com.rezolve.sdk_sample.utils.ProductUtils;
 import com.rezolve.sdk_sample.utils.TokenUtils;
-
 import java.util.List;
+import retrofit2.Response;
 
 import static com.rezolve.sdk.core.AutoDetectService.ACTION_PRODUCT_AUDIO_SCAN;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String entityId;
-    private String partnerId;
     private String deviceId;
 
     private AuthenticationService authenticationService;
@@ -45,30 +43,25 @@ public class MainActivity extends AppCompatActivity {
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifecycleListener(this));
 
         authenticationService = new AuthenticationService();
-        registerUser();
+        loginUser();
     }
 
-    private void registerUser() {
-        authenticationService.register(new AuthenticationCallback() {
+    private void loginUser() {
+        deviceId = DeviceUtils.getDeviceId(this);
+        authenticationService.login(BuildConfig.DEMO_AUTH_USER, BuildConfig.DEMO_AUTH_PASSWORD, deviceId, new AuthenticationCallback() {
             @Override
-            public void onRegistrationSuccess(RegistrationResponse response) {
-                entityId = response.getEntityId();
-                partnerId = response.getPartnerId();
-
-                createSession();
+            public void onLoginSuccess(AuthenticationResponse response) {
+                createSession(response);
             }
 
             @Override
-            public void onRegistrationFailure(String message) {
+            public void onLoginFailure(String message) {
                 DialogUtils.showError(MainActivity.this, message);
             }
         });
     }
 
-    private void createSession() {
-        deviceId = DeviceUtils.getDeviceId(this);
-        String accessToken = TokenUtils.createAccessToken(entityId, partnerId, deviceId);
-
+    private void createSession(AuthenticationResponse response) {
         rezolveSDK = new RezolveSDK.Builder()
                 .setApiKey(BuildConfig.REZOLVE_SDK_API_KEY)
                 .setEnv(BuildConfig.REZOLVE_SDK_ENVIRONMENT)
@@ -76,15 +69,15 @@ public class MainActivity extends AppCompatActivity {
                     if (Looper.myLooper() == Looper.getMainLooper()) {
                         throw new IllegalStateException("You can't run this method from main thread");
                     }
-                    return RezolveSDK.GetAuthRequest.authorizationHeader(accessToken);
+                    return RezolveSDK.GetAuthRequest.authorizationHeader(response.getToken());
                 })
                 .build();
 
-        rezolveSDK.setAuthToken(accessToken);
+        rezolveSDK.setAuthToken(response.getToken());
         rezolveSDK.setDeviceIdHeader(deviceId);
         SdkProvider.getInstance().init(rezolveSDK);
 
-        rezolveSDK.createSession(accessToken, entityId, partnerId, new RezolveInterface() {
+        rezolveSDK.createSession(response.getToken(), response.getEntityId(), response.getPartnerId(), new RezolveInterface() {
             @Override
             public void onInitializationSuccess(RezolveSession rezolveSession, String partnerId, String entityId) {
                 if(isLaunchedFromNotification()) {
