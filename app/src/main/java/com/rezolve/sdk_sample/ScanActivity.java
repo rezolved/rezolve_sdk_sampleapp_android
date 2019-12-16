@@ -4,13 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -28,6 +28,7 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.model.shop.ScannedData;
 import com.rezolve.sdk.views.RezolveScanView;
 import com.rezolve.sdk_sample.utils.DialogUtils;
+import com.rezolve.sdk_sample.utils.ProductUtils;
 import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
 import com.rezolve.sdk_sample.utils.sdk.RezolveSdkUtils;
 
@@ -39,6 +40,7 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     private SpinKitView loadingSpinView;
     private FloatingActionButton fabMain;
+    private ScanManager scanManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,6 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
         loadingSpinView = findViewById(R.id.loadingSpinView);
 
         initFab();
-
     }
 
     @Override
@@ -64,9 +65,19 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(scanManager != null) {
+            scanManager.stopVideoScan();
+            scanManager.stopAudioScan();
+        }
+    }
+
     private void initializeScanner() {
         RezolveScanView scanView = findViewById(R.id.scanView);
-        ScanManager scanManager = RezolveSdkUtils.getScanManager(this, true, true);
+        scanManager = RezolveSdkUtils.getScanManager(this, true, true);
 
         scanView.refresh();
         scanManager.stopVideoScan();
@@ -116,11 +127,8 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
 
     private void navigateToProductDetailsView(Product product) {
         Intent intent = new Intent(ScanActivity.this, ProductDetailsActivity.class);
-        Bundle bundle = new Bundle();
-
-        bundle.putString(ProductDetailsActivity.PARAM_PRODUCT_KEY, product.entityToJson().toString());
+        Bundle bundle = ProductUtils.toBundle(product);
         intent.putExtras(bundle);
-
         startActivity(intent);
     }
 

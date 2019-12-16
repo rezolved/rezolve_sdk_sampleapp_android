@@ -1,6 +1,6 @@
 package com.rezolve.sdk_sample.providers;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.rezolve.sdk.RezolveSDK;
 
