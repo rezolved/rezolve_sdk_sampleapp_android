@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -25,18 +27,6 @@
             android:enabled="true"
             android:exported="false"
             tools:replace="android:authorities" />
-        <provider
-            android:name="com.digimarc.dms.helpers.camerahelper.CameraInitProvider"
-            android:authorities="${applicationId}.camerainitprovider"
-            android:enabled="true"
-            android:exported="false"
-            tools:replace="android:authorities" />
-        <provider
-            android:name="com.digimarc.dms.helpers.audiohelper.AudioInitProvider"
-            android:authorities="${applicationId}.audioinitprovider"
-            android:enabled="true"
-            android:exported="false"
-            tools:replace="android:authorities" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -45,7 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScanActivity" />
+        <activity android:screenOrientation="nosensor" android:name=".ScanActivity" />
         <activity android:name=".ProductDetailsActivity" />
         <activity android:name=".OrderSummaryActivity" />
         <activity android:name=".ProductListActivity" />

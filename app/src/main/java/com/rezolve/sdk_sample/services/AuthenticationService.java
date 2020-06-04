@@ -2,15 +2,15 @@ package com.rezolve.sdk_sample.services;
 
 import com.rezolve.sdk_sample.BuildConfig;
 import com.rezolve.sdk_sample.api.AuthenticationRequest;
+import com.rezolve.sdk_sample.model.PingResponse;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
-import com.rezolve.sdk_sample.utils.DeviceUtils;
-import com.rezolve.sdk_sample.utils.TokenUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -28,11 +28,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AuthenticationService {
 
     private final String KEY_DEVICE_ID = "deviceId";
-    private final String KEY_EMAIL = "email";
+    private final String KEY_EMAIL = "username";
     private final String KEY_PASSWORD = "password";
     private final String KEY_HEADER_TOKEN = "authorization";
 
     private final AuthenticationRequest authenticationRequest;
+
+    private String lastToken;
 
     public AuthenticationService() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -53,13 +55,25 @@ public class AuthenticationService {
 
         authenticationRequest.loginUser(BuildConfig.REZOLVE_SDK_API_KEY, body)
                 .map(response -> {
-                    String token = response.headers().get(KEY_HEADER_TOKEN);
-                    response.body().setToken(token);
+                    if(response.isSuccessful()) {
+                        String token = response.headers().get(KEY_HEADER_TOKEN);
+                        response.body().setToken(token);
+                        lastToken = token;
+                    }
                     return response.body();
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> callback.onLoginSuccess(response),
                         error -> callback.onLoginFailure(error.getMessage()));
+    }
+
+    public String ping() {
+        final Response<PingResponse> response = authenticationRequest.ping(lastToken).blockingFirst();
+        if(response.isSuccessful()) {
+            final PingResponse pingResponse = response.body();
+            return pingResponse != null ? pingResponse.getAccessToken() : "";
+        }
+        return "";
     }
 }

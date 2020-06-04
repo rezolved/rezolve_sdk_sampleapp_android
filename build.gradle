@@ -2,7 +2,8 @@
 
 buildscript {
     ext {
-        rezolveSdkVersion = "2.2.0"
+        rezolveSdkVersion = "1367-resolver_configuration_builder-a1d26e1"
+        rezolveSdkScanVersion = "2033-develop-11508bd"
         jjwtVersion = "0.10.5"
         rxJavaVersion = "2.2.8"
         rxAndroidVersion = "2.1.1"
@@ -16,11 +17,12 @@ buildscript {
     }
 
     repositories {
+        mavenLocal()
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:4.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -28,6 +30,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         google()
         jcenter()
         maven {

@@ -4,28 +4,41 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
-import com.rezolve.sdk.core.interfaces.ScanManagerInterface;
 import com.rezolve.sdk.core.managers.MerchantManager;
-import com.rezolve.sdk.core.managers.ScanManager;
-import com.rezolve.sdk.model.foreign.RezolveScanResult;
+import com.rezolve.sdk.location.LocationDependencyProvider;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.model.shop.ScannedData;
+import com.rezolve.sdk.resolver.ResolverError;
+import com.rezolve.sdk.resolver.UrlTrigger;
+import com.rezolve.sdk.scan.audio.AudioScanManager;
+import com.rezolve.sdk.scan.audio.AudioScanManagerProvider;
+import com.rezolve.sdk.scan.video.VideoScanManager;
+import com.rezolve.sdk.scan.video.VideoScanManagerProvider;
+import com.rezolve.sdk.ssp.resolver.ResolveResultListener;
+import com.rezolve.sdk.ssp.resolver.ResolverResultListenersRegistry;
+import com.rezolve.sdk.ssp.resolver.result.CategoryResult;
+import com.rezolve.sdk.ssp.resolver.result.ContentResult;
+import com.rezolve.sdk.ssp.resolver.result.ProductResult;
+import com.rezolve.sdk.ssp.resolver.result.SspActResult;
+import com.rezolve.sdk.ssp.resolver.result.SspCategoryResult;
+import com.rezolve.sdk.ssp.resolver.result.SspProductResult;
 import com.rezolve.sdk.views.RezolveScanView;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.ProductUtils;
@@ -33,14 +46,61 @@ import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
 import com.rezolve.sdk_sample.utils.sdk.RezolveSdkUtils;
 
 import java.util.List;
+import java.util.UUID;
 
-public class ScanActivity extends AppCompatActivity implements ScanManagerInterface {
+public class ScanActivity extends AppCompatActivity {
 
     private static final String TAG = ScanActivity.class.getSimpleName();
 
     private SpinKitView loadingSpinView;
     private FloatingActionButton fabMain;
-    private ScanManager scanManager;
+    private VideoScanManager videoScanManager = VideoScanManagerProvider.getVideoScanManager();
+    private AudioScanManager audioScanManager = AudioScanManagerProvider.getAudioScanManager();
+
+    private final ResolveResultListener resolveResultListener = new ResolveResultListener() {
+        @Override
+        public void onProcessingStarted(@NonNull UUID uuid) {
+            Log.d(TAG, "onProcessingStarted: " + uuid);
+            processingStarted();
+        }
+
+        @Override
+        public void onProcessingFinished(@NonNull UUID uuid) {
+            Log.d(TAG, "onProcessingFinished: " + uuid);
+            processingFinished();
+        }
+
+        @Override
+        public void onProcessingUrlTriggerStarted(@NonNull UUID uuid, @NonNull UrlTrigger urlTrigger) {
+            Log.d(TAG, "onProcessingUrlTriggerStarted: " + uuid + " url: " + urlTrigger.getUrl());
+        }
+
+        @Override
+        public void onContentResult(@NonNull UUID uuid, @NonNull ContentResult result) {
+            Log.d(TAG, "onContentResult: " + result);
+            if(result instanceof ProductResult) {
+                ProductResult productResult = (ProductResult) result;
+                onProductResult(productResult.getProduct(), productResult.getCategoryId());
+            } else if(result instanceof CategoryResult) {
+                CategoryResult categoryResult = (CategoryResult) result;
+                onCategoryResult(categoryResult.getCategory(), categoryResult.getMerchantId());
+            } else if(result instanceof SspActResult) {
+
+            } else if(result instanceof SspProductResult) {
+
+            } else if(result instanceof SspCategoryResult) {
+
+            }
+        }
+
+        @Override
+        public void onResolverError(@NonNull UUID uuid, @NonNull ResolverError resolverError) {
+            if(resolverError instanceof  ResolverError.Error) {
+                ResolverError.Error error = (ResolverError.Error) resolverError;
+                onScanError(error.rezolveError.getErrorType(), error.message);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,64 +115,57 @@ public class ScanActivity extends AppCompatActivity implements ScanManagerInterf
     @Override
     protected void onResume() {
         super.onResume();
-
-        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
-        Permissions.check(this, permissions, null, null, new PermissionHandler() {
+        ResolverResultListenersRegistry.getInstance().add(resolveResultListener);
+        String[] scannerPermissions = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
+        Permissions.check(this, scannerPermissions, null, null, new PermissionHandler() {
             @Override
             public void onGranted() {
                 initializeScanner();
             }
         });
+        String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        Permissions.check(this, locationPermissions, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                LocationDependencyProvider.locationProvider().start();
+            }
+        });
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        if(scanManager != null) {
-            scanManager.stopVideoScan();
-            scanManager.stopAudioScan();
-        }
+        videoScanManager.stopVideoScan();
+        audioScanManager.stopAudioScan();
+        audioScanManager.destroy();
+        ResolverResultListenersRegistry.getInstance().remove(resolveResultListener);
     }
 
     private void initializeScanner() {
         RezolveScanView scanView = findViewById(R.id.scanView);
-        scanManager = RezolveSdkUtils.getScanManager(this, true, true);
-
-        scanView.refresh();
-        scanManager.stopVideoScan();
-        scanManager.destroy();
-        scanManager.startVideoScan(this, scanView);
-        scanManager.startAudioScan(this, null);
+        audioScanManager.clearCache();
+        videoScanManager.startVideoScan(scanView);
+        audioScanManager.startAudioScan();
     }
 
-    @Override
     public void onProductResult(Product product, String categoryId) {
         navigateToProductDetailsView(product);
     }
 
-    @Override
     public void onCategoryResult(Category category, String merchantId) {
         navigateToProductListView(merchantId, category);
     }
 
-    @Override
-    public void onRezolveResult(RezolveScanResult rezolveScanResult) {
-        Log.e(TAG, "[NON IMPLEMENTED]\nonRezolveResult(" + rezolveScanResult + ")");
-    }
-
-    @Override
-    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg, ScannedData scannedData) {
+    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg) {
         hideLoadingIndicator();
         DialogUtils.showError(this, rezolveErrorType.name() + "\n" + errorMsg);
     }
 
-    @Override
     public void processingStarted() {
         displayLoadingIndicator();
     }
 
-    @Override
     public void processingFinished() {
         hideLoadingIndicator();
     }
