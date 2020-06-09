@@ -2,8 +2,8 @@
 
 buildscript {
     ext {
-        rezolveSdkVersion = "1367-resolver_configuration_builder-a1d26e1"
-        rezolveSdkScanVersion = "2033-develop-11508bd"
+        rezolveSdkVersion = "3.0-alpha.0"
+        rezolveSdkScanVersion = "3.0-alpha.0"
         jjwtVersion = "0.10.5"
         rxJavaVersion = "2.2.8"
         rxAndroidVersion = "2.1.1"
