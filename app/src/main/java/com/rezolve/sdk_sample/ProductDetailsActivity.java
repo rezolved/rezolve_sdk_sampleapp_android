@@ -143,17 +143,21 @@ public class ProductDetailsActivity extends AppCompatActivity {
         checkoutService.checkoutProduct(product, productQuantity, customConfigurableOptionList, new CheckoutCallback() {
             @Override
             public void onCheckoutSuccess(Order order) {
-                hideLoadingIndicator();
+                if(!ProductDetailsActivity.this.isFinishing()) {
+                    hideLoadingIndicator();
 
-                orderId = order.getOrderId();
-                displayCheckoutPriceDetails(order.getBreakdowns());
-                displayCheckoutTotalPrice(order.getFinalPrice());
+                    orderId = order.getOrderId();
+                    displayCheckoutPriceDetails(order.getBreakdowns());
+                    displayCheckoutTotalPrice(order.getFinalPrice());
+                }
             }
 
             @Override
             public void onCheckoutFailure(String message) {
-                hideLoadingIndicator();
-                DialogUtils.showError(ProductDetailsActivity.this, message);
+                if(!ProductDetailsActivity.this.isFinishing()) {
+                    hideLoadingIndicator();
+                    DialogUtils.showError(ProductDetailsActivity.this, message);
+                }
             }
         });
     }
