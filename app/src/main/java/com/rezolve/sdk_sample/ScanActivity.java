@@ -24,7 +24,6 @@ import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk.model.shop.Product;
-import com.rezolve.sdk.model.shop.ScannedData;
 import com.rezolve.sdk.resolver.ResolverError;
 import com.rezolve.sdk.resolver.UrlTrigger;
 import com.rezolve.sdk.scan.audio.AudioScanManager;
@@ -39,7 +38,6 @@ import com.rezolve.sdk.ssp.resolver.result.ProductResult;
 import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk.ssp.resolver.result.SspCategoryResult;
 import com.rezolve.sdk.ssp.resolver.result.SspProductResult;
-import com.rezolve.sdk.views.RezolveScanView;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.ProductUtils;
 import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
@@ -109,7 +107,15 @@ public class ScanActivity extends AppCompatActivity {
 
         loadingSpinView = findViewById(R.id.loadingSpinView);
 
+        videoScanManager.createImageReader();
+
         initFab();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        videoScanManager.destroyImageReader();
     }
 
     @Override
@@ -130,22 +136,21 @@ public class ScanActivity extends AppCompatActivity {
                 LocationDependencyProvider.locationProvider().start();
             }
         });
-
+        videoScanManager.clearCache();
+        videoScanManager.startCamera();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        videoScanManager.stopVideoScan();
-        audioScanManager.stopAudioScan();
+        videoScanManager.detachReader();
+        videoScanManager.stopCamera();
         audioScanManager.destroy();
         ResolverResultListenersRegistry.getInstance().remove(resolveResultListener);
     }
 
     private void initializeScanner() {
-        RezolveScanView scanView = findViewById(R.id.scanView);
         audioScanManager.clearCache();
-        videoScanManager.startVideoScan(scanView);
         audioScanManager.startAudioScan();
     }
 
