@@ -7,13 +7,19 @@ Paste following code into ***~/.gradle/gradle.properties*** and fill with your c
 NEXUS_REZOLVE_REPO_URL_PUBLIC=https://nexus.rezo.lv/repository/maven-sdk-releases/
 NEXUS_REZOLVE_READ_USERNAME=<proper username here>
 NEXUS_REZOLVE_READ_PASSWORD=<proper password here>
-REZOLVE_SDK_API_URL="https://sandbox-api-tw.rzlvtest.co/"
-REZOLVE_SDK_ENVIRONMENT="https://sandbox-api-tw.rzlvtest.co/api"
+REZOLVE_SDK_API_URL="https://core.dev.eu.rezolve.com/"
+REZOLVE_SDK_ENVIRONMENT="https://core.dev.eu.rezolve.com/api"
 REZOLVE_SDK_API_KEY="<proper API key here>"
-REZOLVE_SDK_JWT_SECRET="<proper JWT secrtet here>"
-DEMO_AUTH_SERVER="proper RUA server url"
-DEMO_AUTH_USER="proper RUA username"
-DEMO_AUTH_PASSWORD="proper RUA password"
+REZOLVE_SDK_JWT_SECRET="<proper JWT secret here>"
+DEMO_AUTH_SERVER="<proper RUA server url>"
+DEMO_AUTH_USER="<proper RUA username>"
+DEMO_AUTH_PASSWORD="<proper RUA password>"
+AUTH0_CLIENT_ID="<proper Auth0 client ID>"
+AUTH0_CLIENT_SECRET="<proper Auth0 client secret>"
+AUTH0_API_KEY="<proper Auth0 api key>"
+AUTH0_AUDIENCE="<proper Auth0 audienc>"
+AUTH0_ENDPOINT="<proper Auth0 endpoint>"
+SSP_ENDPOINT="<proper SSP endpoint>"
 ```
 This sample code comes configured to use a Rezolve-hosted authentication server, referred to by Rezolve as a RUA server (Rezolve User Authentication).
 You **SHOULD NOT** use this server for production apps, it is for testing and Sandbox use only.
