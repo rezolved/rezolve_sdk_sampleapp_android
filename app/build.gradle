@@ -24,6 +24,8 @@ android {
         buildConfigField 'String', "AUTH0_AUDIENCE", AUTH0_AUDIENCE
         buildConfigField 'String', "AUTH0_ENDPOINT", AUTH0_ENDPOINT
         buildConfigField 'String', "SSP_ENDPOINT", SSP_ENDPOINT
+        buildConfigField 'String', "SSP_ENGAGEMENT_ENDPOINT", SSP_ENGAGEMENT_ENDPOINT
+        buildConfigField 'String', "SSP_ACT_ENDPOINT", SSP_ACT_ENDPOINT
     }
 
     signingConfigs {

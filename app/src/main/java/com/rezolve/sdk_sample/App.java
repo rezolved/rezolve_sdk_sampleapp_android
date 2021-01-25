@@ -22,6 +22,7 @@ import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.api.HttpClient;
 import com.rezolve.sdk.api.authentication.auth0.AuthParams;
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
+import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
 import com.rezolve.sdk.location.google.LocationProviderFused;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.ssp.helper.NotificationChannelProperties;
@@ -102,7 +103,9 @@ public class App extends Application {
                                     BuildConfig.AUTH0_CLIENT_SECRET,
                                     BuildConfig.AUTH0_API_KEY,
                                     BuildConfig.AUTH0_AUDIENCE,
-                                    BuildConfig.AUTH0_ENDPOINT
+                                    BuildConfig.AUTH0_ENDPOINT,
+                                    BuildConfig.SSP_ENGAGEMENT_ENDPOINT,
+                                    BuildConfig.SSP_ACT_ENDPOINT
                             );
 
         HttpClientConfig httpConfig = new HttpClientConfig.Builder()
@@ -116,9 +119,9 @@ public class App extends Application {
                 .setAuthParams(authParams)
                 .build();
 
-        HttpClient httpClient = httpClientFactory.createHttpClient(BuildConfig.SSP_ENDPOINT);
+        SspHttpClient sspHttpClient = httpClientFactory.createHttpClient(BuildConfig.SSP_ENDPOINT);
 
-        SspActManager sspActManager = new SspActManager(httpClient);
+        SspActManager sspActManager = new SspActManager(sspHttpClient);
 
         new ResolverConfiguration.Builder(rezolveSDK)
                 .enableBarcode1dResolver(true)
@@ -183,16 +186,7 @@ public class App extends Application {
 
         NotificationHelper notificationHelper = new NotificationHelperImpl(this);
 
-        Notification notification = notificationHelper.createNotification(
-                    1,
-                    getString(R.string.app_name),
-                    null,
-                    null,
-                    null,
-                    geofenceForegroundNotificationProperties
-            );
-
-        final LocationProviderFused locationProviderFused = LocationProviderFused.create(this, notification);
+        final LocationProviderFused locationProviderFused = LocationProviderFused.create(this);
         registerGeofenceListener();
         locationProviderFused.start();
         geofenceManager.startGeofenceTracking();
