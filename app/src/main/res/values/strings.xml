@@ -30,4 +30,8 @@
     <string name="msg_not_possible_to_fetch_categories">Not possible to fetch categories</string>
     <string name="msg_category_not_found">Category not found!</string>
     <string name="msg_category_not_found_in_merchant">Category not found in merchant \'%s\'</string>
+    <!-- Background Notifications -->
+    <string name="notification_channel_name">Rezolve Sample Notification Channel</string>
+    <string name="notification_channel_description">Information about Rezolve features</string>
+    
 </resources>

@@ -1,13 +1,12 @@
 package com.rezolve.sdk_sample.utils.sdk;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.RezolveSession;
 import com.rezolve.sdk.core.managers.MerchantManager;
 import com.rezolve.sdk.core.managers.ProductManager;
-import com.rezolve.sdk.core.managers.ScanManager;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk_sample.R;
 
@@ -39,10 +38,6 @@ public class RezolveSdkUtils {
 
     public static ProductManager getProductManager() {
         return getRezolveSession().getProductManager();
-    }
-
-    public static ScanManager getScanManager(Context context, boolean barcodeEnabled, boolean enableVideo) {
-        return getRezolveSession().getScanManager(context, barcodeEnabled, enableVideo);
     }
 
     // Errors

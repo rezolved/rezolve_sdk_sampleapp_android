@@ -9,7 +9,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField 'String', "REZOLVE_SDK_API_URL", REZOLVE_SDK_API_URL
         buildConfigField 'String', "REZOLVE_SDK_ENVIRONMENT", REZOLVE_SDK_ENVIRONMENT
@@ -18,6 +18,14 @@ android {
         buildConfigField 'String', "DEMO_AUTH_SERVER", DEMO_AUTH_SERVER
         buildConfigField 'String', "DEMO_AUTH_USER", DEMO_AUTH_USER
         buildConfigField 'String', "DEMO_AUTH_PASSWORD", DEMO_AUTH_PASSWORD
+        buildConfigField 'String', "AUTH0_CLIENT_ID", AUTH0_CLIENT_ID
+        buildConfigField 'String', "AUTH0_CLIENT_SECRET", AUTH0_CLIENT_SECRET
+        buildConfigField 'String', "AUTH0_API_KEY", AUTH0_API_KEY
+        buildConfigField 'String', "AUTH0_AUDIENCE", AUTH0_AUDIENCE
+        buildConfigField 'String', "AUTH0_ENDPOINT", AUTH0_ENDPOINT
+        buildConfigField 'String', "SSP_ENDPOINT", SSP_ENDPOINT
+        buildConfigField 'String', "SSP_ENGAGEMENT_ENDPOINT", SSP_ENGAGEMENT_ENDPOINT
+        buildConfigField 'String', "SSP_ACT_ENDPOINT", SSP_ACT_ENDPOINT
     }
 
     signingConfigs {
@@ -49,12 +57,20 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:design:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.preference:preference:1.1.1'
 
     // Rezolve SDK
-    implementation "com.rezolve:sdk-android:$rezolveSdkVersion"
+    implementation "com.rezolve.sdk:core-android:$rezolveSdkVersion"
+    implementation "com.rezolve.sdk:payment-android:$rezolveSdkVersion"
+    implementation "com.rezolve.sdk:ssp-android:$rezolveSdkVersion"
+    implementation "com.rezolve.sdk:ssp-google-geofence:$rezolveSdkVersion"
+    implementation "com.rezolve.sdk:resolver:$rezolveSdkVersion"
+    implementation "com.rezolve.sdk:scan-android:$rezolveSdkScanVersion"
+
+    implementation "com.google.android.gms:play-services-location:17.0.0"
 
     // JJWT (Json Web Token library)
     api "io.jsonwebtoken:jjwt-api:$jjwtVersion"
@@ -88,5 +104,8 @@ dependencies {
 
     // Loading Animations
     implementation "com.github.ybq:Android-SpinKit:$loadingAnimationVersion"
+
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
 
 }

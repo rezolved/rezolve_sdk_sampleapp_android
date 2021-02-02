@@ -2,37 +2,38 @@ package com.rezolve.sdk_sample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.rezolve.sdk.RezolveInterface;
 import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.RezolveSession;
 import com.rezolve.sdk.model.network.RezolveError;
+import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.model.AuthenticationResponse;
+import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
-import com.rezolve.sdk_sample.utils.TokenUtils;
+import com.rezolve.sdk_sample.utils.NotificationUtil;
+import com.rezolve.sdk_sample.utils.ProductUtils;
 
-import retrofit2.Response;
+import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainNavigator {
 
     private String deviceId;
 
-    private AuthenticationService authenticationService;
-    private RezolveSDK rezolveSDK;
+    private AuthenticationService authenticationService = AuthenticationServiceProvider.getAuthenticationService();
+    private RezolveSDK rezolveSDK = SdkProvider.getInstance().getSDK();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        authenticationService = new AuthenticationService();
         loginUser();
     }
 
@@ -52,25 +53,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createSession(AuthenticationResponse response) {
-        rezolveSDK = new RezolveSDK.Builder()
-                .setApiKey(BuildConfig.REZOLVE_SDK_API_KEY)
-                .setEnv(BuildConfig.REZOLVE_SDK_ENVIRONMENT)
-                .setAuthRequestProvider(() -> {
-                    if (Looper.myLooper() == Looper.getMainLooper()) {
-                        throw new IllegalStateException("You can't run this method from main thread");
-                    }
-                    return RezolveSDK.GetAuthRequest.authorizationHeader(response.getToken());
-                })
-                .build();
 
         rezolveSDK.setAuthToken(response.getToken());
         rezolveSDK.setDeviceIdHeader(deviceId);
-        SdkProvider.getInstance().init(rezolveSDK);
 
         rezolveSDK.createSession(response.getToken(), response.getEntityId(), response.getPartnerId(), new RezolveInterface() {
             @Override
             public void onInitializationSuccess(RezolveSession rezolveSession, String partnerId, String entityId) {
-                navigateToScanView();
+                if(isLaunchedFromNotification(MainActivity.this)) {
+                    NotificationUtil.launch(getIntent(), MainActivity.this);
+                } else {
+                    navigateToScanView();
+                }
             }
 
             @Override
@@ -83,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
     private void navigateToScanView() {
         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    public void navigateToProductDetails(@NonNull Product product) {
+        // We want to ensure that BGL is stopped even after fresh launch from notification
+
+        Intent intent = new Intent(MainActivity.this, ProductDetailsActivity.class);
+        Bundle bundle = ProductUtils.toBundle(product);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 }
