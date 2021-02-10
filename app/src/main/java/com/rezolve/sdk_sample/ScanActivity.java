@@ -138,6 +138,7 @@ public class ScanActivity extends AppCompatActivity {
         });
         videoScanManager.clearCache();
         videoScanManager.startCamera();
+        videoScanManager.attachReader();
     }
 
     @Override
