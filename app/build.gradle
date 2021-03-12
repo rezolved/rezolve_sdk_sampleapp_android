@@ -49,6 +49,11 @@ android {
         }
     }
 
+    packagingOptions {
+        doNotStrip '*/mips/*.so'
+        pickFirst '**/*.so'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -69,6 +74,7 @@ dependencies {
     implementation "com.rezolve.sdk:ssp-google-geofence:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:resolver:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:scan-android:$rezolveSdkScanVersion"
+    implementation "com.rezolve.sdk:scan-android-x86:$rezolveSdkScanVersion"
 
     implementation "com.google.android.gms:play-services-location:17.0.0"
 
