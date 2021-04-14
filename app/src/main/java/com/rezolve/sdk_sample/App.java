@@ -161,8 +161,8 @@ public class App extends Application {
 
         NotificationProperties geofenceAlertNotificationProperties = new NotificationProperties(
                 ENGAGEMENTS_ALERTS_CHANNEL_ID,
-                R.drawable.ic_slider_head,
-                ContextCompat.getColor(this, R.color.colorAccent),
+                R.drawable.globalmall,
+                ContextCompat.getColor(this, R.color.red),
                 NotificationCompat.PRIORITY_HIGH,
                 Notification.DEFAULT_ALL,
                 new long[] {1000, 1000, 1000, 1000, 1000},
