@@ -47,7 +47,7 @@ public class DatePickerWithDateConditionsFragment extends Fragment implements Vi
     }
 
     interface DatePickerWithDateConditionsListener {
-        void onDateSelected(SspActAnswerDate answer);
+        void onDateSelected(PageBuildingBlock block, String answer);
         void onPickerClose();
     }
 
@@ -119,7 +119,7 @@ public class DatePickerWithDateConditionsFragment extends Fragment implements Vi
                 break;
             case R.id.custom_date_picker_done:
                 String result = String.format("%02d", datePicker.getDayOfMonth()).concat("/").concat(String.format("%02d", datePicker.getMonth() + 1)).concat("/").concat(String.valueOf(datePicker.getYear())).concat(DATE_HH_MM_SUFFIX);
-                listener.onDateSelected(((SspActQuestionDate)pageBuildingBlock.getSspActQuestion()).answer(result));
+                listener.onDateSelected(pageBuildingBlock, result);
                 break;
             default:
                 break;

@@ -2,13 +2,18 @@ package com.rezolve.sdk_sample.sspact;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -31,7 +36,7 @@ public class SspActBlockAdapter extends ListAdapter<BlockWrapper, SspActBlockAda
     private final int VIEW_TYPE_VIDEO = R.layout.item_ssp_block_video;
     private final int VIEW_TYPE_DATE_FIELD = R.layout.item_ssp_block_date_field;
 //    private final int VIEW_TYPE_SELECT = R.layout.item_ssp_block_select;
-//    private final int VIEW_TYPE_TEXT_INPUT = R.layout.item_ssp_block_text_input;
+    private final int VIEW_TYPE_TEXT_INPUT = R.layout.item_ssp_block_text_input;
 
     private LayoutInflater layoutInflater;
 
@@ -55,8 +60,8 @@ public class SspActBlockAdapter extends ListAdapter<BlockWrapper, SspActBlockAda
             case VIEW_TYPE_IMAGE: return new ImageViewHolder(layoutInflater.inflate(R.layout.item_ssp_block_image, parent, false));
             case VIEW_TYPE_VIDEO: return new VideoViewHolder(layoutInflater.inflate(R.layout.item_ssp_block_video, parent, false));
             case VIEW_TYPE_DATE_FIELD: return new DateFieldViewHolder(layoutInflater.inflate(R.layout.item_ssp_block_date_field, parent, false));
-//            case VIEW_TYPE_SELECT: return new SelectViewHolder(layoutInflater.inflate(R.layout.item_ssp_block_paragraph, parent, false));
-//            case VIEW_TYPE_TEXT_INPUT: return new TextInputViewHolder(layoutInflater.inflate(R.layout.item_ssp_block_paragraph, parent, false));
+//            case VIEW_TYPE_SELECT: return new SelectViewHolder(layoutInflater.inflate(R.layout.item_ssp_block_select, parent, false));
+            case VIEW_TYPE_TEXT_INPUT: return new TextInputViewHolder(layoutInflater.inflate(R.layout.item_ssp_block_text_input, parent, false));
             default: throw new IllegalArgumentException("Invalid viewtype: "+viewType);
         }
     }
@@ -76,7 +81,7 @@ public class SspActBlockAdapter extends ListAdapter<BlockWrapper, SspActBlockAda
             case VIDEO: return VIEW_TYPE_VIDEO;
             case DATE_FIELD: return VIEW_TYPE_DATE_FIELD;
 //            case SELECT: return VIEW_TYPE_SELECT;
-//            case TEXT_FIELD: return VIEW_TYPE_TEXT_INPUT;
+            case TEXT_FIELD: return VIEW_TYPE_TEXT_INPUT;
             default: throw new IllegalArgumentException("Invalid type: "+getItem(position).block.getType());
         }
     }
@@ -179,10 +184,51 @@ public class SspActBlockAdapter extends ListAdapter<BlockWrapper, SspActBlockAda
         void bind(BlockWrapper block, int position) {
             this.blockWrapper = block;
             this.position = position;
-            label.setText(block.block.getData().getText().concat((block.block.isRequired() ? label.getContext().getString(R.string.ssp_field_required_suffix) : "")));
-            label.setTextColor(ContextCompat.getColor(label.getContext(), block.block.isRequired() && TextUtils.isEmpty(blockWrapper.answerToDisplay) ? R.color.ssp_block_field_required : R.color.black));
+            setTextForLabel(block, label);
             answer.setText(TextUtils.isEmpty(blockWrapper.answerToDisplay) ? answer.getContext().getString(R.string.ssp_block_select) : blockWrapper.answerToDisplay);
         }
+    }
+
+    class TextInputViewHolder extends ViewHolder {
+        private final AppCompatTextView label;
+        private final AppCompatEditText inputField;
+
+        private BlockWrapper blockWrapper;
+
+        public TextInputViewHolder(@NonNull View itemView) {
+            super(itemView);
+            label = itemView.findViewById(R.id.ssp_block_text_input_label);
+            inputField = itemView.findViewById(R.id.ssp_block_text_input_edittext);
+            inputField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    blockWrapper.answerToDisplay = charSequence.toString();
+                    setColorForLabel(blockWrapper, label);
+                    eventListener.onTextInputBlockChange(blockWrapper, charSequence.toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) { }
+            });
+        }
+
+        @Override
+        void bind(BlockWrapper block, int position) {
+            this.blockWrapper = block;
+            setTextForLabel(block, label);
+        }
+    }
+
+    private void setTextForLabel(BlockWrapper block, TextView label) {
+        label.setText(block.block.getData().getText().concat((block.block.isRequired() ? label.getContext().getString(R.string.ssp_field_required_suffix) : "")));
+        setColorForLabel(block, label);
+    }
+
+    private void setColorForLabel(BlockWrapper block, TextView label) {
+        label.setTextColor(ContextCompat.getColor(label.getContext(), block.block.isRequired() && TextUtils.isEmpty(block.answerToDisplay) ? R.color.ssp_block_field_required : R.color.black));
     }
 
     public void setEventListener(SspActBlockEventListener listener) {

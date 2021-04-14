@@ -1,6 +1,8 @@
 package com.rezolve.sdk_sample.sspact;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rezolve.sdk.ssp.model.PageBuildingBlock;
 import com.rezolve.sdk.ssp.model.SspAct;
+import com.rezolve.sdk.ssp.model.SspActAnswer;
 import com.rezolve.sdk.ssp.model.SspActAnswerDate;
 import com.rezolve.sdk.ssp.model.form.SelectionOption;
 import com.rezolve.sdk_sample.R;
@@ -61,7 +64,7 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
 
     @Override
     public void onTextInputBlockChange(BlockWrapper blockWrapper, String text) {
-
+        updateAnswerForBlock(blockWrapper.block, text, false);
     }
 
     private void setDatePickerFragment(BlockWrapper blockWrapper) {
@@ -69,17 +72,23 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
     }
 
     @Override
-    public void onDateSelected(SspActAnswerDate answer) {
+    public void onDateSelected(PageBuildingBlock block, String answer) {
+        updateAnswerForBlock(block, answer, true);
+        onPickerClose();
+    }
+
+    private void updateAnswerForBlock(PageBuildingBlock block, String answer, boolean updateAdapter) {
         for (int i = 0; i < blocks.size(); i++) {
             BlockWrapper blockWrapper = blocks.get(i);
-            if (answer.getQuestionId().equals(blockWrapper.block.getId())) {
-                blockWrapper.answerToDisplay = answer.getAnswer();
+            if (block.getId().equals(blockWrapper.block.getId())) {
+                blockWrapper.answerToDisplay = answer;
                 blocks.set(i, blockWrapper);
-                adapter.notifyItemChanged(i);
+                if (updateAdapter) {
+                    adapter.notifyItemChanged(i);
+                }
                 break;
             }
         }
-        onPickerClose();
     }
 
     @Override
