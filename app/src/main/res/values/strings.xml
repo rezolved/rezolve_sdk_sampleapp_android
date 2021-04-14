@@ -33,5 +33,10 @@
     <!-- Background Notifications -->
     <string name="notification_channel_name">Rezolve Sample Notification Channel</string>
     <string name="notification_channel_description">Information about Rezolve features</string>
-    
+
+
+    <string name="ssp_field_required_suffix">&#160;*</string>
+    <string name="ssp_block_select">Select</string>
+    <string name="done">DONE!</string>
+    <string name="ssp_act_event_inactive">Event is no longer active.</string>
 </resources>

@@ -22,4 +22,9 @@
     <dimen name="ssp_block_paragraph_padding_small">3dp</dimen>
     <dimen name="ssp_block_standard_text_size">14sp</dimen>
     <dimen name="ssp_block_header_text_size">18sp</dimen>
+
+    <dimen name="fragment_dialog_imagebutton_size">20dp</dimen>
+    <dimen name="fragment_dialog_padding">6dp</dimen>
+    <dimen name="fragment_dialog_padding_top">12dp</dimen>
+    <dimen name="payment_card_title_margin_bottom">8dp</dimen>
 </resources>
