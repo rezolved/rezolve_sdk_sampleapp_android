@@ -29,7 +29,6 @@ public class SspTextBlock extends AppCompatTextView {
     }
 
     public void setBlock(PageBuildingBlock block) {
-        Log.d("dupa", "setBlock: "+block.entityToJson());
         this.setText(block.getData().getText());
         this.setTextColor(Color.parseColor(block.getStyle().getColor()));
         this.setBackgroundColor(Color.parseColor(block.getStyle().getBackgroundColor()));

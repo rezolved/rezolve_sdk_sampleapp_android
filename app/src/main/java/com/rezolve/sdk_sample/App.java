@@ -83,6 +83,8 @@ public class App extends Application {
     private static final String GEOFENCE_FOREGROUND_CHANNEL_ID = "1";
     private static final String ENGAGEMENTS_ALERTS_CHANNEL_ID = "2";
 
+    private SspActManager sspActManager;
+
     private RezolveSDK.AuthRequestProvider authRequestProvider = new RezolveSDK.AuthRequestProvider() {
 
         private final
@@ -138,7 +140,7 @@ public class App extends Application {
 
         SspHttpClient sspHttpClient = httpClientFactory.createHttpClient(BuildConfig.SSP_ENDPOINT);
 
-        SspActManager sspActManager = new SspActManager(sspHttpClient);
+        sspActManager = new SspActManager(sspHttpClient);
 
         new ResolverConfiguration.Builder(rezolveSDK)
                 .enableBarcode1dResolver(true)
@@ -245,4 +247,7 @@ public class App extends Application {
         startActivity(intent);
     }
 
+    public SspActManager getSspActManager() {
+        return sspActManager;
+    }
 }

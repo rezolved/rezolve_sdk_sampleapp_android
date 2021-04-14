@@ -9,6 +9,7 @@
     <color name="gray">#606060</color>
     <color name="blue">#58acd8</color>
     <color name="light_grey">#eeeeee</color>
+    <color name="almost_black">#8a000000</color>
 
     <color name="ssp_block_light_grey">#CCCCCC</color>
     <color name="ssp_block_pale_grey">#F6F6F6</color>

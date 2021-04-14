@@ -110,6 +110,7 @@ dependencies {
 
     // Loading Animations
     implementation "com.github.ybq:Android-SpinKit:$loadingAnimationVersion"
+    implementation "net.cachapa.expandablelayout:expandablelayout:2.9.2"
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"

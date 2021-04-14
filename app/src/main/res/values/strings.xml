@@ -39,4 +39,7 @@
     <string name="ssp_block_select">Select</string>
     <string name="done">DONE!</string>
     <string name="ssp_act_event_inactive">Event is no longer active.</string>
+    <string name="act_now">Act Now</string>
+    <string name="failed_to_submit">Act submission failed.</string>
+    <string name="submission_success">Success!</string>
 </resources>
