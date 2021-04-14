@@ -15,4 +15,11 @@
     <dimen name="text_size_large">30sp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="form_builder_header_size">18sp</dimen>
+    <dimen name="form_builder_paragraph_size">14sp</dimen>
+    <dimen name="ssp_block_paragraph_padding">6dp</dimen>
+    <dimen name="ssp_block_paragraph_padding_small">3dp</dimen>
+    <dimen name="ssp_block_standard_text_size">14sp</dimen>
+    <dimen name="ssp_block_header_text_size">18sp</dimen>
 </resources>

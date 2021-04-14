@@ -38,6 +38,7 @@ import com.rezolve.sdk.ssp.resolver.result.ProductResult;
 import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk.ssp.resolver.result.SspCategoryResult;
 import com.rezolve.sdk.ssp.resolver.result.SspProductResult;
+import com.rezolve.sdk_sample.sspact.SspActActivity;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.ProductUtils;
 import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
@@ -83,7 +84,10 @@ public class ScanActivity extends AppCompatActivity {
                 CategoryResult categoryResult = (CategoryResult) result;
                 onCategoryResult(categoryResult.getCategory(), categoryResult.getMerchantId());
             } else if(result instanceof SspActResult) {
-
+                SspActResult act = (SspActResult) result;
+                if (act.sspAct.getPageBuildingBlocks() != null && !act.sspAct.getPageBuildingBlocks().isEmpty()) {
+                    onSspActResult(act);
+                }
             } else if(result instanceof SspProductResult) {
 
             } else if(result instanceof SspCategoryResult) {
@@ -164,6 +168,10 @@ public class ScanActivity extends AppCompatActivity {
         navigateToProductListView(merchantId, category);
     }
 
+    private void onSspActResult(SspActResult act) {
+        navigateToSspActView(act);
+    }
+
     public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg) {
         hideLoadingIndicator();
         DialogUtils.showError(this, rezolveErrorType.name() + "\n" + errorMsg);
@@ -188,6 +196,13 @@ public class ScanActivity extends AppCompatActivity {
     private void navigateToProductDetailsView(Product product) {
         Intent intent = new Intent(ScanActivity.this, ProductDetailsActivity.class);
         Bundle bundle = ProductUtils.toBundle(product);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    private void navigateToSspActView(SspActResult act) {
+        Intent intent = new Intent(ScanActivity.this, SspActActivity.class);
+        Bundle bundle = ProductUtils.toBundle(act.getSspAct());
         intent.putExtras(bundle);
         startActivity(intent);
     }

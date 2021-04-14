@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,8 +24,15 @@ import com.rezolve.sdk.api.HttpClient;
 import com.rezolve.sdk.api.authentication.auth0.AuthParams;
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
 import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
+import com.rezolve.sdk.core.interfaces.PaymentOptionInterface;
+import com.rezolve.sdk.core.interfaces.TriggerInterface;
 import com.rezolve.sdk.location.google.LocationProviderFused;
+import com.rezolve.sdk.model.cart.CheckoutProduct;
 import com.rezolve.sdk.model.network.RezolveError;
+import com.rezolve.sdk.model.shop.Category;
+import com.rezolve.sdk.model.shop.PaymentOption;
+import com.rezolve.sdk.model.shop.Product;
+import com.rezolve.sdk.model.shop.ScannedData;
 import com.rezolve.sdk.ssp.helper.GeozoneNotificationCallbackHelper;
 import com.rezolve.sdk.ssp.helper.NotificationChannelProperties;
 import com.rezolve.sdk.ssp.helper.NotificationHelper;
@@ -32,6 +40,7 @@ import com.rezolve.sdk.ssp.helper.NotificationHelperImpl;
 import com.rezolve.sdk.ssp.helper.NotificationProperties;
 import com.rezolve.sdk.ssp.interfaces.GeofenceEngagementsListener;
 import com.rezolve.sdk.ssp.interfaces.GeozoneNotificationCallback;
+import com.rezolve.sdk.ssp.interfaces.SspFromEngagementInterface;
 import com.rezolve.sdk.ssp.managers.GeofenceManager;
 import com.rezolve.sdk.ssp.managers.SspActManager;
 import com.rezolve.sdk.ssp.model.EngagementsUpdatePolicy;
@@ -41,9 +50,12 @@ import com.rezolve.sdk.ssp.model.SspCategory;
 import com.rezolve.sdk.ssp.model.SspObject;
 import com.rezolve.sdk.ssp.model.SspProduct;
 import com.rezolve.sdk.ssp.resolver.ResolverConfiguration;
+import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.services.AuthenticationService;
+import com.rezolve.sdk_sample.sspact.SspActActivity;
+import com.rezolve.sdk_sample.utils.ProductUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -182,7 +194,10 @@ public class App extends Application {
 
         final GeofenceManager geofenceManager = new GeofenceManager.Builder()
                 .sspActManager(sspActManager)
-                .engagementsUpdatePolicy(new EngagementsUpdatePolicy.Builder().build())
+                .engagementsUpdatePolicy(new EngagementsUpdatePolicy.Builder()
+                        .silencePeriodMS(TimeUnit.MINUTES.toMillis(5))
+                        .maxCacheTimeMS(TimeUnit.MINUTES.toMillis(5))
+                        .build())
                 .notificationChannelPropertiesList(geofenceLocationChannels)
                 .engagementAlertNotification(geofenceAlertNotificationProperties)
                 .context(this)
@@ -210,11 +225,22 @@ public class App extends Application {
             @Override
             public boolean onSelected(@NonNull SspObject sspObject) {
                 Log.d(TAG, "onSelected: " + sspObject);
+                if (sspObject instanceof SspAct) {
+                    SspAct act = (SspAct)sspObject;
+                    if (act.getPageBuildingBlocks() != null && !act.getPageBuildingBlocks().isEmpty()) {
+                        navigateToSspActView(act);
+                    }
+                }
                 return false;
             }
         });
     }
 
-
+    private void navigateToSspActView(SspAct act) {
+        Intent intent = new Intent(this, SspActActivity.class);
+        Bundle bundle = ProductUtils.toBundle(act);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 
 }
