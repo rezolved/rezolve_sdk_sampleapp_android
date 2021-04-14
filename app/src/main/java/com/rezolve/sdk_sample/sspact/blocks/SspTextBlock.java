@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 
 import androidx.appcompat.widget.AppCompatTextView;
@@ -14,20 +15,21 @@ import com.rezolve.sdk.ssp.model.form.FontWeight;
 import com.rezolve.sdk.ssp.model.form.Style;
 import com.rezolve.sdk.ssp.model.form.TextAlign;
 
-public class Header extends AppCompatTextView {
-    public Header(Context context) {
+public class SspTextBlock extends AppCompatTextView {
+    public SspTextBlock(Context context) {
         super(context);
     }
 
-    public Header(Context context, AttributeSet attrs) {
+    public SspTextBlock(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public Header(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SspTextBlock(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     public void setBlock(PageBuildingBlock block) {
+        Log.d("dupa", "setBlock: "+block.entityToJson());
         this.setText(block.getData().getText());
         this.setTextColor(Color.parseColor(block.getStyle().getColor()));
         this.setBackgroundColor(Color.parseColor(block.getStyle().getBackgroundColor()));

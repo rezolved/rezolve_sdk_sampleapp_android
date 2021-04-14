@@ -1,12 +1,17 @@
 package com.rezolve.sdk_sample.sspact;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.rezolve.sdk.ssp.model.PageBuildingBlock;
 
 public class BlockWrapper {
-    public PageBuildingBlock block;
-    public String answerToDisplay;
+    @NonNull public PageBuildingBlock block;
+    @Nullable public String answerToDisplay;
+
+    public BlockWrapper(PageBuildingBlock block) {
+        this.block = block;
+    }
 
     @Override
     public boolean equals(@Nullable Object obj) {

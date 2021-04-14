@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.ACTION_GEOFENCE_NOTIFICATION_DISPLAYED;
 import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.ACTION_GEOFENCE_NOTIFICATION_SELECTED;
 import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_ACT_ID;
@@ -195,8 +196,8 @@ public class App extends Application {
         final GeofenceManager geofenceManager = new GeofenceManager.Builder()
                 .sspActManager(sspActManager)
                 .engagementsUpdatePolicy(new EngagementsUpdatePolicy.Builder()
-                        .silencePeriodMS(TimeUnit.MINUTES.toMillis(5))
-                        .maxCacheTimeMS(TimeUnit.MINUTES.toMillis(5))
+                        .silencePeriodMS(TimeUnit.MINUTES.toMillis(1))
+                        .maxCacheTimeMS(TimeUnit.MINUTES.toMillis(1))
                         .build())
                 .notificationChannelPropertiesList(geofenceLocationChannels)
                 .engagementAlertNotification(geofenceAlertNotificationProperties)
@@ -240,6 +241,7 @@ public class App extends Application {
         Intent intent = new Intent(this, SspActActivity.class);
         Bundle bundle = ProductUtils.toBundle(act);
         intent.putExtras(bundle);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

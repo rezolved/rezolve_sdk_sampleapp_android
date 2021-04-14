@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.rezolve.sdk_sample.sspact.blocks.SspTextBlock xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ssp_act_paragraph"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="@dimen/ssp_block_standard_text_size"
+    android:padding="@dimen/ssp_block_paragraph_padding"/>

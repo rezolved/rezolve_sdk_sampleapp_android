@@ -5,14 +5,18 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.rezolve.sdk.ssp.model.PageBuildingBlock;
 import com.rezolve.sdk.ssp.model.SspAct;
 import com.rezolve.sdk_sample.R;
-import com.rezolve.sdk_sample.utils.CheckoutUtils;
 import com.rezolve.sdk_sample.utils.ProductUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SspActActivity extends AppCompatActivity {
 
     private SspAct sspAct;
+    private List<BlockWrapper> blocks;
 
     private RecyclerView recyclerView;
 
@@ -29,6 +33,12 @@ public class SspActActivity extends AppCompatActivity {
     }
 
     private void displayActDetails() {
-
+        blocks = new ArrayList<>();
+        for (PageBuildingBlock block : sspAct.getPageBuildingBlocks()) {
+            blocks.add(new BlockWrapper(block));
+        }
+        SspActBlockAdapter adapter = new SspActBlockAdapter();
+        adapter.submitList(blocks);
+        recyclerView.setAdapter(adapter);
     }
 }
