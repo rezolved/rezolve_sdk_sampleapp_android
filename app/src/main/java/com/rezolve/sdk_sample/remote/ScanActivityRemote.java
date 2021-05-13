@@ -1,15 +1,9 @@
-package com.rezolve.sdk_sample;
+package com.rezolve.sdk_sample.remote;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
-import android.media.Image;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.util.Size;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -17,30 +11,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.ImageProxy;
-import androidx.camera.core.Preview;
-import androidx.camera.lifecycle.ProcessCameraProvider;
-import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.ssp.interfaces.SspFromCpmInterface;
 import com.rezolve.sdk.ssp.model.SspObject;
+import com.rezolve.sdk_sample.R;
 import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
-import com.rezolve.sdk_sample.remote.AudioRecorderHelper;
-import com.rezolve.sdk_sample.remote.ImageCaptureHelper;
-import com.rezolve.sdk_sample.remote.ResultInterface;
-
-import java.nio.ByteBuffer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ScanActivityRemote extends AppCompatActivity implements ResultInterface {
 

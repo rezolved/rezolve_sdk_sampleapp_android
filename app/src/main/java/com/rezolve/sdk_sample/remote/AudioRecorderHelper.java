@@ -6,15 +6,6 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.rezolve.sdk.model.network.RezolveError;
-import com.rezolve.sdk.ssp.interfaces.SspFromCpmInterface;
-import com.rezolve.sdk.ssp.model.SspObject;
-import com.rezolve.sdk_sample.ScanActivityRemote;
-import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -16,6 +16,7 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.model.AuthenticationResponse;
 import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
+import com.rezolve.sdk_sample.remote.ScanActivityRemote;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
