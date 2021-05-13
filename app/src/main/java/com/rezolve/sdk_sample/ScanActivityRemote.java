@@ -111,7 +111,7 @@ public class ScanActivityRemote extends AppCompatActivity implements ResultInter
 
             @Override
             public void onError(@NonNull RezolveError error) {
-                Log.d(TAG, "onError: "+error.getMessage());
+                Log.d(TAG, "onError: "+error.getMessage()+" / "+error.getErrorMessage()+" / "+error.getErrorType());
                 showProgressBar(false);
             }
         });
@@ -127,8 +127,19 @@ public class ScanActivityRemote extends AppCompatActivity implements ResultInter
 
             @Override
             public void onError(@NonNull RezolveError error) {
-                Log.d(TAG, "onError: "+error.getMessage());
-                imageCaptureHelper.captureNextFrame();
+                Log.d(TAG, "onError: "+error.getMessage()+" / "+error.getErrorMessage()+" / "+error.getErrorType());
+                if (error.getErrorType() == RezolveError.RezolveErrorType.NOT_FOUND) {
+                    if (error.getErrorMessage() == RezolveError.RezolveErrorMessage.WATERMARK_NOT_FOUND) {
+                        imageCaptureHelper.captureNextFrame();
+                        return;
+                    }
+                }
+
+                if (error.getIoException() != null) {
+                    error.getIoException().printStackTrace();
+                }
+
+                showProgressBar(false);
             }
         });
     }
