@@ -19,17 +19,15 @@ import androidx.core.content.ContextCompat;
 
 import com.rezolve.sdk.HttpClientConfig;
 import com.rezolve.sdk.RezolveSDK;
-import com.rezolve.sdk.api.HttpClient;
 import com.rezolve.sdk.api.authentication.auth0.AuthParams;
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
 import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
 import com.rezolve.sdk.location.google.LocationProviderFused;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.ssp.helper.NotificationChannelProperties;
-import com.rezolve.sdk.ssp.helper.NotificationHelper;
-import com.rezolve.sdk.ssp.helper.NotificationHelperImpl;
 import com.rezolve.sdk.ssp.helper.NotificationProperties;
 import com.rezolve.sdk.ssp.managers.GeofenceManager;
+import com.rezolve.sdk.ssp.managers.RemoteScanResolver;
 import com.rezolve.sdk.ssp.managers.SspActManager;
 import com.rezolve.sdk.ssp.model.EngagementsUpdatePolicy;
 import com.rezolve.sdk.ssp.model.SspAct;
@@ -38,6 +36,7 @@ import com.rezolve.sdk.ssp.model.SspObject;
 import com.rezolve.sdk.ssp.model.SspProduct;
 import com.rezolve.sdk.ssp.resolver.ResolverConfiguration;
 import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
+import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 
@@ -184,12 +183,12 @@ public class App extends Application {
                 .context(this)
                 .build();
 
-        NotificationHelper notificationHelper = new NotificationHelperImpl(this);
-
         final LocationProviderFused locationProviderFused = LocationProviderFused.create(this);
         registerGeofenceListener();
         locationProviderFused.start();
         geofenceManager.startGeofenceTracking();
+
+        RemoteScanResolverProvider.getInstance().init(new RemoteScanResolver(sspActManager, sspHttpClient));
     }
 
     private void registerGeofenceListener() {
