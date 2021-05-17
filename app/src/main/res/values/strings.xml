@@ -33,5 +33,7 @@
     <!-- Background Notifications -->
     <string name="notification_channel_name">Rezolve Sample Notification Channel</string>
     <string name="notification_channel_description">Information about Rezolve features</string>
-    
+    <string name="local_scan_activity">"Local Scan "</string>
+    <string name="remote_scan_activity">Remote scan</string>
+
 </resources>
