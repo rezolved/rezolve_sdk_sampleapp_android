@@ -40,10 +40,10 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loginUser();
-        prepareScanButtons();
+        prepareNavigationButtons();
     }
 
-    private void prepareScanButtons() {
+    private void prepareNavigationButtons() {
         localScanBtn = findViewById(R.id.local_scan_activity_btn);
         remoteScanBtn = findViewById(R.id.remote_scan_activity_btn);
         localScanBtn.setOnClickListener(view -> navigateToScanView());
