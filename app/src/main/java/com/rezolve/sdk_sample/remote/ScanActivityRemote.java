@@ -21,7 +21,7 @@ import com.rezolve.sdk.ssp.model.SspObject;
 import com.rezolve.sdk_sample.R;
 import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
 
-public class ScanActivityRemote extends AppCompatActivity implements ResultInterface {
+public class ScanActivityRemote extends AppCompatActivity {
 
     private static final String TAG = ScanActivityRemote.class.getSimpleName();
 
@@ -34,24 +34,78 @@ public class ScanActivityRemote extends AppCompatActivity implements ResultInter
     private AudioRecorderHelper audioRecorderHelper;
     private ImageCaptureHelper imageCaptureHelper;
 
+    private final ResultInterface resultInterface = new ResultInterface() {
+
+        @Override
+        public void showProgressBar(boolean value) {
+            runOnUiThread(() -> progressBar.setVisibility(value ? View.VISIBLE : View.GONE));
+        }
+
+        @Override
+        public void onAudioResult(byte[] bytes) {
+            RemoteScanResolverProvider.getInstance().getRemoteScanResolver().resolveAudio(bytes, DESIRED_IMAGE_WIDTH, new SspFromCpmInterface() {
+                @Override
+                public void onResponseFromCpmSuccess(SspObject sspObject) {
+                    onResult(sspObject);
+                }
+
+                @Override
+                public void onError(@NonNull RezolveError error) {
+                    Log.d(TAG, "onError: "+error.getMessage()+" / "+error.getErrorMessage()+" / "+error.getErrorType());
+                    showProgressBar(false);
+                }
+            });
+        }
+
+        @Override
+        public void onImageResult(byte[] bytes) {
+            RemoteScanResolverProvider.getInstance().getRemoteScanResolver().resolveImage(bytes, DESIRED_IMAGE_WIDTH, new SspFromCpmInterface() {
+                @Override
+                public void onResponseFromCpmSuccess(SspObject sspObject) {
+                    onResult(sspObject);
+                }
+
+                @Override
+                public void onError(@NonNull RezolveError error) {
+                    Log.d(TAG, "onError: "+error.getMessage()+" / "+error.getErrorMessage()+" / "+error.getErrorType());
+                    if (error.getErrorType() == RezolveError.RezolveErrorType.NOT_FOUND) {
+                        if (error.getErrorMessage() == RezolveError.RezolveErrorMessage.WATERMARK_NOT_FOUND) {
+                            imageCaptureHelper.captureNextFrame();
+                            return;
+                        }
+                    }
+
+                    if (error.getIoException() != null) {
+                        error.getIoException().printStackTrace();
+                    }
+
+                    showProgressBar(false);
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_remote);
-        progressBar = findViewById(R.id.progress_bar);
 
-        Button cameraCaptureButton = findViewById(R.id.camera_capture_button);
-        Button audioCaptureButton = findViewById(R.id.audio_capture_button);
+        prepareViews();
 
-        audioRecorderHelper = new AudioRecorderHelper(this);
-        imageCaptureHelper = new ImageCaptureHelper(this, this);
+        audioRecorderHelper = new AudioRecorderHelper(resultInterface);
+        imageCaptureHelper = new ImageCaptureHelper(this, resultInterface);
 
         if (allPermissionsGranted()) {
             imageCaptureHelper.startCamera();
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
+    }
 
+    private void prepareViews() {
+        progressBar = findViewById(R.id.progress_bar);
+        Button cameraCaptureButton = findViewById(R.id.camera_capture_button);
+        Button audioCaptureButton = findViewById(R.id.audio_capture_button);
         cameraCaptureButton.setOnClickListener(v -> {
             imageCaptureHelper.scanVideo();
         });
@@ -75,57 +129,9 @@ public class ScanActivityRemote extends AppCompatActivity implements ResultInter
         return true;
     }
 
-    @Override
-    public void showProgressBar(boolean value) {
-        runOnUiThread(() -> progressBar.setVisibility(value ? View.VISIBLE : View.GONE));
-    }
-
-    @Override
-    public void onAudioResult(byte[] bytes) {
-        RemoteScanResolverProvider.getInstance().getRemoteScanResolver().resolveAudio(bytes, DESIRED_IMAGE_WIDTH, new SspFromCpmInterface() {
-            @Override
-            public void onResponseFromCpmSuccess(SspObject sspObject) {
-                onResult(sspObject);
-            }
-
-            @Override
-            public void onError(@NonNull RezolveError error) {
-                Log.d(TAG, "onError: "+error.getMessage()+" / "+error.getErrorMessage()+" / "+error.getErrorType());
-                showProgressBar(false);
-            }
-        });
-    }
-
-    @Override
-    public void onImageResult(byte[] bytes) {
-        RemoteScanResolverProvider.getInstance().getRemoteScanResolver().resolveImage(bytes, DESIRED_IMAGE_WIDTH, new SspFromCpmInterface() {
-            @Override
-            public void onResponseFromCpmSuccess(SspObject sspObject) {
-                onResult(sspObject);
-            }
-
-            @Override
-            public void onError(@NonNull RezolveError error) {
-                Log.d(TAG, "onError: "+error.getMessage()+" / "+error.getErrorMessage()+" / "+error.getErrorType());
-                if (error.getErrorType() == RezolveError.RezolveErrorType.NOT_FOUND) {
-                    if (error.getErrorMessage() == RezolveError.RezolveErrorMessage.WATERMARK_NOT_FOUND) {
-                        imageCaptureHelper.captureNextFrame();
-                        return;
-                    }
-                }
-
-                if (error.getIoException() != null) {
-                    error.getIoException().printStackTrace();
-                }
-
-                showProgressBar(false);
-            }
-        });
-    }
-
     public void onResult(SspObject sspObject) {
         Log.d(TAG, "onResponseFromCpmSuccess:IMAGE: "+sspObject.entityToJson());
         Toast.makeText(this, "Engagement successfully resolved: "+sspObject.getEngagementName(), Toast.LENGTH_LONG).show();
-        showProgressBar(false);
+        resultInterface.showProgressBar(false);
     }
 }
