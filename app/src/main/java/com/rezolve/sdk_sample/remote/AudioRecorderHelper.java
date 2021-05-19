@@ -1,5 +1,6 @@
 package com.rezolve.sdk_sample.remote;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -22,8 +23,8 @@ public class AudioRecorderHelper {
 
     private final ResultInterface callback;
 
-    final File rawFile = new File(Environment.getExternalStorageDirectory(), "raw_recording");
-    final File wavFile = new File(Environment.getExternalStorageDirectory(), "recording.wav");
+    final File rawFile;
+    final File wavFile;
 
     private static final int AUDIO_RECORDING_DURATION = (int) TimeUnit.SECONDS.toMillis(5);
     private static final int RECORDER_BPP = 16;
@@ -37,7 +38,9 @@ public class AudioRecorderHelper {
     private AudioRecord recorder;
     private Thread recordingThread;
 
-    public AudioRecorderHelper(ResultInterface callback) {
+    public AudioRecorderHelper(Context context, ResultInterface callback) {
+        this.rawFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "raw_recording");
+        this.wavFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "recording.wav");
         this.callback = callback;
     }
 

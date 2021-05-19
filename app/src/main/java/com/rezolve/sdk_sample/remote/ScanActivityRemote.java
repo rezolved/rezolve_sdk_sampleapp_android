@@ -92,7 +92,7 @@ public class ScanActivityRemote extends AppCompatActivity {
 
         prepareViews();
 
-        audioRecorderHelper = new AudioRecorderHelper(resultInterface);
+        audioRecorderHelper = new AudioRecorderHelper(this, resultInterface);
         imageCaptureHelper = new ImageCaptureHelper(this, resultInterface);
 
         if (allPermissionsGranted()) {
