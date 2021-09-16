@@ -49,6 +49,11 @@ android {
         }
     }
 
+    packagingOptions {
+        doNotStrip '*/mips/*.so'
+        pickFirst '**/*.so'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -73,6 +78,7 @@ dependencies {
     implementation "com.rezolve.sdk:ssp-google-geofence:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:resolver:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:scan-android:$rezolveSdkScanVersion"
+//    implementation "com.rezolve.sdk:scan-android-x86:$rezolveSdkScanVersion"
 
     implementation "com.google.android.gms:play-services-location:18.0.0"
 
@@ -108,6 +114,7 @@ dependencies {
 
     // Loading Animations
     implementation "com.github.ybq:Android-SpinKit:$loadingAnimationVersion"
+    implementation "net.cachapa.expandablelayout:expandablelayout:2.9.2"
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"

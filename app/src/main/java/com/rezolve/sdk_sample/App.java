@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,23 +23,38 @@ import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.api.authentication.auth0.AuthParams;
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
 import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
+import com.rezolve.sdk.core.interfaces.PaymentOptionInterface;
+import com.rezolve.sdk.core.interfaces.TriggerInterface;
 import com.rezolve.sdk.location.google.LocationProviderFused;
+import com.rezolve.sdk.model.cart.CheckoutProduct;
 import com.rezolve.sdk.model.network.RezolveError;
+import com.rezolve.sdk.model.shop.Category;
+import com.rezolve.sdk.model.shop.PaymentOption;
+import com.rezolve.sdk.model.shop.Product;
+import com.rezolve.sdk.model.shop.ScannedData;
+import com.rezolve.sdk.ssp.helper.GeozoneNotificationCallbackHelper;
 import com.rezolve.sdk.ssp.helper.NotificationChannelProperties;
 import com.rezolve.sdk.ssp.helper.NotificationProperties;
+import com.rezolve.sdk.ssp.interfaces.GeofenceEngagementsListener;
+import com.rezolve.sdk.ssp.interfaces.GeozoneNotificationCallback;
+import com.rezolve.sdk.ssp.interfaces.SspFromEngagementInterface;
 import com.rezolve.sdk.ssp.managers.GeofenceManager;
 import com.rezolve.sdk.ssp.managers.RemoteScanResolver;
 import com.rezolve.sdk.ssp.managers.SspActManager;
 import com.rezolve.sdk.ssp.model.EngagementsUpdatePolicy;
+import com.rezolve.sdk.ssp.model.GeolocationTriggeredEngagement;
 import com.rezolve.sdk.ssp.model.SspAct;
 import com.rezolve.sdk.ssp.model.SspCategory;
 import com.rezolve.sdk.ssp.model.SspObject;
 import com.rezolve.sdk.ssp.model.SspProduct;
 import com.rezolve.sdk.ssp.resolver.ResolverConfiguration;
+import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.services.AuthenticationService;
+import com.rezolve.sdk_sample.sspact.SspActActivity;
+import com.rezolve.sdk_sample.utils.ProductUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.ACTION_GEOFENCE_NOTIFICATION_DISPLAYED;
 import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.ACTION_GEOFENCE_NOTIFICATION_SELECTED;
 import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_ACT_ID;
@@ -64,6 +81,8 @@ public class App extends Application {
 
     private static final String GEOFENCE_FOREGROUND_CHANNEL_ID = "1";
     private static final String ENGAGEMENTS_ALERTS_CHANNEL_ID = "2";
+
+    private SspActManager sspActManager;
 
     private RezolveSDK.AuthRequestProvider authRequestProvider = new RezolveSDK.AuthRequestProvider() {
 
@@ -120,7 +139,7 @@ public class App extends Application {
 
         SspHttpClient sspHttpClient = httpClientFactory.createHttpClient(BuildConfig.SSP_ENDPOINT);
 
-        SspActManager sspActManager = new SspActManager(sspHttpClient);
+        sspActManager = new SspActManager(sspHttpClient);
 
         new ResolverConfiguration.Builder(rezolveSDK)
                 .enableBarcode1dResolver(true)
@@ -142,7 +161,7 @@ public class App extends Application {
         NotificationProperties geofenceAlertNotificationProperties = new NotificationProperties(
                 ENGAGEMENTS_ALERTS_CHANNEL_ID,
                 R.drawable.ic_slider_head,
-                ContextCompat.getColor(this, R.color.colorAccent),
+                ContextCompat.getColor(this, R.color.red),
                 NotificationCompat.PRIORITY_HIGH,
                 Notification.DEFAULT_ALL,
                 new long[] {1000, 1000, 1000, 1000, 1000},
@@ -177,83 +196,57 @@ public class App extends Application {
 
         final GeofenceManager geofenceManager = new GeofenceManager.Builder()
                 .sspActManager(sspActManager)
-                .engagementsUpdatePolicy(new EngagementsUpdatePolicy.Builder().build())
+                .engagementsUpdatePolicy(new EngagementsUpdatePolicy.Builder()
+                        .silencePeriodMS(TimeUnit.MINUTES.toMillis(5))
+                        .maxCacheTimeMS(TimeUnit.MINUTES.toMillis(5))
+                        .build())
                 .notificationChannelPropertiesList(geofenceLocationChannels)
                 .engagementAlertNotification(geofenceAlertNotificationProperties)
                 .context(this)
                 .build();
 
         final LocationProviderFused locationProviderFused = LocationProviderFused.create(this);
-        registerGeofenceListener();
         locationProviderFused.start();
         geofenceManager.startGeofenceTracking();
+
+        geofenceManager.addEngagementListener(new GeofenceEngagementsListener() {
+            @Override
+            public void onGeolocationTriggeredEngagementUpdate(List<GeolocationTriggeredEngagement> list) {
+                Log.d(TAG, "onGeolocationTriggeredEngagementUpdate: " + list);
+            }
+        });
+
+        GeozoneNotificationCallbackHelper.getInstance().addCallback(new GeozoneNotificationCallback() {
+            @Override
+            public void onDisplayed(@NonNull SspObject sspObject, @NonNull GeolocationTriggeredEngagement engagement) {
+                Log.d(TAG, "onDisplayed: " + sspObject + ", " + engagement);
+            }
+
+            @Override
+            public boolean onSelected(@NonNull SspObject sspObject) {
+                Log.d(TAG, "onSelected: " + sspObject);
+                if (sspObject instanceof SspAct) {
+                    SspAct act = (SspAct)sspObject;
+                    if (act.getPageBuildingBlocks() != null && !act.getPageBuildingBlocks().isEmpty()) {
+                        navigateToSspActView(act);
+                    }
+                }
+                return false;
+            }
+        });
 
         RemoteScanResolverProvider.getInstance().init(new RemoteScanResolver(sspActManager, sspHttpClient));
     }
 
-    private void registerGeofenceListener() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_GEOFENCE_NOTIFICATION_DISPLAYED);
-        intentFilter.addAction(ACTION_GEOFENCE_NOTIFICATION_SELECTED);
-        registerReceiver(geofenceBroadcastReceiver, intentFilter);
+    private void navigateToSspActView(SspAct act) {
+        Intent intent = new Intent(this, SspActActivity.class);
+        Bundle bundle = ProductUtils.toBundle(act);
+        intent.putExtras(bundle);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
-    BroadcastReceiver geofenceBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            final String action = intent.getAction();
-            final String sender = intent.getStringExtra(KEY_SENDER_PACKAGE_NAME);
-            if(!context.getPackageName().equalsIgnoreCase(sender)) {
-                Log.d(TAG, "Ignoring intent from: " + sender +", expected: " + context.getPackageName());
-                return;
-            }
-
-            if(action != null) {
-                switch (action) {
-                    case ACTION_GEOFENCE_NOTIFICATION_DISPLAYED: {
-                        final String name = intent.getStringExtra(KEY_NAME);
-                        final String shortDescription = intent.getStringExtra(KEY_DESCRIPTION_SHORT);
-                        final String actId = intent.getStringExtra(KEY_ACT_ID);
-                        final SspObject sspObject = getSspObjectFromIntent(intent);
-                        Log.d(TAG, action + ": " + name + ", " + shortDescription + ", " + actId + ", " + sspObject);
-                        break;
-                    }
-                    case ACTION_GEOFENCE_NOTIFICATION_SELECTED: {
-                        final SspObject sspObject = getSspObjectFromIntent(intent);
-                        Log.d(TAG, action + ": " + sspObject);
-                        break;
-                    }
-                }
-            }
-
-        }
-
-        @Nullable
-        private SspObject getSspObjectFromIntent(@NonNull Intent intent) {
-            SspObject sspObject = null;
-
-            if(intent.hasExtra(KEY_SSP_ACT)) {
-                try {
-                    sspObject = SspAct.jsonToEntity(new JSONObject(intent.getStringExtra(KEY_SSP_ACT)));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else if(intent.hasExtra(KEY_SSP_CATEGORY)) {
-                try {
-                    sspObject = SspCategory.jsonToEntity(new JSONObject(intent.getStringExtra(KEY_SSP_CATEGORY)));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else if(intent.hasExtra(KEY_SSP_PRODUCT)) {
-                try {
-                    sspObject = SspProduct.jsonToEntity(new JSONObject(intent.getStringExtra(KEY_SSP_PRODUCT)));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return sspObject;
-        }
-    };
+    public SspActManager getSspActManager() {
+        return sspActManager;
+    }
 }

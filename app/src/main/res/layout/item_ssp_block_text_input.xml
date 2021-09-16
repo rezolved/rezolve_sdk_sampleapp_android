@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/ssp_block_paragraph_padding">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/ssp_block_text_input_label"
+        style="@style/SspBlockBaseStyle.Title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Special requests"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/ssp_block_text_input_edittext"
+        style="@style/SspBlockBaseStyle.Answer"
+        app:layout_constraintTop_toBottomOf="@id/ssp_block_text_input_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
