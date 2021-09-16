@@ -108,7 +108,9 @@ public class DatePickerWithDateConditionsFragment extends Fragment implements Vi
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        listener = (DatePickerWithDateConditionsListener)getActivity();
+        if (getActivity() instanceof DatePickerWithDateConditionsListener) {
+            listener = (DatePickerWithDateConditionsListener)getActivity();
+        }
     }
 
     @Override

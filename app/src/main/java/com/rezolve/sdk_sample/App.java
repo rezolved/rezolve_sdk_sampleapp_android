@@ -161,7 +161,7 @@ public class App extends Application {
 
         NotificationProperties geofenceAlertNotificationProperties = new NotificationProperties(
                 ENGAGEMENTS_ALERTS_CHANNEL_ID,
-                R.drawable.globalmall,
+                R.drawable.ic_slider_head,
                 ContextCompat.getColor(this, R.color.red),
                 NotificationCompat.PRIORITY_HIGH,
                 Notification.DEFAULT_ALL,
@@ -198,8 +198,8 @@ public class App extends Application {
         final GeofenceManager geofenceManager = new GeofenceManager.Builder()
                 .sspActManager(sspActManager)
                 .engagementsUpdatePolicy(new EngagementsUpdatePolicy.Builder()
-                        .silencePeriodMS(TimeUnit.MINUTES.toMillis(1))
-                        .maxCacheTimeMS(TimeUnit.MINUTES.toMillis(1))
+                        .silencePeriodMS(TimeUnit.MINUTES.toMillis(5))
+                        .maxCacheTimeMS(TimeUnit.MINUTES.toMillis(5))
                         .build())
                 .notificationChannelPropertiesList(geofenceLocationChannels)
                 .engagementAlertNotification(geofenceAlertNotificationProperties)
