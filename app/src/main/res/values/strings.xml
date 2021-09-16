@@ -34,7 +34,6 @@
     <string name="notification_channel_name">Rezolve Sample Notification Channel</string>
     <string name="notification_channel_description">Information about Rezolve features</string>
 
-
     <string name="ssp_field_required_suffix">&#160;*</string>
     <string name="ssp_block_select">Select</string>
     <string name="done">DONE!</string>
@@ -42,4 +41,6 @@
     <string name="act_now">Act Now</string>
     <string name="failed_to_submit">Act submission failed.</string>
     <string name="submission_success">Success!</string>
+    <string name="local_scan_activity">"Local Scan "</string>
+    <string name="remote_scan_activity">Remote scan</string>
 </resources>

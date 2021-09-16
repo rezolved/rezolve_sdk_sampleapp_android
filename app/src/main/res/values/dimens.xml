@@ -35,4 +35,6 @@
     <dimen name="slide_to_buy_side_margin">9dp</dimen>
     <dimen name="slide_to_buy_margin_half">2dp</dimen>
     <dimen name="logo_size">60dp</dimen>
+
+    <dimen name="scan_button_margin">40dp</dimen>
 </resources>

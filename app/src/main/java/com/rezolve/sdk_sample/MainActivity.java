@@ -2,6 +2,8 @@ package com.rezolve.sdk_sample;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.model.AuthenticationResponse;
 import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
+import com.rezolve.sdk_sample.remote.ScanActivityRemote;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
@@ -30,11 +33,21 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
     private AuthenticationService authenticationService = AuthenticationServiceProvider.getAuthenticationService();
     private RezolveSDK rezolveSDK = SdkProvider.getInstance().getSDK();
 
+    private Button localScanBtn, remoteScanBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loginUser();
+        prepareNavigationButtons();
+    }
+
+    private void prepareNavigationButtons() {
+        localScanBtn = findViewById(R.id.local_scan_activity_btn);
+        remoteScanBtn = findViewById(R.id.remote_scan_activity_btn);
+        localScanBtn.setOnClickListener(view -> navigateToScanView());
+        remoteScanBtn.setOnClickListener(view -> navigateToRemoteScanView());
     }
 
     private void loginUser() {
@@ -63,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
                 if(isLaunchedFromNotification(MainActivity.this)) {
                     NotificationUtil.launch(getIntent(), MainActivity.this);
                 } else {
-                    navigateToScanView();
+                    showNavigationButtons();
                 }
             }
 
@@ -74,8 +87,20 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         });
     }
 
+    private void showNavigationButtons() {
+        localScanBtn.setVisibility(View.VISIBLE);
+        remoteScanBtn.setVisibility(View.VISIBLE);
+        findViewById(R.id.authenticationStatusTextView).setVisibility(View.GONE);
+    }
+
     private void navigateToScanView() {
         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void navigateToRemoteScanView() {
+        Intent intent = new Intent(MainActivity.this, ScanActivityRemote.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat;
 
 import com.rezolve.sdk.HttpClientConfig;
 import com.rezolve.sdk.RezolveSDK;
-import com.rezolve.sdk.api.HttpClient;
 import com.rezolve.sdk.api.authentication.auth0.AuthParams;
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
 import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
@@ -35,13 +34,12 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.model.shop.ScannedData;
 import com.rezolve.sdk.ssp.helper.GeozoneNotificationCallbackHelper;
 import com.rezolve.sdk.ssp.helper.NotificationChannelProperties;
-import com.rezolve.sdk.ssp.helper.NotificationHelper;
-import com.rezolve.sdk.ssp.helper.NotificationHelperImpl;
 import com.rezolve.sdk.ssp.helper.NotificationProperties;
 import com.rezolve.sdk.ssp.interfaces.GeofenceEngagementsListener;
 import com.rezolve.sdk.ssp.interfaces.GeozoneNotificationCallback;
 import com.rezolve.sdk.ssp.interfaces.SspFromEngagementInterface;
 import com.rezolve.sdk.ssp.managers.GeofenceManager;
+import com.rezolve.sdk.ssp.managers.RemoteScanResolver;
 import com.rezolve.sdk.ssp.managers.SspActManager;
 import com.rezolve.sdk.ssp.model.EngagementsUpdatePolicy;
 import com.rezolve.sdk.ssp.model.GeolocationTriggeredEngagement;
@@ -52,6 +50,7 @@ import com.rezolve.sdk.ssp.model.SspProduct;
 import com.rezolve.sdk.ssp.resolver.ResolverConfiguration;
 import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
+import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.sspact.SspActActivity;
@@ -206,8 +205,6 @@ public class App extends Application {
                 .context(this)
                 .build();
 
-        NotificationHelper notificationHelper = new NotificationHelperImpl(this);
-
         final LocationProviderFused locationProviderFused = LocationProviderFused.create(this);
         locationProviderFused.start();
         geofenceManager.startGeofenceTracking();
@@ -237,6 +234,8 @@ public class App extends Application {
                 return false;
             }
         });
+
+        RemoteScanResolverProvider.getInstance().init(new RemoteScanResolver(sspActManager, sspHttpClient));
     }
 
     private void navigateToSspActView(SspAct act) {
