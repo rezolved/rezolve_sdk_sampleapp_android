@@ -149,7 +149,6 @@ public class ScanActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         videoScanManager.detachReader();
-        videoScanManager.stopCamera();
         audioScanManager.stopAudioScan();
         audioScanManager.destroy();
         ResolverResultListenersRegistry.getInstance().remove(resolveResultListener);
