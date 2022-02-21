@@ -78,7 +78,7 @@ public class CheckoutService {
         this.checkoutCallback = checkoutCallback;
 
         checkout = new CheckoutProduct();
-        checkout.setId(Integer.parseInt(product.getId()));
+        checkout.setId(product.getId());
         checkout.setQty(quantity);
         if (customConfigurableOptionList != null) {
             for (CustomConfigurableOption customConfigurableOption : customConfigurableOptionList) {
