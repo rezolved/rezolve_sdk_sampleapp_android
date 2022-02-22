@@ -1,12 +1,20 @@
 package com.rezolve.sdk_sample.remote;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +26,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AudioRecorderHelper {
+
+    private static final int REQUEST_CODE_PERMISSIONS = 10204;
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{ Manifest.permission.RECORD_AUDIO, };
 
     private final static String TAG = AudioRecorderHelper.class.getSimpleName();
 
@@ -44,16 +55,22 @@ public class AudioRecorderHelper {
         this.callback = callback;
     }
 
-    public void startRecording() {
+    public void startRecording(AppCompatActivity activity) {
         rawFile.delete();
         wavFile.delete();
-        this.recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLING_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, BUFFER_SIZE);
-        this.recordingThread = new Thread(new RecordingRunnable(), "Recording Thread");
-        callback.showProgressBar(true);
-        recorder.startRecording();
-        recordingInProgress.set(true);
-        recordingThread.start();
-        new Handler(Looper.myLooper()).postDelayed(this::stopRecording, AUDIO_RECORDING_DURATION);
+        if(ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED){
+            this.recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLING_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, BUFFER_SIZE);
+            this.recordingThread = new Thread(new RecordingRunnable(), "Recording Thread");
+            callback.showProgressBar(true);
+            recorder.startRecording();
+            recordingInProgress.set(true);
+            recordingThread.start();
+            new Handler(Looper.myLooper()).postDelayed(this::stopRecording, AUDIO_RECORDING_DURATION);
+        } else {
+            ActivityCompat.requestPermissions(activity, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
+            Log.d(TAG, "Audio Record Permission not granted!");
+            Toast.makeText(activity, "Audio Record Permission not granted!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void stopRecording() {
