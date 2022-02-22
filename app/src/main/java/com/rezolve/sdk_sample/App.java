@@ -139,7 +139,7 @@ public class App extends Application {
 
         SspHttpClient sspHttpClient = httpClientFactory.createHttpClient(BuildConfig.SSP_ENDPOINT);
 
-        sspActManager = new SspActManager(sspHttpClient);
+        sspActManager = new SspActManager(sspHttpClient, rezolveSDK);
 
         new ResolverConfiguration.Builder(rezolveSDK)
                 .enableBarcode1dResolver(true)
