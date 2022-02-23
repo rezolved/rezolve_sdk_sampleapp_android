@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         rezolveSDK.setAuthToken(response.getToken());
         rezolveSDK.setDeviceIdHeader(deviceId);
 
-        rezolveSDK.createSession(response.getToken(), response.getEntityId(), response.getPartnerId(), new RezolveInterface() {
+        rezolveSDK.createSession(response.getToken(), response.getEntityId(), response.getPartnerId(), null, new RezolveInterface() {
             @Override
             public void onInitializationSuccess(RezolveSession rezolveSession, String partnerId, String entityId) {
                 if(isLaunchedFromNotification(MainActivity.this)) {

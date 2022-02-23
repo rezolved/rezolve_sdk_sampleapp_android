@@ -110,7 +110,7 @@ public class ScanActivityRemote extends AppCompatActivity {
             imageCaptureHelper.scanVideo();
         });
         audioCaptureButton.setOnClickListener(v -> {
-            audioRecorderHelper.startRecording();
+            audioRecorderHelper.startRecording(this);
         });
     }
 
