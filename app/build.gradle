@@ -75,6 +75,7 @@ dependencies {
     implementation "com.rezolve.sdk:core-android:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:payment-android:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:ssp-android:$rezolveSdkVersion"
+    implementation "com.rezolve.sdk:old-ssp-android:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:ssp-google-geofence:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:resolver:$rezolveSdkVersion"
     implementation "com.rezolve.sdk:scan-android:$rezolveSdkScanVersion"

@@ -162,7 +162,7 @@ public class ProductListActivity extends AppCompatActivity {
                     ProductListActivity.this,
                     getString(R.string.category_choicer_title),
                     categoryList,
-                    (spinnerView, item) -> requestCategory(merchant, item)
+                    (spinnerView, item) -> requestCategory(merchant, item.getId())
             );
         } else {
             Toast.makeText(this, R.string.msg_category_not_found, Toast.LENGTH_SHORT).show();
@@ -172,12 +172,12 @@ public class ProductListActivity extends AppCompatActivity {
 
     // Base request
     private void requestCategory(@NonNull Merchant merchant,
-                                 @Nullable Category categoryParam,
+                                 @Nullable String categoryId,
                                  @NonNull ProductManagerUtils.GetCategoryCallback callback) {
         ProductManagerUtils.getCategory(
                 productManager,
                 merchant.getId(),
-                categoryParam,
+                categoryId,
                 callback
         );
     }
@@ -194,8 +194,8 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     // Normal request
-    private void requestCategory(@NonNull Merchant merchant, @Nullable Category categoryParam) {
-        requestCategory(merchant, categoryParam, new BaseGetCategoryCallback() {
+    private void requestCategory(@NonNull Merchant merchant, @Nullable String categoryId) {
+        requestCategory(merchant, categoryId, new BaseGetCategoryCallback() {
             @Override
             public void onSuccess(Category category) {
                 onRequestCategorySuccess(merchant, category);

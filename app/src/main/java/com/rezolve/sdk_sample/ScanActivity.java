@@ -218,7 +218,6 @@ public class ScanActivity extends AppCompatActivity {
         }
         MerchantManagerUtils.getMerchants(
                 RezolveSdkUtils.getMerchantManager(),
-                getApplicationContext(),
                 MerchantManager.MerchantVisibility.ALL,
                 new BaseGetMerchantsCallback(view) {
                     @Override
@@ -282,7 +281,6 @@ public class ScanActivity extends AppCompatActivity {
     private void onFabMainClick(View view) {
         MerchantManagerUtils.getMerchants(
                 RezolveSdkUtils.getMerchantManager(),
-                getApplicationContext(),
                 MerchantManager.MerchantVisibility.ALL,
                 new BaseGetMerchantsCallback(view) {
                     @Override

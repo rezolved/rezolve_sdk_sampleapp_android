@@ -24,7 +24,7 @@ public class ProductManagerUtils {
 
     public static void getCategory(@Nullable ProductManager productManager,
                                    @NonNull String merchantId,
-                                   @Nullable Category category,
+                                   @Nullable String categoryId,
                                    @NonNull PageNavigationFilter categoryFilter,
                                    @NonNull PageNavigationFilter productFilter,
                                    @NonNull GetCategoryCallback callback) {
@@ -32,15 +32,15 @@ public class ProductManagerUtils {
             callback.onRezolveError(RezolveSdkUtils.createMissingProductManagerError());
         } else {
             callback.processingStarted();
-            productManager.getProductsAndCategories(merchantId, category, categoryFilter, productFilter, callback);
+            productManager.getProductsAndCategories(merchantId, categoryId, categoryFilter, productFilter, callback);
         }
     }
 
     public static void getCategory(@Nullable ProductManager productManager,
                                    @NonNull String merchantId,
-                                   @Nullable Category category,
+                                   @Nullable String categoryId,
                                    @NonNull GetCategoryCallback callback) {
-        getCategory(productManager, merchantId, category, PageNavigationFilter.getDefault(-1), PageNavigationFilter.getDefault(-1), callback);
+        getCategory(productManager, merchantId, categoryId, PageNavigationFilter.getDefault(-1), PageNavigationFilter.getDefault(-1), callback);
     }
 
     public static void getCategory(@Nullable ProductManager productManager,
@@ -72,11 +72,6 @@ public class ProductManagerUtils {
         if (category.hasCategories()) {
             try {
                 result.addAll(category.getCategoryPageResult().getItems());
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-            }
-            try {
-                result.addAll(category.getCategories());
             } catch (NullPointerException npe) {
                 npe.printStackTrace();
             }
@@ -117,21 +112,6 @@ public class ProductManagerUtils {
     public interface GetCategoryCallback extends ProductInterface, RezolveSdkUtils.ProcessingInterface {
 
         void onSuccess(Category category);
-
-        @Override
-        default void onGetCategoriesSuccess(Category category) {
-            processingFinished();
-        }
-
-        @Override
-        default void onGetCategorySuccess(Category category) {
-            processingFinished();
-        }
-
-        @Override
-        default void onGetProductsSuccess(PageResult<DisplayProduct> pageResult) {
-            processingFinished();
-        }
 
         @Override
         default void onGetProductSuccess(Product product) {

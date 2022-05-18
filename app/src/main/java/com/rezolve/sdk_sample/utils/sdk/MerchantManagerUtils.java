@@ -20,14 +20,13 @@ public class MerchantManagerUtils {
     //
 
     public static void getMerchants(@Nullable MerchantManager merchantManager,
-                                    @NonNull Context context,
                                     @NonNull MerchantManager.MerchantVisibility merchantVisibility,
                                     @NonNull GetMerchantsCallback callback) {
         if (merchantManager == null) {
             callback.onRezolveError(RezolveSdkUtils.createMissingMerchantManagerError());
         } else {
             callback.processingStarted();
-            merchantManager.getMerchants(context, merchantVisibility, callback);
+            merchantManager.getMerchants(merchantVisibility, callback);
         }
     }
 
