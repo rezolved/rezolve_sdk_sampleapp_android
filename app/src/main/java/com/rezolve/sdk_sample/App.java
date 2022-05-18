@@ -3,10 +3,7 @@ package com.rezolve.sdk_sample;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,7 +11,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
@@ -23,32 +19,21 @@ import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.api.authentication.auth0.AuthParams;
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
 import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
-import com.rezolve.sdk.core.interfaces.PaymentOptionInterface;
-import com.rezolve.sdk.core.interfaces.TriggerInterface;
 import com.rezolve.sdk.location.google.LocationProviderFused;
-import com.rezolve.sdk.model.cart.CheckoutProduct;
 import com.rezolve.sdk.model.network.RezolveError;
-import com.rezolve.sdk.model.shop.Category;
-import com.rezolve.sdk.model.shop.PaymentOption;
-import com.rezolve.sdk.model.shop.Product;
-import com.rezolve.sdk.model.shop.ScannedData;
-import com.rezolve.sdk.ssp.helper.GeozoneNotificationCallbackHelper;
+import com.rezolve.sdk.old_ssp.helper.GeozoneNotificationCallbackHelper;
+import com.rezolve.sdk.old_ssp.interfaces.GeofenceEngagementsListener;
+import com.rezolve.sdk.old_ssp.interfaces.GeozoneNotificationCallback;
+import com.rezolve.sdk.old_ssp.managers.GeofenceManager;
+import com.rezolve.sdk.old_ssp.managers.SspActManager;
 import com.rezolve.sdk.ssp.helper.NotificationChannelProperties;
 import com.rezolve.sdk.ssp.helper.NotificationProperties;
-import com.rezolve.sdk.ssp.interfaces.GeofenceEngagementsListener;
-import com.rezolve.sdk.ssp.interfaces.GeozoneNotificationCallback;
-import com.rezolve.sdk.ssp.interfaces.SspFromEngagementInterface;
-import com.rezolve.sdk.ssp.managers.GeofenceManager;
 import com.rezolve.sdk.ssp.managers.RemoteScanResolver;
-import com.rezolve.sdk.ssp.managers.SspActManager;
 import com.rezolve.sdk.ssp.model.EngagementsUpdatePolicy;
 import com.rezolve.sdk.ssp.model.GeolocationTriggeredEngagement;
 import com.rezolve.sdk.ssp.model.SspAct;
-import com.rezolve.sdk.ssp.model.SspCategory;
 import com.rezolve.sdk.ssp.model.SspObject;
-import com.rezolve.sdk.ssp.model.SspProduct;
 import com.rezolve.sdk.ssp.resolver.ResolverConfiguration;
-import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
@@ -56,24 +41,12 @@ import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.sspact.SspActActivity;
 import com.rezolve.sdk_sample.utils.ProductUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.ACTION_GEOFENCE_NOTIFICATION_DISPLAYED;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.ACTION_GEOFENCE_NOTIFICATION_SELECTED;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_ACT_ID;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_DESCRIPTION_SHORT;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_NAME;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_SENDER_PACKAGE_NAME;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_SSP_ACT;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_SSP_CATEGORY;
-import static com.rezolve.sdk.ssp.managers.GeofenceManager.Const.KEY_SSP_PRODUCT;
 
 public class App extends Application {
 
@@ -143,7 +116,6 @@ public class App extends Application {
 
         new ResolverConfiguration.Builder(rezolveSDK)
                 .enableBarcode1dResolver(true)
-                .enableCoreResolver(true)
                 .enableSspResolver(sspActManager, 400)
                 .build(this);
 
