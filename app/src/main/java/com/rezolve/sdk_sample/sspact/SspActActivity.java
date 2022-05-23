@@ -147,7 +147,9 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
         for (BlockWrapper blockWrapper : blocks) {
             if (blockWrapper.block.getSspActQuestion() != null) {
                 String answer = getOptionIdForAnswer(blockWrapper.block, blockWrapper.answerToDisplay);
-                answers.add(blockWrapper.block.getSspActQuestion().answer(answer));
+                if (answer != null) {
+                    answers.add(blockWrapper.block.getSspActQuestion().answer(answer));
+                }
             }
         }
         return answers;
