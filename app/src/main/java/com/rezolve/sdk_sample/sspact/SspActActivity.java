@@ -174,7 +174,7 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
                 .setPersonTitle("Sir")
                 .setPhone("+447400258461")
                 .setServiceId(sspAct.getServiceId())
-                .setUserId(UUID.randomUUID().toString()) // in production application UserId should be static
+                .setUserId(sspAct.getId())
                 .setUserName("TesterTestman")
                 .build();
     }
