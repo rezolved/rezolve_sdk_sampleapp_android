@@ -2,7 +2,6 @@ package com.rezolve.sdk_sample.sspact;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,19 +10,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.location.LocationHelper;
-import com.rezolve.sdk.location.LocationWrapper;
-import com.rezolve.sdk.model.history.RezolveLocation;
 import com.rezolve.sdk.model.network.RezolveError;
-import com.rezolve.sdk.model.shop.CustomOption;
 import com.rezolve.sdk.ssp.interfaces.SspSubmitActDataInterface;
 import com.rezolve.sdk.ssp.model.PageBuildingBlock;
 import com.rezolve.sdk.ssp.model.SspAct;
 import com.rezolve.sdk.ssp.model.SspActAnswer;
-import com.rezolve.sdk.ssp.model.SspActQuestion;
-import com.rezolve.sdk.ssp.model.SspActQuestionType;
-import com.rezolve.sdk.ssp.model.SspActQuestionValue;
 import com.rezolve.sdk.ssp.model.SspActSubmission;
 import com.rezolve.sdk.ssp.model.SspActSubmissionResponse;
 import com.rezolve.sdk.ssp.model.form.SelectionOption;
@@ -41,6 +33,10 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
         DatePickerWithDateConditionsFragment.DatePickerWithDateConditionsListener,
         BuyView.SlideToBuyListener {
 
+    public static final String ENTITY_ID = "ENTITY_ID";
+
+    private String entityId;
+
     private SspAct sspAct;
     private List<BlockWrapper> blocks;
 
@@ -55,14 +51,20 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
 
         // Bind views
         recyclerView = findViewById(R.id.page_building_recycler);
+        entityId = getIntent().getExtras().getString(ENTITY_ID);
         sspAct = ProductUtils.getSspActFromArgs(getIntent().getExtras());
 
         displayActDetails();
+        prepareBuyView(sspAct);
+    }
+
+    private void prepareBuyView(SspAct sspAct) {
         buyView = new BuyView(
                 findViewById(R.id.slider_container),
                 this
         );
         buyView.setVisible(!sspAct.isInformationPage());
+        buyView.setEnabled(!sspAct.isInformationPage());
     }
 
     private void displayActDetails() {
@@ -174,7 +176,8 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
                 .setPersonTitle("Sir")
                 .setPhone("+447400258461")
                 .setServiceId(sspAct.getServiceId())
-                .setUserId(sspAct.getId())
+                .setUserId(UUID.randomUUID().toString()) // in production application UserId should be static
+                .setEntityId(entityId)
                 .setUserName("TesterTestman")
                 .build();
     }

@@ -23,6 +23,7 @@ import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.remote.ScanActivityRemote;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
+import com.rezolve.sdk_sample.sspact.SspActActivity;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.NotificationUtil;
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
     private void prepareNavigationButtons() {
         localScanBtn = findViewById(R.id.local_scan_activity_btn);
         remoteScanBtn = findViewById(R.id.remote_scan_activity_btn);
-        localScanBtn.setOnClickListener(view -> navigateToScanView());
         remoteScanBtn.setOnClickListener(view -> navigateToRemoteScanView());
     }
 
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
                 if(isLaunchedFromNotification(MainActivity.this)) {
                     NotificationUtil.launch(getIntent(), MainActivity.this);
                 } else {
-                    showNavigationButtons();
+                    showNavigationButtons(response.getEntityId());
                 }
             }
 
@@ -104,15 +104,17 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         });
     }
 
-    private void showNavigationButtons() {
+    private void showNavigationButtons(String entityId) {
         localScanBtn.setVisibility(View.VISIBLE);
         remoteScanBtn.setVisibility(View.VISIBLE);
+        localScanBtn.setOnClickListener(view -> navigateToScanView(entityId));
         findViewById(R.id.authenticationStatusTextView).setVisibility(View.GONE);
     }
 
-    private void navigateToScanView() {
+    private void navigateToScanView(String entityId) {
         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(SspActActivity.ENTITY_ID, entityId);
         startActivity(intent);
     }
 
