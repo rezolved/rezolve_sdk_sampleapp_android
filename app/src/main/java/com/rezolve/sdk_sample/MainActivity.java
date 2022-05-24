@@ -2,9 +2,11 @@ package com.rezolve.sdk_sample;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +48,24 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         setContentView(R.layout.activity_main);
         loginUser();
         prepareNavigationButtons();
+        handleDeepLink();
+    }
+
+    private void handleDeepLink() {
+        Intent handleIntent = getIntent();
+        if (handleIntent != null && handleIntent.getData() != null) {
+            Uri data = handleIntent.getData();
+            openToastWithDeepLinkData(data);
+        }
+    }
+
+    private void openToastWithDeepLinkData(Uri data) {
+        String engagementId = data.getQueryParameter("engagementid");
+        if (engagementId != null && !engagementId.isEmpty()) {
+            Toast.makeText(this, "engagementId: " + engagementId, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "url: " + data, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

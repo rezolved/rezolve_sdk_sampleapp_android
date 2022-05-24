@@ -33,14 +33,43 @@
             android:exported="false"
             tools:replace="android:authorities" />
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter android:autoVerify="true" tools:targetApi="m">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="http"
+                    android:host="@string/deep_link_host" />
+                <data
+                    android:scheme="https"
+                    android:host="@string/deep_link_host"  />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="http"
+                    android:host="@string/deep_link_host" />
+                <data
+                    android:scheme="https"
+                    android:host="@string/deep_link_host"  />
+            </intent-filter>
+
         </activity>
-        <activity android:screenOrientation="nosensor" android:name=".ScanActivity" />
+        <activity
+            android:screenOrientation="nosensor"
+            android:name=".ScanActivity" />
         <activity android:name=".ProductDetailsActivity" />
         <activity android:name=".OrderSummaryActivity" />
         <activity android:name=".ProductListActivity" />
