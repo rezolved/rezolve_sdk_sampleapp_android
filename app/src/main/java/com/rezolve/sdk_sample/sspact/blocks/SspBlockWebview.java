@@ -8,7 +8,7 @@ import android.webkit.WebView;
 import com.rezolve.sdk.ssp.model.PageBuildingBlock;
 import com.rezolve.sdk.ssp.model.form.Type;
 
-public class SspBlockHeaderWebview extends WebView {
+public class SspBlockWebview extends WebView {
 
     private static final String HTML_HEAD = "<html><head>";
     private static final String HTML_BODY = "</head><body>";
@@ -21,15 +21,15 @@ public class SspBlockHeaderWebview extends WebView {
     private static final String HEADER_SPAN_END = "</span>";
     private static final String HTML_END = "</body></html>";
 
-    public SspBlockHeaderWebview(Context context) {
+    public SspBlockWebview(Context context) {
         super(context);
     }
 
-    public SspBlockHeaderWebview(Context context, AttributeSet attrs) {
+    public SspBlockWebview(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SspBlockHeaderWebview(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SspBlockWebview(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

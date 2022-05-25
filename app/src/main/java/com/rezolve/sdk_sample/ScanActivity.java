@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -50,8 +51,6 @@ public class ScanActivity extends AppCompatActivity {
 
     private static final String TAG = ScanActivity.class.getSimpleName();
 
-    private String entityId;
-
     private SpinKitView loadingSpinView;
     private FloatingActionButton fabMain;
     private VideoScanManager videoScanManager = VideoScanManagerProvider.getVideoScanManager();
@@ -87,13 +86,21 @@ public class ScanActivity extends AppCompatActivity {
             } else if(result instanceof SspActResult) {
                 SspActResult act = (SspActResult) result;
                 if (act.sspAct.getPageBuildingBlocks() != null && !act.sspAct.getPageBuildingBlocks().isEmpty()) {
-                    onSspActResult(act, entityId);
+                    onSspActResult(act);
                 }
             } else if(result instanceof SspProductResult) {
-
+                SspProductResult sspProductResult = (SspProductResult) result;
+                toastRezolveTrigger(sspProductResult.getSspProduct().getEngagementName(),
+                        sspProductResult.getSspProduct().getRezolveTrigger());
             } else if(result instanceof SspCategoryResult) {
-
+                SspCategoryResult sspCategoryResult = (SspCategoryResult) result;
+                toastRezolveTrigger(sspCategoryResult.getSspCategory().getEngagementName(),
+                        sspCategoryResult.getSspCategory().getRezolveTrigger());
             }
+        }
+
+        private void toastRezolveTrigger(String name, String rezolveTrigger) {
+            Toast.makeText(getBaseContext(), name + " - " + rezolveTrigger, Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -109,10 +116,6 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-
-        if (!getIntent().getExtras().isEmpty()) {
-            entityId = getIntent().getExtras().getString(SspActActivity.ENTITY_ID);
-        }
 
         loadingSpinView = findViewById(R.id.loadingSpinView);
 
@@ -166,8 +169,8 @@ public class ScanActivity extends AppCompatActivity {
         navigateToProductListView(merchantId, category);
     }
 
-    private void onSspActResult(SspActResult act, String entityId) {
-        navigateToSspActView(act, entityId);
+    private void onSspActResult(SspActResult act) {
+        navigateToSspActView(act);
     }
 
     public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg) {
@@ -198,10 +201,9 @@ public class ScanActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void navigateToSspActView(SspActResult act, String entityId) {
+    private void navigateToSspActView(SspActResult act) {
         Intent intent = new Intent(ScanActivity.this, SspActActivity.class);
         Bundle bundle = ProductUtils.toBundle(act.getSspAct());
-        bundle.putString(SspActActivity.ENTITY_ID, entityId);
         intent.putExtras(bundle);
         startActivity(intent);
     }

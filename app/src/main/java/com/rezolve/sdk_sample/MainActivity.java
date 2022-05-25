@@ -1,12 +1,12 @@
 package com.rezolve.sdk_sample;
 
+import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
+
 import android.Manifest;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,13 +25,10 @@ import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.remote.ScanActivityRemote;
 import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
-import com.rezolve.sdk_sample.sspact.SspActActivity;
 import com.rezolve.sdk_sample.utils.DeviceUtils;
 import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.NotificationUtil;
 import com.rezolve.sdk_sample.utils.ProductUtils;
-
-import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
 
 public class MainActivity extends AppCompatActivity implements MainNavigator {
 
@@ -48,24 +45,6 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         setContentView(R.layout.activity_main);
         loginUser();
         prepareNavigationButtons();
-        handleDeepLink();
-    }
-
-    private void handleDeepLink() {
-        Intent handleIntent = getIntent();
-        if (handleIntent != null && handleIntent.getData() != null) {
-            Uri data = handleIntent.getData();
-            openToastWithDeepLinkData(data);
-        }
-    }
-
-    private void openToastWithDeepLinkData(Uri data) {
-        String engagementId = data.getQueryParameter("engagementid");
-        if (engagementId != null && !engagementId.isEmpty()) {
-            Toast.makeText(this, "engagementId: " + engagementId, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "url: " + data, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -113,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
                 if(isLaunchedFromNotification(MainActivity.this)) {
                     NotificationUtil.launch(getIntent(), MainActivity.this);
                 } else {
-                    showNavigationButtons(response.getEntityId());
+                    showNavigationButtons();
                 }
             }
 
@@ -124,17 +103,16 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         });
     }
 
-    private void showNavigationButtons(String entityId) {
+    private void showNavigationButtons() {
         localScanBtn.setVisibility(View.VISIBLE);
         remoteScanBtn.setVisibility(View.VISIBLE);
-        localScanBtn.setOnClickListener(view -> navigateToScanView(entityId));
+        localScanBtn.setOnClickListener(view -> navigateToScanView());
         findViewById(R.id.authenticationStatusTextView).setVisibility(View.GONE);
     }
 
-    private void navigateToScanView(String entityId) {
+    private void navigateToScanView() {
         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(SspActActivity.ENTITY_ID, entityId);
         startActivity(intent);
     }
 

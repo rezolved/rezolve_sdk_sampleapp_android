@@ -35,7 +35,7 @@ import com.rezolve.sdk.ssp.model.form.Style;
 import com.rezolve.sdk.ssp.model.form.TextAlign;
 import com.rezolve.sdk.ssp.model.form.Type;
 import com.rezolve.sdk_sample.R;
-import com.rezolve.sdk_sample.sspact.blocks.SspBlockHeaderWebview;
+import com.rezolve.sdk_sample.sspact.blocks.SspBlockWebview;
 import com.rezolve.sdk_sample.sspact.blocks.SspTextBlock;
 import com.rezolve.sdk_sample.utils.DateUtils;
 
@@ -141,7 +141,7 @@ public class SspActBlockAdapter extends ListAdapter<BlockWrapper, SspActBlockAda
     }
 
     class WebViewHolder extends ViewHolder {
-        private final SspBlockHeaderWebview sspBlockHeaderWebview;
+        private final SspBlockWebview sspBlockHeaderWebview;
 
         public WebViewHolder(@NonNull View itemView) {
             super(itemView);

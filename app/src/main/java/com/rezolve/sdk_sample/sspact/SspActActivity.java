@@ -23,6 +23,8 @@ import com.rezolve.sdk.ssp.model.form.Type;
 import com.rezolve.sdk_sample.App;
 import com.rezolve.sdk_sample.BuyView;
 import com.rezolve.sdk_sample.R;
+import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
+import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.utils.ProductUtils;
 
 import java.util.ArrayList;
@@ -33,16 +35,15 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
         DatePickerWithDateConditionsFragment.DatePickerWithDateConditionsListener,
         BuyView.SlideToBuyListener {
 
-    public static final String ENTITY_ID = "ENTITY_ID";
-
-    private String entityId;
-
     private SspAct sspAct;
     private List<BlockWrapper> blocks;
 
     private RecyclerView recyclerView;
     private SspActBlockAdapter adapter;
     private BuyView buyView;
+
+    private final AuthenticationService authenticationService =
+            AuthenticationServiceProvider.getAuthenticationService();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,6 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
 
         // Bind views
         recyclerView = findViewById(R.id.page_building_recycler);
-        entityId = getIntent().getExtras().getString(ENTITY_ID);
         sspAct = ProductUtils.getSspActFromArgs(getIntent().getExtras());
 
         displayActDetails();
@@ -179,7 +179,7 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
                 .setPhone("+447400258461")
                 .setServiceId(sspAct.getServiceId())
                 .setUserId(UUID.randomUUID().toString()) // in production application UserId should be static
-                .setEntityId(entityId)
+                .setEntityId(authenticationService.getEntityId())
                 .setUserName("TesterTestman")
                 .build();
     }
