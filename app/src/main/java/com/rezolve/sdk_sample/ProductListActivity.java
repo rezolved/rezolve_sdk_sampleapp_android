@@ -22,11 +22,11 @@ import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.DisplayProduct;
 import com.rezolve.sdk.model.shop.Merchant;
-import com.rezolve.sdk_sample.adapter.DisplayProductAdapter;
-import com.rezolve.sdk_sample.utils.DialogUtils;
-import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
-import com.rezolve.sdk_sample.utils.sdk.ProductManagerUtils;
-import com.rezolve.sdk_sample.utils.sdk.RezolveSdkUtils;
+import com.rezolve.shared.adapter.DisplayProductAdapter;
+import com.rezolve.shared.utils.DialogUtils;
+import com.rezolve.shared.utils.sdk.MerchantManagerUtils;
+import com.rezolve.shared.utils.sdk.ProductManagerUtils;
+import com.rezolve.shared.utils.sdk.RezolveSdkUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

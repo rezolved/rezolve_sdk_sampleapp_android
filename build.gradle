@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        rezolveSdkVersion = "2662-develop-cfa4adc"
+        rezolveSdkVersion = "2664-develop-bac1595-dirty"
         rezolveSdkScanVersion = "2064-develop-3f62203"
         jjwtVersion = "0.10.5"
         rxJavaVersion = "2.2.8"
@@ -23,6 +23,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20'
+        classpath 'com.google.gms:google-services:4.3.10'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
