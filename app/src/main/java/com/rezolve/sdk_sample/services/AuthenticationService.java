@@ -35,6 +35,7 @@ public class AuthenticationService {
     private final AuthenticationRequest authenticationRequest;
 
     private String lastToken;
+    private String entityId;
 
     public AuthenticationService() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -59,6 +60,7 @@ public class AuthenticationService {
                         String token = response.headers().get(KEY_HEADER_TOKEN);
                         response.body().setToken(token);
                         lastToken = token;
+                        entityId = response.body().getEntityId();
                     }
                     return response.body();
                 })
@@ -75,5 +77,9 @@ public class AuthenticationService {
             return pingResponse != null ? pingResponse.getAccessToken() : "";
         }
         return "";
+    }
+
+    public String getEntityId() {
+        return entityId;
     }
 }

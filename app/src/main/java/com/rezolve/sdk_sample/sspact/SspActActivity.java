@@ -2,7 +2,6 @@ package com.rezolve.sdk_sample.sspact;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,19 +10,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.location.LocationHelper;
-import com.rezolve.sdk.location.LocationWrapper;
-import com.rezolve.sdk.model.history.RezolveLocation;
 import com.rezolve.sdk.model.network.RezolveError;
-import com.rezolve.sdk.model.shop.CustomOption;
 import com.rezolve.sdk.ssp.interfaces.SspSubmitActDataInterface;
 import com.rezolve.sdk.ssp.model.PageBuildingBlock;
 import com.rezolve.sdk.ssp.model.SspAct;
 import com.rezolve.sdk.ssp.model.SspActAnswer;
-import com.rezolve.sdk.ssp.model.SspActQuestion;
-import com.rezolve.sdk.ssp.model.SspActQuestionType;
-import com.rezolve.sdk.ssp.model.SspActQuestionValue;
 import com.rezolve.sdk.ssp.model.SspActSubmission;
 import com.rezolve.sdk.ssp.model.SspActSubmissionResponse;
 import com.rezolve.sdk.ssp.model.form.SelectionOption;
@@ -31,6 +23,8 @@ import com.rezolve.sdk.ssp.model.form.Type;
 import com.rezolve.sdk_sample.App;
 import com.rezolve.sdk_sample.BuyView;
 import com.rezolve.sdk_sample.R;
+import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
+import com.rezolve.sdk_sample.services.AuthenticationService;
 import com.rezolve.sdk_sample.utils.ProductUtils;
 
 import java.util.ArrayList;
@@ -48,6 +42,9 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
     private SspActBlockAdapter adapter;
     private BuyView buyView;
 
+    private final AuthenticationService authenticationService =
+            AuthenticationServiceProvider.getAuthenticationService();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +55,16 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
         sspAct = ProductUtils.getSspActFromArgs(getIntent().getExtras());
 
         displayActDetails();
+        prepareBuyView(sspAct);
+    }
+
+    private void prepareBuyView(SspAct sspAct) {
         buyView = new BuyView(
                 findViewById(R.id.slider_container),
                 this
         );
         buyView.setVisible(!sspAct.isInformationPage());
+        buyView.setEnabled(!sspAct.isInformationPage());
     }
 
     private void displayActDetails() {
@@ -145,7 +147,9 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
         for (BlockWrapper blockWrapper : blocks) {
             if (blockWrapper.block.getSspActQuestion() != null) {
                 String answer = getOptionIdForAnswer(blockWrapper.block, blockWrapper.answerToDisplay);
-                answers.add(blockWrapper.block.getSspActQuestion().answer(answer));
+                if (answer != null) {
+                    answers.add(blockWrapper.block.getSspActQuestion().answer(answer));
+                }
             }
         }
         return answers;
@@ -175,6 +179,7 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
                 .setPhone("+447400258461")
                 .setServiceId(sspAct.getServiceId())
                 .setUserId(UUID.randomUUID().toString()) // in production application UserId should be static
+                .setEntityId(authenticationService.getEntityId())
                 .setUserName("TesterTestman")
                 .build();
     }

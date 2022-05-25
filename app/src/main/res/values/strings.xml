@@ -43,4 +43,5 @@
     <string name="submission_success">Success!</string>
     <string name="local_scan_activity">"Local Scan "</string>
     <string name="remote_scan_activity">Remote scan</string>
+    <string name="ssp_block_coupon_expiration">Valid until %s</string>
 </resources>
