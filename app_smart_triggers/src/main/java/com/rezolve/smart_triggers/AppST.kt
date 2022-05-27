@@ -207,6 +207,10 @@ class AppST : Application(), SspActManagerProvider, MainActivityProvider {
         private val accessTokenChangeListenerList: MutableList<TokenHolder.AccessTokenChangeListener> =
             mutableListOf()
 
+        /**
+         *  Initially token is set after successful creation of the session. Check MainActivity#createSession().
+         *  Remember to update your access token in tokenHolder when it's refreshed.
+         */
         override fun setAccessToken(accessToken: String?) {
             Log.d("TokenHolder", "setAccessToken: $accessToken, observers: ${accessTokenChangeListenerList.joinToString()}")
             preferences.edit().putString(ACCESS_TOKEN, accessToken.orEmpty()).apply()
