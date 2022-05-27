@@ -33,6 +33,7 @@ public class AuthenticationService {
     private AuthenticationRequest authenticationRequest;
 
     private String lastToken;
+    private String entityId;
 
     private String apiKey;
 
@@ -64,6 +65,7 @@ public class AuthenticationService {
                             response.body().setToken(token);
                         }
                         lastToken = token;
+                        entityId = response.body().getEntityId();
                     }
                     return response.body();
                 })
@@ -80,5 +82,9 @@ public class AuthenticationService {
             return pingResponse != null ? pingResponse.getAccessToken() : "";
         }
         return "";
+    }
+
+    public String getEntityId() {
+        return entityId;
     }
 }

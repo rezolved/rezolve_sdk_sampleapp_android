@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -19,7 +20,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.rezolve.sdk.core.managers.MerchantManager;
-import com.rezolve.sdk.location.LocationDependencyProvider;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Merchant;
@@ -90,10 +90,18 @@ public class ScanActivity extends AppCompatActivity {
                     onSspActResult(act);
                 }
             } else if(result instanceof SspProductResult) {
-
+                SspProductResult sspProductResult = (SspProductResult) result;
+                toastRezolveTrigger(sspProductResult.getSspProduct().getEngagementName(),
+                        sspProductResult.getSspProduct().getRezolveTrigger());
             } else if(result instanceof SspCategoryResult) {
-
+                SspCategoryResult sspCategoryResult = (SspCategoryResult) result;
+                toastRezolveTrigger(sspCategoryResult.getSspCategory().getEngagementName(),
+                        sspCategoryResult.getSspCategory().getRezolveTrigger());
             }
+        }
+
+        private void toastRezolveTrigger(String name, String rezolveTrigger) {
+            Toast.makeText(getBaseContext(), name + " - " + rezolveTrigger, Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -134,13 +142,7 @@ public class ScanActivity extends AppCompatActivity {
                 initializeScanner();
             }
         });
-        String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        Permissions.check(this, locationPermissions, null, null, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                LocationDependencyProvider.locationProvider().start();
-            }
-        });
+
         videoScanManager.clearCache();
         videoScanManager.startCamera();
         videoScanManager.attachReader();

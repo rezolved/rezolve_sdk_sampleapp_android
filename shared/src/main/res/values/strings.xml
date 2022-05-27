@@ -41,4 +41,5 @@
     <string name="act_now">Act Now</string>
     <string name="failed_to_submit">Act submission failed.</string>
     <string name="submission_success">Success!</string>
+    <string name="ssp_block_coupon_expiration">Valid until %s</string>
 </resources>

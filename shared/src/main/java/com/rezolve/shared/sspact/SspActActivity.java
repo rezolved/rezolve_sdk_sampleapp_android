@@ -23,6 +23,8 @@ import com.rezolve.sdk.ssp.model.form.Type;
 import com.rezolve.shared.BuyView;
 import com.rezolve.shared.R;
 import com.rezolve.shared.SspActManagerProvider;
+import com.rezolve.shared.authentication.AuthenticationService;
+import com.rezolve.shared.authentication.AuthenticationServiceProvider;
 import com.rezolve.shared.utils.ProductUtils;
 
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
     private SspActBlockAdapter adapter;
     private BuyView buyView;
 
+    private final AuthenticationService authenticationService = AuthenticationServiceProvider.getAuthenticationService();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +54,16 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
         sspAct = ProductUtils.getSspActFromArgs(getIntent().getExtras());
 
         displayActDetails();
+        prepareBuyView(sspAct);
+    }
+
+    private void prepareBuyView(SspAct sspAct) {
         buyView = new BuyView(
                 findViewById(R.id.slider_container),
                 this
         );
         buyView.setVisible(!sspAct.isInformationPage());
+        buyView.setEnabled(!sspAct.isInformationPage());
     }
 
     private void displayActDetails() {
@@ -137,7 +146,9 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
         for (BlockWrapper blockWrapper : blocks) {
             if (blockWrapper.block.getSspActQuestion() != null) {
                 String answer = getOptionIdForAnswer(blockWrapper.block, blockWrapper.answerToDisplay);
-                answers.add(blockWrapper.block.getSspActQuestion().answer(answer));
+                if (answer != null) {
+                    answers.add(blockWrapper.block.getSspActQuestion().answer(answer));
+                }
             }
         }
         return answers;
@@ -167,6 +178,7 @@ public class SspActActivity extends AppCompatActivity implements SspActBlockEven
                 .setPhone("+447400258461")
                 .setServiceId(sspAct.getServiceId())
                 .setUserId(UUID.randomUUID().toString()) // in production application UserId should be static
+                .setEntityId(authenticationService.getEntityId())
                 .setUserName("TesterTestman")
                 .build();
     }

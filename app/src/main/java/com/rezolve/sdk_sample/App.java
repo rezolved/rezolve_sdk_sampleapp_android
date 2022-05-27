@@ -82,7 +82,7 @@ public class App extends Application implements SspActManagerProvider, MainActiv
                                     BuildConfig.AUTH0_ENDPOINT,
                                     BuildConfig.SSP_ENGAGEMENT_ENDPOINT,
                                     BuildConfig.SSP_ACT_ENDPOINT
-                            );
+                                );
 
         HttpClientConfig httpConfig = new HttpClientConfig.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)

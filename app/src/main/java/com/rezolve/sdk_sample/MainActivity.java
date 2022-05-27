@@ -1,5 +1,8 @@
 package com.rezolve.sdk_sample;
 
+import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
+
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,9 +11,12 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.rezolve.sdk.RezolveInterface;
 import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.RezolveSession;
+import com.rezolve.sdk.location.LocationDependencyProvider;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.providers.SdkProvider;
@@ -24,8 +30,6 @@ import com.rezolve.shared.authentication.AuthenticationResponse;
 import com.rezolve.shared.authentication.AuthenticationService;
 import com.rezolve.shared.authentication.AuthenticationServiceProvider;
 import com.rezolve.shared.utils.DeviceUtils;
-
-import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
 
 public class MainActivity extends AppCompatActivity implements MainNavigator {
 
@@ -44,10 +48,22 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         prepareNavigationButtons();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String[] locationPermissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
+        Permissions.check(this, locationPermissions, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                LocationDependencyProvider.locationProvider().start();
+            }
+        });
+    }
+
     private void prepareNavigationButtons() {
         localScanBtn = findViewById(R.id.local_scan_activity_btn);
         remoteScanBtn = findViewById(R.id.remote_scan_activity_btn);
-        localScanBtn.setOnClickListener(view -> navigateToScanView());
         remoteScanBtn.setOnClickListener(view -> navigateToRemoteScanView());
     }
 
@@ -91,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
     private void showNavigationButtons() {
         localScanBtn.setVisibility(View.VISIBLE);
         remoteScanBtn.setVisibility(View.VISIBLE);
+        localScanBtn.setOnClickListener(view -> navigateToScanView());
         findViewById(R.id.authenticationStatusTextView).setVisibility(View.GONE);
     }
 
