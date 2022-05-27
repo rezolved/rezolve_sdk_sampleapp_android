@@ -35,6 +35,8 @@ import com.rezolve.rxp.client.data.model.Geofences
 
 import com.rezolve.rxp.enums.CoordinateSystem
 import com.rezolve.rxp.enums.MyAreaFilter
+import com.rezolve.rxp.sdk.geofence.*
+import com.rezolve.sdk.ssp.model.SspObject
 
 
 class MainActivity : AppCompatActivity() {
@@ -51,10 +53,8 @@ class MainActivity : AppCompatActivity() {
         if (LocationHelper.isLocationPermissionGranted(this).not()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_LOCATION)
         } else {
-            startLocationUpdates()
+            loginUser()
         }
-
-        loginUser()
     }
 
     override fun onRequestPermissionsResult(
@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity() {
 
         when(requestCode) {
             REQUEST_CODE_LOCATION -> {
-                if (grantResults.size == 3 && grantResults.contains(PackageManager.PERMISSION_DENIED).not()) {
-                    startLocationUpdates()
+                if (grantResults.size == REQUIRED_PERMISSIONS.size && grantResults.contains(PackageManager.PERMISSION_DENIED).not()) {
+                    loginUser()
                 }
             }
         }
@@ -132,6 +132,8 @@ class MainActivity : AppCompatActivity() {
                         entityId: String
                     ) {
                         Log.d(TAG, "RezolveSDK initalization success")
+                        startLocationUpdates()
+
                         CoroutineScope(Dispatchers.Default).launch {
                             rxpCheckIn()
                         }
@@ -150,7 +152,8 @@ class MainActivity : AppCompatActivity() {
             if (checkInApiResult is APIResult.Success) {
                 //handle successful check in
                 Log.d(AppST.TAG, "RxpSdk check-in success: ${checkInApiResult.result}")
-                getRxpTags()
+                RxpSdkProvider.sdk.runTagsListWorkerOnce()
+//                setRxpTags()
             } else if (checkInApiResult is APIResult.Error) {
                 //handle error
                 DialogUtils.showError(this@MainActivity, checkInApiResult.message)
@@ -158,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // gets list of user tags from server
     private fun getRxpTags() {
         // check user interests
         val tagsResult = RxpSdkProvider.sdk.rxpClient.listTags()
@@ -166,7 +170,6 @@ class MainActivity : AppCompatActivity() {
                 tagsResult.result.forEach {
                     Log.d(TAG,"GET selected tag: $it")
                 }
-                setRxpTags(tagsResult.result)
             }
             is APIResult.Error -> {
                 Log.d(TAG,"GET tag error: ${tagsResult.message}")
@@ -174,24 +177,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setRxpTags(list: List<Tag>) {
-        val tagsMutable = list.map {
-            Tag(it.id, it.name, State.ENABLED) // enable tags according to user's preferences. Here we're enabling all tags
-        }
-        val tagsResult = RxpSdkProvider.sdk.rxpClient.updateTags(tagsMutable)
-        when (tagsResult) {
-            is APIResult.Success -> {
-                tagsResult.result.forEach {
-                    Log.d(TAG,"SET selected tag: $it")
-                }
-                getNearbyEngagements()
-            }
-            is APIResult.Error -> {
-                Log.d(TAG,"SET tag error: ${tagsResult.message}")
-            }
-        }
+    // updates list of tags in local DB and on the server
+    private fun setRxpTags() {
+        RxpSdkProvider.sdk.rxpDataBase.tagDAO().updateAllTagsToState(State.ENABLED)
     }
 
+    // returns paginated list of engagements in selected proximity
     private fun getNearbyEngagements() {
         LocationHelper.getInstance(this).lastKnownLocation?.let {
             val result = RxpSdkProvider.sdk.rxpClient.getMyArea(

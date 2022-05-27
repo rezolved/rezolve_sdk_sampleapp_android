@@ -26,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.rezolve.shared.sspact.SspActActivity" />
 
         <service
             android:name="com.rezolve.smart_triggers.RezolveFirebaseMessagingService"

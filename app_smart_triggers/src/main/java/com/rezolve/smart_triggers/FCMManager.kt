@@ -42,7 +42,7 @@ class FCMManager constructor(context: Context) : PushNotificationProvider {
                 return@OnCompleteListener
             }
             val token = task.result
-            if(token != null) {
+            if (token != null) {
                 _token.tryEmit(PushToken.FCM(token))
             } else {
                 Log.e(TAG, "FCM token is null")
