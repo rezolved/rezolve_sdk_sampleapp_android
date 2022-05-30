@@ -1,6 +1,8 @@
 package com.rezolve.sdk_sample.utils;
 
 import com.rezolve.sdk_sample.BuildConfig;
+import com.rezolve.shared.utils.DateUtils;
+import com.rezolve.shared.utils.DeviceUtils;
 
 import java.util.HashMap;
 import java.util.Map;

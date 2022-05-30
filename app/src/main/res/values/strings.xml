@@ -1,47 +1,5 @@
 <resources>
     <string name="app_name">sdk_sample</string>
-    <string name="authentication_in_progress">Authentication in Progress...</string>
-    <string name="quantity">Quantity:</string>
-    <string name="payment_details">Payment Details</string>
-    <string name="delivery_details">Delivery Details</string>
-    <string name="summary">Summary</string>
-    <string name="subtotal">Subtotal (excluding Tax)</string>
-    <string name="tax">Tax</string>
-    <string name="shipping">Shipping</string>
-    <string name="discount">Discount</string>
-    <string name="total">Total:</string>
-    <string name="instant_buy">Instant Buy</string>
-    <string name="your_order">Your Order</string>
-    <string name="payment_complete">Payment complete</string>
-    <string name="your_order_ref">Your order ref</string>
-    <string name="contact_merchant">Contact Merchant</string>
-    <string name="continue_shopping">Continue Shopping</string>
-    <string name="dialog_error">Error</string>
-    <string name="dialog_ok">OK</string>
-    <string name="merchant_choicer_title">Choice merchant</string>
-    <string name="category_choicer_title">Choice Category</string>
-    <string name="merchant_banner_description">merchant banner</string>
-    <string name="missing_merchants">missing merchants!!!</string>
-    <string name="missing_category">missing category!!!</string>
-    <string name="rezolve_error_format">[RezolveError] T: %s, M: %s\n(%s)</string>
-    <string name="empty_list">empty list</string>
-    <!-- Messages -->
-    <string name="msg_missing_displayproductlist_in_category">Problem witch getting the list of DisplayProduct object from given Category object</string>
-    <string name="msg_not_possible_to_fetch_categories">Not possible to fetch categories</string>
-    <string name="msg_category_not_found">Category not found!</string>
-    <string name="msg_category_not_found_in_merchant">Category not found in merchant \'%s\'</string>
-    <!-- Background Notifications -->
-    <string name="notification_channel_name">Rezolve Sample Notification Channel</string>
-    <string name="notification_channel_description">Information about Rezolve features</string>
-
-    <string name="ssp_field_required_suffix">&#160;*</string>
-    <string name="ssp_block_select">Select</string>
-    <string name="done">DONE!</string>
-    <string name="ssp_act_event_inactive">Event is no longer active.</string>
-    <string name="act_now">Act Now</string>
-    <string name="failed_to_submit">Act submission failed.</string>
-    <string name="submission_success">Success!</string>
     <string name="local_scan_activity">"Local Scan "</string>
     <string name="remote_scan_activity">Remote scan</string>
-    <string name="ssp_block_coupon_expiration">Valid until %s</string>
 </resources>

@@ -19,16 +19,17 @@ import com.rezolve.sdk.RezolveSession;
 import com.rezolve.sdk.location.LocationDependencyProvider;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Product;
-import com.rezolve.sdk_sample.model.AuthenticationResponse;
-import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.remote.ScanActivityRemote;
-import com.rezolve.sdk_sample.services.AuthenticationService;
-import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
-import com.rezolve.sdk_sample.utils.DeviceUtils;
-import com.rezolve.sdk_sample.utils.DialogUtils;
 import com.rezolve.sdk_sample.utils.NotificationUtil;
-import com.rezolve.sdk_sample.utils.ProductUtils;
+import com.rezolve.shared.ProductDetailsActivity;
+import com.rezolve.shared.utils.DialogUtils;
+import com.rezolve.shared.utils.ProductUtils;
+import com.rezolve.shared.authentication.AuthenticationCallback;
+import com.rezolve.shared.authentication.AuthenticationResponse;
+import com.rezolve.shared.authentication.AuthenticationService;
+import com.rezolve.shared.authentication.AuthenticationServiceProvider;
+import com.rezolve.shared.utils.DeviceUtils;
 
 public class MainActivity extends AppCompatActivity implements MainNavigator {
 

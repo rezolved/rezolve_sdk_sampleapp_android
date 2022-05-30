@@ -38,11 +38,12 @@ import com.rezolve.sdk.ssp.resolver.result.ProductResult;
 import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk.ssp.resolver.result.SspCategoryResult;
 import com.rezolve.sdk.ssp.resolver.result.SspProductResult;
-import com.rezolve.sdk_sample.sspact.SspActActivity;
-import com.rezolve.sdk_sample.utils.DialogUtils;
-import com.rezolve.sdk_sample.utils.ProductUtils;
-import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
-import com.rezolve.sdk_sample.utils.sdk.RezolveSdkUtils;
+import com.rezolve.shared.ProductDetailsActivity;
+import com.rezolve.shared.sspact.SspActActivity;
+import com.rezolve.shared.utils.DialogUtils;
+import com.rezolve.shared.utils.ProductUtils;
+import com.rezolve.shared.utils.sdk.MerchantManagerUtils;
+import com.rezolve.shared.utils.sdk.RezolveSdkUtils;
 
 import java.util.List;
 import java.util.UUID;

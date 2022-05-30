@@ -43,13 +43,11 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:screenOrientation="nosensor"
-            android:name=".ScanActivity" />
-        <activity android:name=".ProductDetailsActivity" />
-        <activity android:name=".OrderSummaryActivity" />
+        <activity android:screenOrientation="nosensor" android:name=".ScanActivity" />
+        <activity android:name="com.rezolve.shared.ProductDetailsActivity" />
+        <activity android:name="com.rezolve.shared.OrderSummaryActivity" />
         <activity android:name=".ProductListActivity" />
-        <activity android:name=".sspact.SspActActivity" />
+        <activity android:name="com.rezolve.shared.sspact.SspActActivity" />
         <activity android:name=".remote.ScanActivityRemote" />
     </application>
 

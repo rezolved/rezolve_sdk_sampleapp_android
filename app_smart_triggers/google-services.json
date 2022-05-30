@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "412421153981",
+    "firebase_url": "https://rezolve-it.firebaseio.com",
+    "project_id": "rezolve-it",
+    "storage_bucket": "rezolve-it.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412421153981:android:2fd266e6cd2bfed21e43d4",
+        "android_client_info": {
+          "package_name": "sb.rezolve.app.sandbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412421153981-u55li27qac9pghr3vaba8or3evn96d8h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNvSLuZq62kNC1IYLQJbfvd7HF0yZwUx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412421153981-u55li27qac9pghr3vaba8or3evn96d8h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "412421153981-v6kkm04ajakvoih94tib4eg5qfl66jbv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "now.rezolve.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

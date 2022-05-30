@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,7 +19,6 @@ import com.rezolve.sdk.api.authentication.auth0.AuthParams;
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
 import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
 import com.rezolve.sdk.location.google.LocationProviderFused;
-import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.old_ssp.helper.GeozoneNotificationCallbackHelper;
 import com.rezolve.sdk.old_ssp.interfaces.GeofenceEngagementsListener;
 import com.rezolve.sdk.old_ssp.interfaces.GeozoneNotificationCallback;
@@ -34,21 +32,23 @@ import com.rezolve.sdk.ssp.model.GeolocationTriggeredEngagement;
 import com.rezolve.sdk.ssp.model.SspAct;
 import com.rezolve.sdk.ssp.model.SspObject;
 import com.rezolve.sdk.ssp.resolver.ResolverConfiguration;
-import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.RemoteScanResolverProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
-import com.rezolve.sdk_sample.services.AuthenticationService;
-import com.rezolve.sdk_sample.sspact.SspActActivity;
-import com.rezolve.sdk_sample.utils.ProductUtils;
+import com.rezolve.shared.MainActivityProvider;
+import com.rezolve.shared.SspActManagerProvider;
+import com.rezolve.shared.sspact.SspActActivity;
+import com.rezolve.shared.utils.ProductUtils;
+import com.rezolve.shared.authentication.AuthenticationService;
+import com.rezolve.shared.authentication.AuthenticationServiceProvider;
+import com.rezolve.shared.authentication.SampleAuthRequestProvider;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class App extends Application {
+public class App extends Application implements SspActManagerProvider, MainActivityProvider {
 
     private static final String TAG = "App";
 
@@ -57,24 +57,6 @@ public class App extends Application {
 
     private SspActManager sspActManager;
 
-    private RezolveSDK.AuthRequestProvider authRequestProvider = new RezolveSDK.AuthRequestProvider() {
-
-        private final
-        AuthenticationService authenticationService = AuthenticationServiceProvider.getAuthenticationService();
-
-        @NonNull
-        @Override
-        public RezolveSDK.GetAuthRequest getAuthRequest() {
-            Log.d(TAG, "getAuthRequest");
-            final String tokenJson = authenticationService.ping();
-            if(TextUtils.isEmpty(tokenJson)) {
-                return RezolveSDK.GetAuthRequest.error(new RezolveError(new IOException("Empty token")));
-            } else {
-                return RezolveSDK.GetAuthRequest.authorizationHeader(tokenJson);
-            }
-        }
-    };
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -82,10 +64,13 @@ public class App extends Application {
     }
 
     private void init() {
+        AuthenticationService authenticationService = AuthenticationServiceProvider.getAuthenticationService();
+        authenticationService.init(BuildConfig.DEMO_AUTH_SERVER, BuildConfig.REZOLVE_SDK_API_KEY);
+
         RezolveSDK rezolveSDK = new RezolveSDK.Builder()
                 .setApiKey(BuildConfig.REZOLVE_SDK_API_KEY)
                 .setEnv(BuildConfig.REZOLVE_SDK_ENVIRONMENT)
-                .setAuthRequestProvider(authRequestProvider)
+                .setAuthRequestProvider(new SampleAuthRequestProvider())
                 .build();
         SdkProvider.getInstance().init(rezolveSDK);
 
@@ -97,7 +82,7 @@ public class App extends Application {
                                     BuildConfig.AUTH0_ENDPOINT,
                                     BuildConfig.SSP_ENGAGEMENT_ENDPOINT,
                                     BuildConfig.SSP_ACT_ENDPOINT
-                            );
+                                );
 
         HttpClientConfig httpConfig = new HttpClientConfig.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -218,7 +203,13 @@ public class App extends Application {
         startActivity(intent);
     }
 
+    @Override
     public SspActManager getSspActManager() {
         return sspActManager;
+    }
+
+    @Override
+    public Class<?> getMainActivity() {
+        return ScanActivity.class;
     }
 }
