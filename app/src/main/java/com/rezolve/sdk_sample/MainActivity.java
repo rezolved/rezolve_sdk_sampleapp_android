@@ -1,27 +1,35 @@
 package com.rezolve.sdk_sample;
 
+import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
+
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.rezolve.sdk.RezolveInterface;
 import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.RezolveSession;
+import com.rezolve.sdk.location.LocationDependencyProvider;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Product;
-import com.rezolve.sdk_sample.model.AuthenticationResponse;
-import com.rezolve.sdk_sample.providers.AuthenticationServiceProvider;
 import com.rezolve.sdk_sample.providers.SdkProvider;
-import com.rezolve.sdk_sample.services.AuthenticationService;
-import com.rezolve.sdk_sample.services.callbacks.AuthenticationCallback;
-import com.rezolve.sdk_sample.utils.DeviceUtils;
-import com.rezolve.sdk_sample.utils.DialogUtils;
+import com.rezolve.sdk_sample.remote.ScanActivityRemote;
 import com.rezolve.sdk_sample.utils.NotificationUtil;
-import com.rezolve.sdk_sample.utils.ProductUtils;
-
-import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
+import com.rezolve.shared.ProductDetailsActivity;
+import com.rezolve.shared.utils.DialogUtils;
+import com.rezolve.shared.utils.ProductUtils;
+import com.rezolve.shared.authentication.AuthenticationCallback;
+import com.rezolve.shared.authentication.AuthenticationResponse;
+import com.rezolve.shared.authentication.AuthenticationService;
+import com.rezolve.shared.authentication.AuthenticationServiceProvider;
+import com.rezolve.shared.utils.DeviceUtils;
 
 public class MainActivity extends AppCompatActivity implements MainNavigator {
 
@@ -30,11 +38,33 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
     private AuthenticationService authenticationService = AuthenticationServiceProvider.getAuthenticationService();
     private RezolveSDK rezolveSDK = SdkProvider.getInstance().getSDK();
 
+    private Button localScanBtn, remoteScanBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loginUser();
+        prepareNavigationButtons();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String[] locationPermissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
+        Permissions.check(this, locationPermissions, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                LocationDependencyProvider.locationProvider().start();
+            }
+        });
+    }
+
+    private void prepareNavigationButtons() {
+        localScanBtn = findViewById(R.id.local_scan_activity_btn);
+        remoteScanBtn = findViewById(R.id.remote_scan_activity_btn);
+        remoteScanBtn.setOnClickListener(view -> navigateToRemoteScanView());
     }
 
     private void loginUser() {
@@ -57,13 +87,13 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         rezolveSDK.setAuthToken(response.getToken());
         rezolveSDK.setDeviceIdHeader(deviceId);
 
-        rezolveSDK.createSession(response.getToken(), response.getEntityId(), response.getPartnerId(), new RezolveInterface() {
+        rezolveSDK.createSession(response.getToken(), response.getEntityId(), response.getPartnerId(), null, new RezolveInterface() {
             @Override
             public void onInitializationSuccess(RezolveSession rezolveSession, String partnerId, String entityId) {
                 if(isLaunchedFromNotification(MainActivity.this)) {
                     NotificationUtil.launch(getIntent(), MainActivity.this);
                 } else {
-                    navigateToScanView();
+                    showNavigationButtons();
                 }
             }
 
@@ -74,8 +104,21 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         });
     }
 
+    private void showNavigationButtons() {
+        localScanBtn.setVisibility(View.VISIBLE);
+        remoteScanBtn.setVisibility(View.VISIBLE);
+        localScanBtn.setOnClickListener(view -> navigateToScanView());
+        findViewById(R.id.authenticationStatusTextView).setVisibility(View.GONE);
+    }
+
     private void navigateToScanView() {
         Intent intent = new Intent(MainActivity.this, ScanActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void navigateToRemoteScanView() {
+        Intent intent = new Intent(MainActivity.this, ScanActivityRemote.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

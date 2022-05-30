@@ -1,1 +1,3 @@
 include ':app'
+include ':app_smart_triggers'
+include ':shared'

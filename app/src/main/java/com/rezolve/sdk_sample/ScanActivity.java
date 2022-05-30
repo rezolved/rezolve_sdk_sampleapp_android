@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -19,7 +20,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.rezolve.sdk.core.managers.MerchantManager;
-import com.rezolve.sdk.location.LocationDependencyProvider;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Merchant;
@@ -38,10 +38,12 @@ import com.rezolve.sdk.ssp.resolver.result.ProductResult;
 import com.rezolve.sdk.ssp.resolver.result.SspActResult;
 import com.rezolve.sdk.ssp.resolver.result.SspCategoryResult;
 import com.rezolve.sdk.ssp.resolver.result.SspProductResult;
-import com.rezolve.sdk_sample.utils.DialogUtils;
-import com.rezolve.sdk_sample.utils.ProductUtils;
-import com.rezolve.sdk_sample.utils.sdk.MerchantManagerUtils;
-import com.rezolve.sdk_sample.utils.sdk.RezolveSdkUtils;
+import com.rezolve.shared.ProductDetailsActivity;
+import com.rezolve.shared.sspact.SspActActivity;
+import com.rezolve.shared.utils.DialogUtils;
+import com.rezolve.shared.utils.ProductUtils;
+import com.rezolve.shared.utils.sdk.MerchantManagerUtils;
+import com.rezolve.shared.utils.sdk.RezolveSdkUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -83,12 +85,23 @@ public class ScanActivity extends AppCompatActivity {
                 CategoryResult categoryResult = (CategoryResult) result;
                 onCategoryResult(categoryResult.getCategory(), categoryResult.getMerchantId());
             } else if(result instanceof SspActResult) {
-
+                SspActResult act = (SspActResult) result;
+                if (act.sspAct.getPageBuildingBlocks() != null && !act.sspAct.getPageBuildingBlocks().isEmpty()) {
+                    onSspActResult(act);
+                }
             } else if(result instanceof SspProductResult) {
-
+                SspProductResult sspProductResult = (SspProductResult) result;
+                toastRezolveTrigger(sspProductResult.getSspProduct().getEngagementName(),
+                        sspProductResult.getSspProduct().getRezolveTrigger());
             } else if(result instanceof SspCategoryResult) {
-
+                SspCategoryResult sspCategoryResult = (SspCategoryResult) result;
+                toastRezolveTrigger(sspCategoryResult.getSspCategory().getEngagementName(),
+                        sspCategoryResult.getSspCategory().getRezolveTrigger());
             }
+        }
+
+        private void toastRezolveTrigger(String name, String rezolveTrigger) {
+            Toast.makeText(getBaseContext(), name + " - " + rezolveTrigger, Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -129,13 +142,7 @@ public class ScanActivity extends AppCompatActivity {
                 initializeScanner();
             }
         });
-        String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        Permissions.check(this, locationPermissions, null, null, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                LocationDependencyProvider.locationProvider().start();
-            }
-        });
+
         videoScanManager.clearCache();
         videoScanManager.startCamera();
         videoScanManager.attachReader();
@@ -145,7 +152,6 @@ public class ScanActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         videoScanManager.detachReader();
-        videoScanManager.stopCamera();
         audioScanManager.stopAudioScan();
         audioScanManager.destroy();
         ResolverResultListenersRegistry.getInstance().remove(resolveResultListener);
@@ -162,6 +168,10 @@ public class ScanActivity extends AppCompatActivity {
 
     public void onCategoryResult(Category category, String merchantId) {
         navigateToProductListView(merchantId, category);
+    }
+
+    private void onSspActResult(SspActResult act) {
+        navigateToSspActView(act);
     }
 
     public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg) {
@@ -192,6 +202,13 @@ public class ScanActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void navigateToSspActView(SspActResult act) {
+        Intent intent = new Intent(ScanActivity.this, SspActActivity.class);
+        Bundle bundle = ProductUtils.toBundle(act.getSspAct());
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     private void navigateToProductListView(String merchantId, Category category) {
         View view = getWindow().getDecorView().getRootView();
         if (merchantId == null) {
@@ -204,7 +221,6 @@ public class ScanActivity extends AppCompatActivity {
         }
         MerchantManagerUtils.getMerchants(
                 RezolveSdkUtils.getMerchantManager(),
-                getApplicationContext(),
                 MerchantManager.MerchantVisibility.ALL,
                 new BaseGetMerchantsCallback(view) {
                     @Override
@@ -268,7 +284,6 @@ public class ScanActivity extends AppCompatActivity {
     private void onFabMainClick(View view) {
         MerchantManagerUtils.getMerchants(
                 RezolveSdkUtils.getMerchantManager(),
-                getApplicationContext(),
                 MerchantManager.MerchantVisibility.ALL,
                 new BaseGetMerchantsCallback(view) {
                     @Override
