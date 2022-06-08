@@ -2,7 +2,8 @@
 
 buildscript {
     ext {
-        rezolveSdkVersion = "3.2.0"
+        // TODO: update the version after sdk release
+        rezolveSdkVersion = "2682-bugfix-RR-10724-st-integration-issues-99d664d-dirty" //"3.2.0"
         rezolveSdkScanVersion = "3.2.0"
         jjwtVersion = "0.10.5"
         rxJavaVersion = "2.2.8"
