@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             override fun onLocationChanged(location: LocationWrapper?) {
                 Log.d(TAG, "location update: ${location?.entityToJson()}")
                 location?.let {
-                    CoroutineScope(Dispatchers.Default).launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         val updateTrackingApiResult: APIResult<Geofences> = RxpSdkProvider.sdk.rxpClient.updateTracking(
                             location.rezolveLocation.latitude.toFloat(),
                             location.rezolveLocation.longitude.toFloat(),
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "RezolveSDK initalization success")
                         startLocationUpdates()
 
-                        CoroutineScope(Dispatchers.Default).launch {
+                        CoroutineScope(Dispatchers.IO).launch {
                             rxpCheckIn()
                         }
                     }
