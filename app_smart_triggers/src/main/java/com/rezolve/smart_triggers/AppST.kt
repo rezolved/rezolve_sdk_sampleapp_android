@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.rezolve.rxp.client.observeAccessTokenAsFlow
+import com.rezolve.rxp.client.observeLocationAsFlow
 import com.rezolve.rxp.data.database.RXPSdkDatabase
 import com.rezolve.rxp.domain.di.RXPSdkDatabaseProvider
 import com.rezolve.rxp.push.PushNotificationDIProvider
@@ -28,6 +29,7 @@ import com.rezolve.sdk.RezolveSDK.GetAuthRequest
 import com.rezolve.sdk.api.TokenHolder
 import com.rezolve.sdk.api.authentication.auth0.AuthParams
 import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory
+import com.rezolve.sdk.location.LocationHelper
 import com.rezolve.sdk.logger.RezLog
 import com.rezolve.sdk.model.network.RezolveError
 import com.rezolve.sdk.ssp.google.GoogleGeofenceDetector
@@ -161,6 +163,7 @@ class AppST : Application(), SspActManagerProvider, MainActivityProvider {
             .authenticator(authenticator)
             .accessTokenFlowable(tokenHolder.observeAccessTokenAsFlow())
             .notificationAlerts(geofenceEngagementAlerts)
+            .location(LocationHelper.getInstance(this).observeLocationAsFlow())
             .pushNotificationProvider(SdkProvider.pushNotificationProvider)
             .notificationHelper(notificationHelper)
             .apiKey(BuildConfig.REZOLVE_SDK_API_KEY)
