@@ -1,18 +1,25 @@
 package com.rezolve.smart_triggers
 
 import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.rezolve.rxp.client.APIResult
-import com.rezolve.rxp.sdk.RxpSdkProvider
-import sb.rezolve.app.sandbox.R
-
-import com.rezolve.rxp.client.data.model.Tag
+import com.rezolve.rxp.client.data.model.Geofences
+import com.rezolve.rxp.enums.CoordinateSystem
+import com.rezolve.rxp.enums.MyAreaFilter
 import com.rezolve.rxp.enums.State
+import com.rezolve.rxp.sdk.RxpSdkProvider
 import com.rezolve.sdk.RezolveInterface
 import com.rezolve.sdk.RezolveSession
+import com.rezolve.sdk.location.LocationHelper
+import com.rezolve.sdk.location.LocationUpdateListener
+import com.rezolve.sdk.location.LocationWrapper
+import com.rezolve.sdk.location.google.LocationProviderFused
 import com.rezolve.sdk.model.network.RezolveError
 import com.rezolve.shared.authentication.AuthenticationCallback
 import com.rezolve.shared.authentication.AuthenticationResponse
@@ -22,22 +29,9 @@ import com.rezolve.shared.utils.DialogUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import sb.rezolve.app.sandbox.BuildConfig
-
-import android.content.pm.PackageManager
-import com.rezolve.sdk.location.LocationHelper
-import com.rezolve.sdk.location.LocationUpdateListener
-import com.rezolve.sdk.location.LocationWrapper
-import com.rezolve.sdk.location.google.LocationProviderFused
-import android.R.attr.radius
-
-import com.rezolve.rxp.client.data.model.Geofences
-
-import com.rezolve.rxp.enums.CoordinateSystem
-import com.rezolve.rxp.enums.MyAreaFilter
-import com.rezolve.rxp.sdk.geofence.*
-import com.rezolve.sdk.ssp.model.SspObject
-
+import sb.rezolve.app.sandbox.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_CODE_LOCATION = 10203
     private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -62,7 +57,6 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when(requestCode) {
             REQUEST_CODE_LOCATION -> {
@@ -71,6 +65,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun startLocationUpdates() {
@@ -81,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             override fun onLocationChanged(location: LocationWrapper?) {
                 Log.d(TAG, "location update: ${location?.entityToJson()}")
                 location?.let {
-                    CoroutineScope(Dispatchers.Default).launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         val updateTrackingApiResult: APIResult<Geofences> = RxpSdkProvider.sdk.rxpClient.updateTracking(
                             location.rezolveLocation.latitude.toFloat(),
                             location.rezolveLocation.longitude.toFloat(),
@@ -134,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "RezolveSDK initalization success")
                         startLocationUpdates()
 
-                        CoroutineScope(Dispatchers.Default).launch {
+                        CoroutineScope(Dispatchers.IO).launch {
                             rxpCheckIn()
                         }
                     }
@@ -156,7 +152,9 @@ class MainActivity : AppCompatActivity() {
 //                setRxpTags()
             } else if (checkInApiResult is APIResult.Error) {
                 //handle error
-                DialogUtils.showError(this@MainActivity, checkInApiResult.message)
+                withContext(Dispatchers.Main) {
+                    DialogUtils.showError(this@MainActivity, checkInApiResult.message)
+                }
             }
         }
     }

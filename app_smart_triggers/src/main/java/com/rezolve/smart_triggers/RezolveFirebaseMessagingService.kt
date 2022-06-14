@@ -3,12 +3,13 @@ package com.rezolve.smart_triggers
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.rezolve.sdk.logger.RezLog
 
 class RezolveFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        println("RezolveFirebaseMessagingService.onMessageReceived: $message")
+        RezLog.d("RezolveFirebaseMessagingService","onMessageReceived: $message")
         SdkProvider.pushNotificationProvider.onMessageReceived(message)
     }
 

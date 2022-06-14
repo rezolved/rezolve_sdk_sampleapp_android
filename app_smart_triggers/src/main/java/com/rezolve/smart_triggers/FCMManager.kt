@@ -9,6 +9,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.rezolve.rxp.client.data.model.PushMessage
 import com.rezolve.rxp.client.data.model.PushToken
 import com.rezolve.rxp.push.PushNotificationProvider
+import com.rezolve.sdk.logger.RezLog
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -57,7 +58,7 @@ class FCMManager constructor(context: Context) : PushNotificationProvider {
     }
 
     fun onMessageReceived(message: RemoteMessage) {
-        println("$TAG.onMessageReceived: $message")
+        RezLog.d(TAG,"onMessageReceived: $message")
         _messages.tryEmit(message.toPushMessage())
     }
 
