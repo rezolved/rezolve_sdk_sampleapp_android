@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        rezolveSdkVersion = "2711-feature-RR-12348-b39e4b3"
+        rezolveSdkVersion = "2713-develop-f591425"
         rezolveSdkScanVersion = "3.2.1"
         jjwtVersion = "0.10.5"
         rxJavaVersion = "2.2.8"
