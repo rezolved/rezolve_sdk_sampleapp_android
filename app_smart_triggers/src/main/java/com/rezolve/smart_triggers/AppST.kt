@@ -17,7 +17,6 @@ import com.rezolve.rxp.data.database.RXPSdkDatabase
 import com.rezolve.rxp.domain.di.RXPSdkDatabaseProvider
 import com.rezolve.rxp.push.PushNotificationDIProvider
 import com.rezolve.rxp.push.PushNotificationProvider
-import com.rezolve.rxp.sdk.GeofenceDetectorWrapper
 import com.rezolve.rxp.sdk.RxpSdk
 import com.rezolve.rxp.sdk.RxpSdkProvider
 import com.rezolve.rxp.sdk.geofence.GeozoneNotificationCallback
@@ -39,7 +38,6 @@ import com.rezolve.sdk.ssp.helper.NotificationProperties
 import com.rezolve.sdk.ssp.managers.SspActManager
 import com.rezolve.sdk.ssp.model.SspAct
 import com.rezolve.sdk.ssp.model.SspObject
-import com.rezolve.sdk.ssp.provider.GeofenceDetectorProvider
 import com.rezolve.shared.MainActivityProvider
 import com.rezolve.shared.SspActManagerProvider
 import com.rezolve.shared.authentication.AuthenticationServiceProvider
@@ -149,15 +147,9 @@ class AppST : Application(), SspActManagerProvider, MainActivityProvider {
         val geofenceDetector = GoogleGeofenceDetector.Builder()
             .transitionTypes(GoogleGeofenceDetector.TRANSITION_TYPE_ENTER or GoogleGeofenceDetector.TRANSITION_TYPE_EXIT)
             .build(this)
+        geofenceDetector.unregisterAll()
 
         RXPSdkDatabaseProvider.database = RXPSdkDatabase.getDatabase(context = applicationContext)
-
-        val geofenceDetectorWrapper = GeofenceDetectorWrapper(
-            RXPSdkDatabaseProvider.database.geofenceEntityDAO(),
-            geofenceDetector
-        )
-        geofenceDetectorWrapper.unregisterAll()
-        GeofenceDetectorProvider.getInstance().setGeofenceDetector(geofenceDetectorWrapper)
 
         val rxpSdk = RxpSdk.Builder(this)
             .authenticator(authenticator)
@@ -168,7 +160,7 @@ class AppST : Application(), SspActManagerProvider, MainActivityProvider {
             .notificationHelper(notificationHelper)
             .apiKey(BuildConfig.REZOLVE_SDK_API_KEY)
             .endpoint(BuildConfig.SMART_TRIGGERS_BASE_ENDPOINT)
-            .geofenceDetector(geofenceDetectorWrapper)
+            .geofenceDetector(geofenceDetector)
             .sspActManager(SdkProvider.sspActManager)
             .build()
 
