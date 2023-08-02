@@ -42,16 +42,6 @@ public class RezolveSdkUtils {
     }
 
     // Errors
-
-    public static String formatedRezolveError(Context context, RezolveError rezolveError) {
-        return String.format(
-                context.getString(R.string.rezolve_error_format),
-                rezolveError.getErrorType().toString(),
-                rezolveError.getErrorMessage().toString(),
-                rezolveError.getMessage() == null ? "NULL" : rezolveError.getMessage()
-        );
-    }
-
     public static RezolveError createCustomRezolveError(String message) {
         return new RezolveError(RezolveError.RezolveErrorType.CUSTOM, RezolveError.RezolveErrorMessage.CUSTOM, message);
     }

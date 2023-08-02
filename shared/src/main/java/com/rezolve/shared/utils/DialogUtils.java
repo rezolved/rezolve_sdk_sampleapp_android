@@ -26,7 +26,7 @@ public final class DialogUtils {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 
         dialog.setTitle(title)
-                .setIcon(R.drawable.default_notification_icon)
+                .setIcon(R.drawable.ic_slider_head)
                 .setMessage(message)
                 .setPositiveButton(resources.getText(R.string.dialog_ok), (dialogInterface, i) -> {
                     // nothing to implement here

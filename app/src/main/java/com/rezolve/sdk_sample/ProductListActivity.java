@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.rezolve.sdk.core.managers.ProductManager;
 import com.rezolve.sdk.model.network.RezolveError;
@@ -160,7 +161,7 @@ public class ProductListActivity extends AppCompatActivity {
         if (categoryList != null && categoryList.size() > 0) {
             DialogUtils.showChoicer(
                     ProductListActivity.this,
-                    getString(R.string.category_choicer_title),
+                    getString(R.string.select_category_title),
                     categoryList,
                     (spinnerView, item) -> requestCategory(merchant, item.getId())
             );
@@ -235,10 +236,6 @@ public class ProductListActivity extends AppCompatActivity {
         tvMessage.setTextColor(Color.RED);
     }
 
-    private void displayRezolveError(RezolveError rezolveError) {
-        displayError(RezolveSdkUtils.formatedRezolveError(getApplicationContext(), rezolveError));
-    }
-
     //
     // Redundant callbacks
     //
@@ -257,7 +254,7 @@ public class ProductListActivity extends AppCompatActivity {
 
         @Override
         public void onRezolveError(@NonNull RezolveError rezolveError) {
-            displayRezolveError(rezolveError);
+            displayError(rezolveError.getMessage());
         }
     }
 
