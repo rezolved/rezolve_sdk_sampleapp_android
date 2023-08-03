@@ -88,17 +88,12 @@ dependencies {
     implementation "com.rezolve.sdk:scan-android:$rezolveSdkScanVersion"
 //    implementation "com.rezolve.sdk:scan-android-x86:$rezolveSdkScanVersion"
 
-    implementation "com.google.android.gms:play-services-location:21.0.1"
-
     // JJWT (Json Web Token library)
     api "io.jsonwebtoken:jjwt-api:$jjwtVersion"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:$jjwtVersion"
     runtimeOnly("io.jsonwebtoken:jjwt-orgjson:$jjwtVersion") {
         exclude group: "org.json", module: "json"
     }
-
-    // Permissions library
-    implementation "com.nabinbhandari.android:permissions:$permissionsVersion" // TODO remove
 
     // Parceler
     implementation "org.parceler:parceler-api:$parcelerVersion"

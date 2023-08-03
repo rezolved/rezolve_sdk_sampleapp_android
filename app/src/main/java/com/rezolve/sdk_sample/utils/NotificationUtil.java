@@ -10,7 +10,7 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.ssp.model.SspAct;
 import com.rezolve.sdk.ssp.model.SspCategory;
 import com.rezolve.sdk.ssp.model.SspProduct;
-import com.rezolve.sdk_sample.MainNavigator;
+import com.rezolve.sdk_sample.navigation.MainNavigator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +43,7 @@ public class NotificationUtil {
         }
 
         switch (action) {
-            case ACTION_PRODUCT_AUDIO_SCAN: {
+            case ACTION_PRODUCT_AUDIO_SCAN -> {
                 final String productResult = receivedIntent.getStringExtra(SERIALIZED_PRODUCT_RESULT);
                 try {
                     JSONObject jsonObject = new JSONObject(productResult);
@@ -54,24 +54,26 @@ public class NotificationUtil {
                 }
                 break;
             }
-            case ACTION_CATEGORY_AUDIO_SCAN: {
+            case ACTION_CATEGORY_AUDIO_SCAN -> {
                 final String productResult = receivedIntent.getStringExtra(SERIALIZED_CATEGORY_RESULT);
                 try {
                     JSONObject jsonObject = new JSONObject(productResult);
                     Category category = Category.jsonToEntity(jsonObject.getJSONObject("category"));
                     String merchantId = jsonObject.getString("merchantId");
                     //navigator.navigateToProductDetails();
+                    //TODO
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
             }
-            case ACTION_SSP_ACT_SCAN: {
+            case ACTION_SSP_ACT_SCAN -> {
 
                 if (receivedIntent.hasExtra(SERIALIZED_SSP_ACT)) {
                     final String sspActSerialized = receivedIntent.getStringExtra(SERIALIZED_SSP_ACT);
                     try {
                         final SspAct sspAct = SspAct.jsonToEntity(new JSONObject(sspActSerialized));
+                        //TODO
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -81,6 +83,7 @@ public class NotificationUtil {
                     final String sspProductSerialized = receivedIntent.getStringExtra(SERIALIZED_SSP_PRODUCT);
                     try {
                         final SspProduct sspProduct = SspProduct.jsonToEntity(new JSONObject(sspProductSerialized));
+                        //TODO
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -89,6 +92,7 @@ public class NotificationUtil {
                     final String sspCategorySerialized = receivedIntent.getStringExtra(SERIALIZED_SSP_CATEGORY);
                     try {
                         final SspCategory sspCategory = SspCategory.jsonToEntity(new JSONObject(sspCategorySerialized));
+                        //TODO
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
