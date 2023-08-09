@@ -1,4 +1,4 @@
-package com.rezolve.sdk_sample;
+package com.rezolve.sdk_sample.scan;
 
 import static com.rezolve.sdk_sample.utils.NotificationUtil.isLaunchedFromNotification;
 
@@ -32,27 +32,30 @@ import com.rezolve.scan.core.video.ScanHint;
 import com.rezolve.scan.core.video.VideoScanManager;
 import com.rezolve.scan.core.video.VideoScanManagerListener;
 import com.rezolve.scan.video.VideoScanManagerProvider;
-import com.rezolve.sdk.core.callbacks.MerchantCallback;
-import com.rezolve.sdk.core.managers.MerchantManager;
 import com.rezolve.sdk.model.network.RezolveError;
+import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Merchant;
+import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.resolver.ResolverError;
 import com.rezolve.sdk.resolver.UrlTrigger;
 import com.rezolve.sdk.ssp.resolver.ResolveResultListener;
 import com.rezolve.sdk.ssp.resolver.ResolverResultListenersRegistry;
 import com.rezolve.sdk.ssp.resolver.result.ContentResult;
+import com.rezolve.sdk.ssp.resolver.result.SspActResult;
+import com.rezolve.sdk_sample.R;
 import com.rezolve.sdk_sample.authentication.UserAuthenticator;
 import com.rezolve.sdk_sample.navigation.Navigator;
 import com.rezolve.sdk_sample.utils.NotificationUtil;
 import com.rezolve.shared.utils.DialogUtils;
-import com.rezolve.shared.utils.sdk.RezolveSdkUtils;
 
 import java.util.List;
 import java.util.UUID;
 
-public class ScanActivity extends AppCompatActivity implements UserAuthenticator.Callback, Navigator.NavigatorEvents {
+public class ScanActivity extends AppCompatActivity implements UserAuthenticator.Callback, ScanCallback {
 
     private static final String TAG = ScanActivity.class.getSimpleName();
+
+    private ScanViewModel scanViewModel;
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 200;
 
@@ -62,13 +65,10 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
     private final VideoScanManager videoScanManager = VideoScanManagerProvider.getVideoScanManager();
     private final AudioScanManager audioScanManager = AudioScanManagerProvider.getAudioScanManager();
 
-    private Navigator navigator;
-    private UserAuthenticator userAuthenticator;
-
     @Override
     public void onInitializationSuccess() {
         if(isLaunchedFromNotification(this)) {
-            NotificationUtil.launch(getIntent(), navigator);
+            NotificationUtil.launch(getIntent(), this);
         } else {
             initFab();
             findViewById(R.id.authenticationStatusTextView).setVisibility(View.GONE);
@@ -96,7 +96,7 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
         @Override
         public void onContentResult(@NonNull UUID uuid, @NonNull ContentResult result) {
             Log.d(TAG, "onContentResult: " + result);
-            navigator.onContentResult(result);
+            scanViewModel.onContentResult(result);
         }
 
         @Override
@@ -117,7 +117,7 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
         videoScanManager.attachScanView(previewView);
         loadingSpinView = findViewById(R.id.loadingSpinView);
 
-        navigator = new Navigator(this, this);
+        scanViewModel = new ScanViewModel(this);
         new UserAuthenticator(this, this).loginUser();
     }
 
@@ -240,7 +240,14 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
         return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg) {
+    private void initFab() {
+        FloatingActionButton fabMain = findViewById(R.id.fabMain);
+        if (fabMain != null) {
+            fabMain.setOnClickListener(view -> scanViewModel.onFabMainClick());
+        }
+    }
+
+    private void onScanError(RezolveError.RezolveErrorType rezolveErrorType, String errorMsg) {
         hideLoadingIndicator();
         DialogUtils.showError(this, rezolveErrorType.name() + "\n" + errorMsg);
     }
@@ -255,50 +262,38 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
         runOnUiThread(() -> loadingSpinView.setVisibility(View.GONE));
     }
 
-    private void initFab() {
-        FloatingActionButton fabMain = findViewById(R.id.fabMain);
-        if (fabMain != null) {
-            fabMain.setOnClickListener(view -> onFabMainClick());
-        }
-    }
-
-    private void onFabMainClick() {
-        showLoadingIndicator();
-        RezolveSdkUtils.getMerchantManager().getMerchants(
-                MerchantManager.MerchantVisibility.ALL,
-                new MerchantCallback() {
-                    @Override
-                    public void onGetMerchantsSuccess(List<Merchant> merchants) {
-                        hideLoadingIndicator();
-                        if (merchants != null && merchants.size() > 0) {
-                            DialogUtils.showChoicer(
-                                    ScanActivity.this,
-                                    getString(R.string.select_merchant_title),
-                                    merchants,
-                                    (spinnerView, item) -> navigator.navigateToProductListView(item, null)
-
-                            );
-                        } else {
-                            onSnackbarMessage(R.string.missing_merchants);
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull RezolveError error) {
-                        hideLoadingIndicator();
-                        Log.d(TAG, "onRezolveError: "+error.getMessage());
-                        onToastMessage(error.getMessage());
-                    }
-                }
-        );
-    }
-
     @Override
     public void onSnackbarMessage(@StringRes int message) {
         View view = getWindow().getDecorView().getRootView();
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT);
         snackbar.getView().setBackgroundColor(Color.YELLOW);
         snackbar.show();
+    }
+
+    @Override
+    public void showProductDetails(Product product) {
+        Navigator.navigateToProductDetails(product, this);
+    }
+
+    @Override
+    public void showSspActView(SspActResult act) {
+        Navigator.navigateToSspActView(act, this);
+    }
+
+    @Override
+    public void showProductListView(Merchant merchantDetails, Category category) {
+        Navigator.navigateToProductListView(merchantDetails, category, this);
+    }
+
+    @Override
+    public void showMerchantSelector(List<Merchant> merchants) {
+        DialogUtils.showSelector(
+                ScanActivity.this,
+                getString(R.string.select_merchant_title),
+                merchants,
+                (spinnerView, item) -> Navigator.navigateToProductListView(item, null, this)
+
+        );
     }
 
     @Override

@@ -34,7 +34,7 @@ public final class DialogUtils {
                 .show();
     }
 
-    public static <T> void showChoicer(Activity activity, String title, @NonNull List<T> choices, RecyclerViewAdapter.OnItemClickListener<T> onItemClickListener) {
+    public static <T> void showSelector(Activity activity, String title, @NonNull List<T> choices, RecyclerViewAdapter.OnItemClickListener<T> onItemClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
         final Spinner spinner = new Spinner(activity);

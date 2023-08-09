@@ -10,7 +10,7 @@ import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.ssp.model.SspAct;
 import com.rezolve.sdk.ssp.model.SspCategory;
 import com.rezolve.sdk.ssp.model.SspProduct;
-import com.rezolve.sdk_sample.navigation.MainNavigator;
+import com.rezolve.sdk_sample.navigation.Navigator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +35,7 @@ public class NotificationUtil {
                 && isValidAction(activity.getIntent().getAction());
     }
 
-    public static void launch(@NonNull Intent receivedIntent, @NonNull MainNavigator navigator) {
+    public static void launch(@NonNull Intent receivedIntent, @NonNull Activity activity) {
         String action = receivedIntent.getAction();
 
         if (action == null) {
@@ -48,7 +48,7 @@ public class NotificationUtil {
                 try {
                     JSONObject jsonObject = new JSONObject(productResult);
                     Product product = Product.jsonToEntity(jsonObject.getJSONObject("product"));
-                    navigator.navigateToProductDetails(product);
+                    Navigator.navigateToProductDetails(product, activity);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

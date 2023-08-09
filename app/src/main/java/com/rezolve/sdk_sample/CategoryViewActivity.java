@@ -12,18 +12,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.rezolve.sdk.RezolveSDK;
+import com.rezolve.sdk.core.callbacks.ProductCallback;
 import com.rezolve.sdk.core.managers.ProductManager;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.DisplayProduct;
 import com.rezolve.sdk.model.shop.Merchant;
+import com.rezolve.sdk.model.shop.PageNavigationFilter;
+import com.rezolve.sdk.model.shop.Product;
+import com.rezolve.sdk_sample.navigation.Navigator;
 import com.rezolve.shared.adapter.DisplayProductAdapter;
+import com.rezolve.shared.adapter.RecyclerViewAdapter;
 import com.rezolve.shared.utils.DialogUtils;
 import com.rezolve.shared.utils.sdk.MerchantManagerUtils;
 import com.rezolve.shared.utils.sdk.ProductManagerUtils;
@@ -35,16 +41,17 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Objects;
 
-public class ProductListActivity extends AppCompatActivity {
+public class CategoryViewActivity extends AppCompatActivity {
+
+    private final static String TAG = CategoryViewActivity.class.getSimpleName();
 
     public static final String PARAM_MERCHANT_JSON_KEY = "merchantJson";
     public static final String PARAM_CATEGORY_JSON_KEY = "categoryJson";
-    private SpinKitView loadingSpinView; // TODO: code duplication
+    private SpinKitView loadingSpinView;
     private FloatingActionButton fabMain;
     private ImageView ivBanner;
     private RecyclerView recyclerView;
     private TextView tvMessage;
-    private ProductManager productManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,22 +64,47 @@ public class ProductListActivity extends AppCompatActivity {
         Category category = getCategory(intent);
 
         // Bind views
-        loadingSpinView = findViewById(R.id.loadingSpinView); // TODO: code duplication
+        loadingSpinView = findViewById(R.id.loadingSpinView);
         fabMain = findViewById(R.id.fabMain);
         ivBanner = findViewById(R.id.ivBanner);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.setAdapter(new DisplayProductAdapter());
         tvMessage = findViewById(R.id.tvMessage);
 
-        // global
-        productManager = RezolveSdkUtils.getProductManager();
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        DisplayProductAdapter adapter = new DisplayProductAdapter();
+        adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener<DisplayProduct>() {
+            @Override
+            public void onItemClick(View view, DisplayProduct item) {
+                Log.d("dupa", "onItemClick: "+item.entityToJson());
+                showLoadingIndicator();
+                RezolveSDK.peekInstance().getRezolveSession().getProductManager().getProduct(
+                        item.getMerchantId(),
+                        item.getCategoryId(),
+                        item.getId(),
+                        new ProductCallback() {
+                            @Override
+                            public void onGetProductSuccess(Product product) {
+                                Log.d("dupa", "onItemClick.onGetProductSuccess: "+product.getTitle());
+                                hideLoadingIndicator();
+                                Navigator.navigateToProductDetails(product, CategoryViewActivity.this);
+                            }
+
+                            @Override
+                            public void onError(@NonNull RezolveError error) {
+                                hideLoadingIndicator();
+                                Log.e(TAG, "getProduct error: "+error.getMessage());
+                            }
+                        }
+                );
+            }
+        });
+        recyclerView.setAdapter(adapter);
 
         // load data
         loadBanner(merchant, category);
 
         if (category == null && merchant != null) {
-            initialRequestCategory(merchant); // initialRequestCategory -> initFab -> loadProducts
+            requestCategoryDetails(merchant, null); // initialRequestCategory -> initFab -> loadProducts
         } else {
             initFab(merchant, category);
             loadProducts(merchant, category);
@@ -80,7 +112,7 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     private JSONObject createJsonObject(Intent intent, String intentParamKey) throws NullPointerException, JSONException {
-        return new JSONObject(intent == null ? null : intent.getStringExtra(intentParamKey));
+        return intent == null ? null : new JSONObject(intent.getStringExtra(intentParamKey));
     }
 
     private Merchant getMerchant(Intent intent) {
@@ -95,9 +127,7 @@ public class ProductListActivity extends AppCompatActivity {
     private Category getCategory(Intent intent) {
         try {
             return Category.jsonToEntity(createJsonObject(intent, PARAM_CATEGORY_JSON_KEY));
-        } catch (NullPointerException npe) {
-            // DO NOTHING
-        } catch (JSONException e) {
+        } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
         return null;
@@ -105,12 +135,12 @@ public class ProductListActivity extends AppCompatActivity {
 
     private void initFab(Merchant merchant, Category category) {
         if (fabMain != null) {
-            fabMain.setOnClickListener(view -> showCategoryChoicer(merchant, category));
+            fabMain.setOnClickListener(view -> showCategorySelector(merchant, category));
         }
     }
 
     // TODO: code duplication:
-    private void displayLoadingIndicator() {
+    private void showLoadingIndicator() {
         loadingSpinView.setVisibility(View.VISIBLE);
     }
 
@@ -119,92 +149,91 @@ public class ProductListActivity extends AppCompatActivity {
     }
     // TODO: code duplication ^^^
 
-    private void loadBanner(String bannerUrl) {
-        Glide.with(this)
-                .load(bannerUrl)
-                .placeholder(R.drawable.ic_slider_head)
-                .error(android.R.drawable.stat_notify_error)
-                .dontTransform()
-                .into(ivBanner);
-    }
-
     private void loadBanner(Merchant merchant, Category category) {
         String bannerUrl = ProductManagerUtils.getImage(category);
         if (TextUtils.isEmpty(bannerUrl)) {
             bannerUrl = MerchantManagerUtils.getBanner(merchant);
         }
-        loadBanner(bannerUrl);
+        if (bannerUrl != null) {
+            Glide.with(this)
+                    .load(bannerUrl)
+                    .placeholder(R.drawable.ic_slider_head)
+                    .error(android.R.drawable.stat_notify_error)
+                    .dontTransform()
+                    .into(ivBanner);
+        }
     }
 
     private void loadProducts(@Nullable Merchant merchant, @Nullable Category category) {
-        loadProducts(category);
-        showCategoryChoicer(merchant, category);
-    }
-
-    private void loadProducts(@Nullable Category category) {
-        List<DisplayProduct> displayProductList = ProductManagerUtils.getProductFromCategory(category);
+        List<DisplayProduct> displayProductList = ProductManagerUtils.getProductsFromCategory(category);
         if (displayProductList == null) {
             displayError(getString(R.string.msg_missing_displayproductlist_in_category));
         } else {
             displayProductList(displayProductList);
         }
+
+        showCategorySelector(merchant, category);
     }
 
-    private void showCategoryChoicer(@Nullable Merchant merchant, @Nullable Category category) {
+    /**
+     *  Each category in Rezolve ecosystem can have subcategories. Each subcategory can have
+     *  it's own subcategories. It's up to your UX design to decide how you want to show them.
+     *  In this example to navigate down the category tree we show a floating button with selector menu.
+     */
+    private void showCategorySelector(@Nullable Merchant merchant, @Nullable Category category) {
         if (merchant == null) {
-            // We are not possible to fetch category
+            // To fetch category details we need merchant ID
             displayError(getString(R.string.msg_not_possible_to_fetch_categories));
             return;
         }
-        // Choice category
         List<Category> categoryList = ProductManagerUtils.getCategoryList(category);
         if (categoryList != null && categoryList.size() > 0) {
-            DialogUtils.showChoicer(
-                    ProductListActivity.this,
+            DialogUtils.showSelector(
+                    CategoryViewActivity.this,
                     getString(R.string.select_category_title),
                     categoryList,
-                    (spinnerView, item) -> requestCategory(merchant, item.getId())
+                    (spinnerView, item) -> requestCategoryDetails(merchant, item.getId())
             );
         } else {
-            Toast.makeText(this, R.string.msg_category_not_found, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "showCategorySelector: No subcategories found");
         }
     }
 
+    /**
+     *  To request Merchant's default Category pass 'null' as Category ID.
+     *  To request selected subcategory you have to pass selected Category ID.
+     *
+     *  Category object contains paginated lists of products and subcategories.
+     *  In this example we only fetch first page of results, but if the number of items exceeds
+     *  page size you might need to follow with more requests with incremented page indexes.
+     */
+    private void requestCategoryDetails(@NonNull Merchant merchant, @Nullable String categoryID) {
+        showLoadingIndicator();
+        PageNavigationFilter categoryFilter = PageNavigationFilter.getDefault(0);
+        PageNavigationFilter productFilter = PageNavigationFilter.getDefault(0);
 
-    // Base request
-    private void requestCategory(@NonNull Merchant merchant,
-                                 @Nullable String categoryId,
-                                 @NonNull ProductManagerUtils.GetCategoryCallback callback) {
-        ProductManagerUtils.getCategory(
-                productManager,
+        RezolveSDK.peekInstance().getRezolveSession().getProductManager().getProductsAndCategories(
                 merchant.getId(),
-                categoryId,
-                callback
+                categoryID,
+                categoryFilter,
+                productFilter,
+                new ProductCallback() {
+                    @Override
+                    public void onGetProductsAndCategoriesSuccess(Category category) {
+                        hideLoadingIndicator();
+                        initFab(merchant, category);
+                        onRequestCategorySuccess(merchant, category);
+                    }
+
+                    @Override
+                    public void onError(@NonNull RezolveError error) {
+                        hideLoadingIndicator();
+                        Log.e(TAG, "requestCategoryDetails error: "+error.getMessage());
+                    }
+                }
         );
     }
 
-    // Initial request
-    private void initialRequestCategory(@NonNull Merchant merchant) {
-        requestCategory(merchant, null, new BaseGetCategoryCallback() {
-            @Override
-            public void onSuccess(Category category) {
-                initFab(merchant, category);
-                onRequestCategorySuccess(merchant, category);
-            }
-        });
-    }
-
-    // Normal request
-    private void requestCategory(@NonNull Merchant merchant, @Nullable String categoryId) {
-        requestCategory(merchant, categoryId, new BaseGetCategoryCallback() {
-            @Override
-            public void onSuccess(Category category) {
-                onRequestCategorySuccess(merchant, category);
-            }
-        });
-    }
-
-    // Just reduce code duplication
     private void onRequestCategorySuccess(@NonNull Merchant merchant, @Nullable Category category) {
         loadBanner(merchant, category);
         if (category == null) {
@@ -235,31 +264,4 @@ public class ProductListActivity extends AppCompatActivity {
         displayMessage(message);
         tvMessage.setTextColor(Color.RED);
     }
-
-    //
-    // Redundant callbacks
-    //
-
-    private class BaseProcessingInterface implements RezolveSdkUtils.ProcessingInterface {
-
-        @Override
-        public void processingStarted() {
-            displayLoadingIndicator();
-        }
-
-        @Override
-        public void processingFinished() {
-            hideLoadingIndicator();
-        }
-
-        @Override
-        public void onRezolveError(@NonNull RezolveError rezolveError) {
-            displayError(rezolveError.getMessage());
-        }
-    }
-
-    private abstract class BaseGetCategoryCallback extends BaseProcessingInterface
-            implements ProductManagerUtils.GetCategoryCallback {
-    }
-
 }

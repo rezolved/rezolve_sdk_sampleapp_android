@@ -9,7 +9,6 @@
 
     <!-- Messages -->
     <string name="msg_not_possible_to_fetch_categories">Can\'t fetch categories</string>
-    <string name="msg_category_not_found">Category not found</string>
     <string name="msg_category_not_found_in_merchant">Category not found for merchant \'%s\'</string>
     <string name="msg_missing_displayproductlist_in_category">Can\'t get list of DisplayProducts from given Category object</string>
 

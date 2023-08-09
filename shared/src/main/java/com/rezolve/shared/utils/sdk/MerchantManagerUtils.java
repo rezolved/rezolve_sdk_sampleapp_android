@@ -15,21 +15,6 @@ import java.util.List;
 
 public class MerchantManagerUtils {
 
-    //
-    // Getters
-    //
-
-    public static void getMerchants(@Nullable MerchantManager merchantManager,
-                                    @NonNull MerchantManager.MerchantVisibility merchantVisibility,
-                                    @NonNull GetMerchantsCallback callback) {
-        if (merchantManager == null) {
-            callback.onRezolveError(RezolveSdkUtils.createMissingMerchantManagerError());
-        } else {
-            callback.processingStarted();
-            merchantManager.getMerchants(merchantVisibility, callback);
-        }
-    }
-
     public static String getBanner(Merchant merchant) {
         if (merchant == null) {
             return null;
@@ -43,31 +28,5 @@ public class MerchantManagerUtils {
             }
         }
         return merchant.getBanner();
-    }
-
-    //
-    // Interfaces
-    //
-
-    public interface GetMerchantsCallback extends MerchantInterface, RezolveSdkUtils.ProcessingInterface {
-
-        void onSuccess(List<Merchant> merchantList);
-
-        @Override
-        default void onGetMerchantsSuccess(List<Merchant> list) {
-            processingFinished();
-            onSuccess(list);
-        }
-
-        @Override
-        default void onGetShippingMethodsSuccess(List<SupportedDeliveryMethod> list) {
-            processingFinished();
-        }
-
-        @Override
-        default void onError(@NonNull RezolveError rezolveError) {
-            processingFinished();
-            onRezolveError(rezolveError);
-        }
     }
 }

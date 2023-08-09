@@ -14,8 +14,6 @@ import com.rezolve.shared.utils.sdk.ProductManagerUtils;
 
 public class DisplayProductAdapter extends RecyclerViewAdapter<DisplayProduct, DisplayProductAdapter.ViewHolder> {
 
-    // RecyclerViewAdapter
-
     @LayoutRes
     @Override
     protected int getItemLayoutResId() {
@@ -26,8 +24,6 @@ public class DisplayProductAdapter extends RecyclerViewAdapter<DisplayProduct, D
     protected ViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
     }
-
-    // BindableRecyclerViewHolder
 
     protected static class ViewHolder extends BindableRecyclerViewHolder<DisplayProduct> {
         private final ImageView thumbnails;

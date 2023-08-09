@@ -10,6 +10,7 @@ import com.rezolve.sdk.core.managers.ProductManager;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.DisplayProduct;
+import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk.model.shop.PageNavigationFilter;
 import com.rezolve.sdk.model.shop.Product;
 
@@ -17,39 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductManagerUtils {
-
-    //
-    // Getters
-    //
-
-    public static void getCategory(@Nullable ProductManager productManager,
-                                   @NonNull String merchantId,
-                                   @Nullable String categoryId,
-                                   @NonNull PageNavigationFilter categoryFilter,
-                                   @NonNull PageNavigationFilter productFilter,
-                                   @NonNull GetCategoryCallback callback) {
-        if (productManager == null) {
-            callback.onRezolveError(RezolveSdkUtils.createMissingProductManagerError());
-        } else {
-            callback.processingStarted();
-            productManager.getProductsAndCategories(merchantId, categoryId, categoryFilter, productFilter, callback);
-        }
-    }
-
-    public static void getCategory(@Nullable ProductManager productManager,
-                                   @NonNull String merchantId,
-                                   @Nullable String categoryId,
-                                   @NonNull GetCategoryCallback callback) {
-        getCategory(productManager, merchantId, categoryId, PageNavigationFilter.getDefault(-1), PageNavigationFilter.getDefault(-1), callback);
-    }
-
-    public static void getCategory(@Nullable ProductManager productManager,
-                                   @NonNull String merchantId,
-                                   @NonNull GetCategoryCallback callback) {
-        getCategory(productManager, merchantId, null, callback);
-    }
-
-    public static List<DisplayProduct> getProductFromCategory(Category category) {
+    public static List<DisplayProduct> getProductsFromCategory(Category category) {
         if (category == null) {
             return null;
         }
@@ -109,6 +78,7 @@ public class ProductManagerUtils {
     // Interfaces
     //
 
+    //TODO check if we need this
     public interface GetCategoryCallback extends ProductInterface, RezolveSdkUtils.ProcessingInterface {
 
         void onSuccess(Category category);
