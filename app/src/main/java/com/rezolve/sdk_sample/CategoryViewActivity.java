@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.rezolve.sdk.RezolveSDK;
 import com.rezolve.sdk.core.callbacks.ProductCallback;
-import com.rezolve.sdk.core.managers.ProductManager;
 import com.rezolve.sdk.model.network.RezolveError;
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.DisplayProduct;
@@ -28,12 +27,11 @@ import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk.model.shop.PageNavigationFilter;
 import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk_sample.navigation.Navigator;
-import com.rezolve.shared.adapter.DisplayProductAdapter;
+import com.rezolve.shared.adapter.CategoryViewAdapter;
 import com.rezolve.shared.adapter.RecyclerViewAdapter;
 import com.rezolve.shared.utils.DialogUtils;
 import com.rezolve.shared.utils.sdk.MerchantManagerUtils;
 import com.rezolve.shared.utils.sdk.ProductManagerUtils;
-import com.rezolve.shared.utils.sdk.RezolveSdkUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +51,9 @@ public class CategoryViewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView tvMessage;
 
+    @NonNull
+    private Merchant merchant;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,7 @@ public class CategoryViewActivity extends AppCompatActivity {
 
         // Get external parameters
         Intent intent = getIntent();
-        Merchant merchant = getMerchant(intent);
+        merchant = getMerchant(intent);
         Category category = getCategory(intent);
 
         // Bind views
@@ -71,57 +72,53 @@ public class CategoryViewActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        DisplayProductAdapter adapter = new DisplayProductAdapter();
-        adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener<DisplayProduct>() {
-            @Override
-            public void onItemClick(View view, DisplayProduct item) {
-                Log.d("dupa", "onItemClick: "+item.entityToJson());
-                showLoadingIndicator();
-                RezolveSDK.peekInstance().getRezolveSession().getProductManager().getProduct(
-                        item.getMerchantId(),
-                        item.getCategoryId(),
-                        item.getId(),
-                        new ProductCallback() {
-                            @Override
-                            public void onGetProductSuccess(Product product) {
-                                Log.d("dupa", "onItemClick.onGetProductSuccess: "+product.getTitle());
-                                hideLoadingIndicator();
-                                Navigator.navigateToProductDetails(product, CategoryViewActivity.this);
-                            }
-
-                            @Override
-                            public void onError(@NonNull RezolveError error) {
-                                hideLoadingIndicator();
-                                Log.e(TAG, "getProduct error: "+error.getMessage());
-                            }
-                        }
-                );
-            }
-        });
+        CategoryViewAdapter adapter = new CategoryViewAdapter();
+        adapter.setOnItemClickListener(adapterListener);
         recyclerView.setAdapter(adapter);
 
         // load data
         loadBanner(merchant, category);
 
-        if (category == null && merchant != null) {
+        if (category == null) {
             requestCategoryDetails(merchant, null); // initialRequestCategory -> initFab -> loadProducts
         } else {
             initFab(merchant, category);
-            loadProducts(merchant, category);
+            loadItems(merchant, category);
         }
     }
+
+    private final RecyclerViewAdapter.OnItemClickListener<CategoryViewAdapter.Item> adapterListener = (view, item) -> {
+        Log.d("dupa", "onItemClick: "+item.getName());
+        showLoadingIndicator();
+        switch (item.getType()) {
+            case PRODUCT -> {
+                DisplayProduct displayProduct = item.getDisplayProduct();
+                if (displayProduct != null) {
+                    Log.d("dupa", "product id: "+displayProduct.getId());
+                    requestProductDetails(merchant, displayProduct);
+                }
+            }
+            case CATEGORY -> {
+                if (item.getCategory() != null) {
+                    Log.d("dupa", "category id: "+item.getCategory().getId());
+                    requestCategoryDetails(merchant, item.getCategory().getId());
+                }
+            }
+        }
+    };
 
     private JSONObject createJsonObject(Intent intent, String intentParamKey) throws NullPointerException, JSONException {
         return intent == null ? null : new JSONObject(intent.getStringExtra(intentParamKey));
     }
 
+    @NonNull
     private Merchant getMerchant(Intent intent) {
         try {
             return Merchant.jsonToEntity(createJsonObject(intent, PARAM_MERCHANT_JSON_KEY));
         } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        throw new IllegalArgumentException("Merchant object is required");
     }
 
     private Category getCategory(Intent intent) {
@@ -164,12 +161,15 @@ public class CategoryViewActivity extends AppCompatActivity {
         }
     }
 
-    private void loadProducts(@Nullable Merchant merchant, @Nullable Category category) {
-        List<DisplayProduct> displayProductList = ProductManagerUtils.getProductsFromCategory(category);
-        if (displayProductList == null) {
+    private void loadItems(@Nullable Merchant merchant, @Nullable Category category) {
+        List<CategoryViewAdapter.Item> itemList = ProductManagerUtils.getProductsAndSubcategoriesFromCategory(category);
+        if (itemList == null) {
             displayError(getString(R.string.msg_missing_displayproductlist_in_category));
         } else {
-            displayProductList(displayProductList);
+            for (CategoryViewAdapter.Item item : itemList) {
+                Log.d("dupa", "item: "+item.getName() + " / "+item.getType());
+            }
+            displayItems(itemList);
         }
 
         showCategorySelector(merchant, category);
@@ -234,22 +234,44 @@ public class CategoryViewActivity extends AppCompatActivity {
         );
     }
 
+    private void requestProductDetails(@NonNull Merchant merchant, @NonNull DisplayProduct displayProduct) {
+        RezolveSDK.peekInstance().getRezolveSession().getProductManager().getProduct(
+                merchant.getId(),
+                displayProduct.getCategoryId(),
+                displayProduct.getId(),
+                new ProductCallback() {
+                    @Override
+                    public void onGetProductSuccess(Product product) {
+                        Log.d("dupa", "onItemClick.onGetProductSuccess: "+product.getTitle());
+                        hideLoadingIndicator();
+                        Navigator.navigateToProductDetails(product, CategoryViewActivity.this);
+                    }
+
+                    @Override
+                    public void onError(@NonNull RezolveError error) {
+                        hideLoadingIndicator();
+                        Log.e(TAG, "getProduct error: "+error.getMessage());
+                    }
+                }
+        );
+    }
+
     private void onRequestCategorySuccess(@NonNull Merchant merchant, @Nullable Category category) {
         loadBanner(merchant, category);
         if (category == null) {
             displayError(getString(R.string.msg_category_not_found_in_merchant, merchant.toString()));
         } else {
-            loadProducts(merchant, category);
+            loadItems(merchant, category);
         }
     }
 
-    private void displayProductList(List<DisplayProduct> displayProductList) {
-        if (displayProductList == null || displayProductList.isEmpty()) {
+    private void displayItems(@NonNull List<CategoryViewAdapter.Item> itemList) {
+        if (itemList.isEmpty()) {
             displayMessage(getString(R.string.empty_list));
         } else {
             tvMessage.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            ((DisplayProductAdapter) Objects.requireNonNull(recyclerView.getAdapter())).updateData(displayProductList);
+            ((CategoryViewAdapter) Objects.requireNonNull(recyclerView.getAdapter())).updateData(itemList);
         }
     }
 
