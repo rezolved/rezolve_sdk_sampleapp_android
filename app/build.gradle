@@ -118,7 +118,7 @@ dependencies {
     implementation "com.rezolve.sdk:scan-video-core:$rezolveSdkScanVersion"
 
     // provides barcode detector with Google Play Services dependency
-    implementation "com.rezolve.sdk:scan-video-barcode:$rezolveSdkScanVersion"
+//    implementation "com.rezolve.sdk:scan-video-barcode:$rezolveSdkScanVersion"
 
     // alternative to scan-video-barcode. Doesn't rely on GPS but weights a bit more.
     // See https://developers.google.com/ml-kit/vision/barcode-scanning/android
@@ -128,16 +128,16 @@ dependencies {
     implementation "com.rezolve.sdk:scan-video-watermark-arm64-v8a:$rezolveSdkScanVersion"
 
     // image watermark detection for armeabi-v7a
-    implementation "com.rezolve.sdk:scan-video-watermark-armeabi-v7a:$rezolveSdkScanVersion"
+//    implementation "com.rezolve.sdk:scan-video-watermark-armeabi-v7a:$rezolveSdkScanVersion"
 
     // image watermark detection for emulators
-    implementation "com.rezolve.sdk:scan-video-watermark-x86:$rezolveSdkScanVersion"
+//    implementation "com.rezolve.sdk:scan-video-watermark-x86:$rezolveSdkScanVersion"
 
     // base module for audio watermark detection. Includes arm64 support
-    implementation "com.rezolve.sdk:scan-audio-watermark:$rezolveSdkScanVersion"
+//    implementation "com.rezolve.sdk:scan-audio-watermark:$rezolveSdkScanVersion"
 
     // audio watermark for emulators
-    implementation "com.rezolve.sdk:scan-audio-watermark-x86:$rezolveSdkScanVersion"
+//    implementation "com.rezolve.sdk:scan-audio-watermark-x86:$rezolveSdkScanVersion"
 
     // JJWT (Json Web Token library)
     api "io.jsonwebtoken:jjwt-api:$jjwtVersion"
