@@ -38,9 +38,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".category.CategoryViewActivity" />
         <activity android:name="com.rezolve.shared.ProductDetailsActivity" />
         <activity android:name="com.rezolve.shared.OrderSummaryActivity" />
-        <activity android:name=".CategoryViewActivity" />
         <activity android:name="com.rezolve.shared.sspact.SspActActivity" />
 
     </application>

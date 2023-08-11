@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.rezolve.shared.R;
-import com.rezolve.shared.adapter.RecyclerViewAdapter;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public final class DialogUtils {
                 .show();
     }
 
-    public static <T> void showSelector(Activity activity, String title, @NonNull List<T> choices, RecyclerViewAdapter.OnItemClickListener<T> onItemClickListener) {
+    public static <T> void showSelector(Activity activity, String title, @NonNull List<T> choices, SpinnerSelectorClickListener<T> clickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
         final Spinner spinner = new Spinner(activity);
@@ -44,8 +43,7 @@ public final class DialogUtils {
         builder.setView(spinner);
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             try {
-                //noinspection unchecked
-                onItemClickListener.onItemClick(spinner, (T) spinner.getSelectedItem());
+                clickListener.onClick(spinner, (T) spinner.getSelectedItem());
             } catch (ClassCastException e) {
                 e.printStackTrace();
             }

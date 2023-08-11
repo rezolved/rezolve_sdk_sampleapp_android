@@ -1,4 +1,4 @@
-package com.rezolve.sdk_sample;
+package com.rezolve.sdk_sample.category;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -26,9 +26,9 @@ import com.rezolve.sdk.model.shop.DisplayProduct;
 import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk.model.shop.PageNavigationFilter;
 import com.rezolve.sdk.model.shop.Product;
+import com.rezolve.sdk_sample.R;
 import com.rezolve.sdk_sample.navigation.Navigator;
-import com.rezolve.shared.adapter.CategoryViewAdapter;
-import com.rezolve.shared.adapter.RecyclerViewAdapter;
+import com.rezolve.shared.model.CategoryItem;
 import com.rezolve.shared.utils.DialogUtils;
 import com.rezolve.shared.utils.sdk.MerchantManagerUtils;
 import com.rezolve.shared.utils.sdk.ProductManagerUtils;
@@ -51,7 +51,6 @@ public class CategoryViewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView tvMessage;
 
-    @NonNull
     private Merchant merchant;
 
     @Override
@@ -72,8 +71,7 @@ public class CategoryViewActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        CategoryViewAdapter adapter = new CategoryViewAdapter();
-        adapter.setOnItemClickListener(adapterListener);
+        CategoryViewAdapter adapter = new CategoryViewAdapter(adapterListener);
         recyclerView.setAdapter(adapter);
 
         // load data
@@ -87,20 +85,17 @@ public class CategoryViewActivity extends AppCompatActivity {
         }
     }
 
-    private final RecyclerViewAdapter.OnItemClickListener<CategoryViewAdapter.Item> adapterListener = (view, item) -> {
-        Log.d("dupa", "onItemClick: "+item.getName());
+    private final CategoryViewAdapter.ClickListener adapterListener = item -> {
         showLoadingIndicator();
         switch (item.getType()) {
             case PRODUCT -> {
                 DisplayProduct displayProduct = item.getDisplayProduct();
                 if (displayProduct != null) {
-                    Log.d("dupa", "product id: "+displayProduct.getId());
                     requestProductDetails(merchant, displayProduct);
                 }
             }
             case CATEGORY -> {
                 if (item.getCategory() != null) {
-                    Log.d("dupa", "category id: "+item.getCategory().getId());
                     requestCategoryDetails(merchant, item.getCategory().getId());
                 }
             }
@@ -162,13 +157,10 @@ public class CategoryViewActivity extends AppCompatActivity {
     }
 
     private void loadItems(@Nullable Merchant merchant, @Nullable Category category) {
-        List<CategoryViewAdapter.Item> itemList = ProductManagerUtils.getProductsAndSubcategoriesFromCategory(category);
+        List<CategoryItem> itemList = ProductManagerUtils.getProductsAndSubcategoriesFromCategory(category);
         if (itemList == null) {
             displayError(getString(R.string.msg_missing_displayproductlist_in_category));
         } else {
-            for (CategoryViewAdapter.Item item : itemList) {
-                Log.d("dupa", "item: "+item.getName() + " / "+item.getType());
-            }
             displayItems(itemList);
         }
 
@@ -242,7 +234,6 @@ public class CategoryViewActivity extends AppCompatActivity {
                 new ProductCallback() {
                     @Override
                     public void onGetProductSuccess(Product product) {
-                        Log.d("dupa", "onItemClick.onGetProductSuccess: "+product.getTitle());
                         hideLoadingIndicator();
                         Navigator.navigateToProductDetails(product, CategoryViewActivity.this);
                     }
@@ -265,13 +256,13 @@ public class CategoryViewActivity extends AppCompatActivity {
         }
     }
 
-    private void displayItems(@NonNull List<CategoryViewAdapter.Item> itemList) {
+    private void displayItems(@NonNull List<CategoryItem> itemList) {
         if (itemList.isEmpty()) {
             displayMessage(getString(R.string.empty_list));
         } else {
             tvMessage.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            ((CategoryViewAdapter) Objects.requireNonNull(recyclerView.getAdapter())).updateData(itemList);
+            ((CategoryViewAdapter) Objects.requireNonNull(recyclerView.getAdapter())).setItems(itemList);
         }
     }
 

@@ -4,21 +4,21 @@ import android.text.TextUtils;
 
 import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.DisplayProduct;
-import com.rezolve.shared.adapter.CategoryViewAdapter;
+import com.rezolve.shared.model.CategoryItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductManagerUtils {
-    public static List<CategoryViewAdapter.Item> getProductsAndSubcategoriesFromCategory(Category category) {
+    public static List<CategoryItem> getProductsAndSubcategoriesFromCategory(Category category) {
         if (category == null) {
             return null;
         }
-        List<CategoryViewAdapter.Item> items = new ArrayList<>();
+        List<CategoryItem> items = new ArrayList<>();
         if (category.hasCategories()) {
             for (Category subcategory : category.getCategoryPageResult().getItems()) {
-                items.add(new CategoryViewAdapter.Item(
-                        CategoryViewAdapter.ItemType.CATEGORY,
+                items.add(new CategoryItem(
+                        CategoryItem.ItemType.CATEGORY,
                         subcategory.getName(),
                         getImage(subcategory),
                         subcategory)
@@ -28,8 +28,8 @@ public class ProductManagerUtils {
 
         if (category.hasProducts()) {
             for (DisplayProduct displayProduct : category.getProductPageResult().getItems()) {
-                items.add(new CategoryViewAdapter.Item(
-                        CategoryViewAdapter.ItemType.PRODUCT,
+                items.add(new CategoryItem(
+                        CategoryItem.ItemType.PRODUCT,
                         displayProduct.getName(),
                         getImage(displayProduct),
                         displayProduct)

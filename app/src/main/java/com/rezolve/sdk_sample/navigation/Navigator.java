@@ -11,7 +11,7 @@ import com.rezolve.sdk.model.shop.Category;
 import com.rezolve.sdk.model.shop.Merchant;
 import com.rezolve.sdk.model.shop.Product;
 import com.rezolve.sdk.ssp.resolver.result.SspActResult;
-import com.rezolve.sdk_sample.CategoryViewActivity;
+import com.rezolve.sdk_sample.category.CategoryViewActivity;
 import com.rezolve.shared.ProductDetailsActivity;
 import com.rezolve.shared.sspact.SspActActivity;
 import com.rezolve.shared.utils.ProductUtils;
