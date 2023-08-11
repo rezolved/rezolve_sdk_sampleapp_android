@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.rezolve.scan.audio.AudioScanManagerProvider;
 import com.rezolve.scan.core.audio.AudioScanManager;
 import com.rezolve.scan.core.errors.CameraError;
 import com.rezolve.scan.core.errors.ReaderError;
@@ -63,7 +62,7 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
     private PreviewView previewView;
     private SpinKitView loadingSpinView;
     private final VideoScanManager videoScanManager = VideoScanManagerProvider.getVideoScanManager();
-    private final AudioScanManager audioScanManager = AudioScanManagerProvider.getAudioScanManager();
+//    private final AudioScanManager audioScanManager = AudioScanManagerProvider.getAudioScanManager();
 
     @Override
     public void onInitializationSuccess() {
@@ -220,16 +219,16 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
     }
 
     private void startAudioScan() {
-        audioScanManager.clearCache();
-
-        if (wasMicrophonePermissionGranted()) {
-            audioScanManager.startAudioScan();
-        }
+//        audioScanManager.clearCache();
+//
+//        if (wasMicrophonePermissionGranted()) {
+//            audioScanManager.startAudioScan();
+//        }
     }
 
     private void stopAudioScan() {
-        audioScanManager.stopAudioScan();
-        audioScanManager.destroy();
+//        audioScanManager.stopAudioScan();
+//        audioScanManager.destroy();
     }
 
     private boolean wasCameraPermissionGranted() {
