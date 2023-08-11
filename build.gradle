@@ -30,6 +30,35 @@ buildscript {
     }
 }
 
+plugins {
+    id 'net.nemerosa.versioning' version '2.7.1'
+}
+
+def getCommitCount = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-list', '--all', '--count'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+versioning {
+    gitRepoRootDir = rootProject.getRootDir().absolutePath
+
+    displayMode = { branchType, branchId, base, build, full, extension ->
+        "${getCommitCount}-${full}"
+    }
+
+    releaseMode = { nextTag, lastTag, currentTag, extension ->
+        "${lastTag}"
+    }
+
+    dirtySuffix = '-uncommitted'
+
+    branchEnv = ['BITRISE_GIT_BRANCH']
+}
+
 allprojects {
     repositories {
         mavenLocal()
@@ -43,8 +72,14 @@ allprojects {
             }
         }
     }
+
+    version = "${versioning.info.display}"
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task displayAppVersion() {
+    println version
 }
