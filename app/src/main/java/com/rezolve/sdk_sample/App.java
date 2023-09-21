@@ -1,6 +1,8 @@
 package com.rezolve.sdk_sample;
 
 import android.app.Application;
+import android.net.Uri;
+import android.text.TextUtils;
 
 import com.rezolve.sdk.HttpClientConfig;
 import com.rezolve.sdk.RezolveSDK;
@@ -9,7 +11,6 @@ import com.rezolve.sdk.api.authentication.auth0.HttpClientFactory;
 import com.rezolve.sdk.api.authentication.auth0.SspHttpClient;
 import com.rezolve.sdk.old_ssp.managers.SspActManager;
 import com.rezolve.sdk.ssp.resolver.ResolverConfiguration;
-import com.rezolve.sdk_sample.navigation.Navigator;
 import com.rezolve.sdk_sample.providers.SdkProvider;
 import com.rezolve.sdk_sample.scan.ScanActivity;
 import com.rezolve.shared.MainActivityProvider;
@@ -69,6 +70,16 @@ public class App extends Application implements SspActManagerProvider, MainActiv
         new ResolverConfiguration.Builder(rezolveSDK)
                 .enableBarcode1dResolver(true)
                 .enableSspResolver(sspActManager, 400)
+// TODO this has to be fixed before the release. Right now RXP SBX produces QR codes with bad urls. https://rezolvetech.slack.com/archives/C042KJENSQL/p1693477828888649?thread_ts=1693297522.150259&cid=C042KJENSQL
+// to detect RXP generated QR Codes define a host or set up an UrlVerificator.
+// If your QR Codes match regex "^(https?://" + host + "/(resolve|instant)\\?engagementid=.*)" use SspUrlHost:
+//                .setSspUrlHost("instant.eu.rezolve.com")
+// Otherwise use UrlVerificator to create your own conditions, when QR Code should be resolved into an engagement.
+// Remember that QR Code must carry valid engagement id for given host.
+                .setUrlVerificator(url -> {
+                    Uri uri = Uri.parse(url);
+                    return uri.getHost().equals("instant.eu.rezolve.com") && !TextUtils.isEmpty(uri.getQueryParameter("engagementid"));
+                })
                 .build(this);
     }
 

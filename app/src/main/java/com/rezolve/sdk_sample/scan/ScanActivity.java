@@ -101,6 +101,7 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
 
         @Override
         public void onResolverError(@NonNull UUID uuid, @NonNull ResolverError resolverError) {
+            Log.d(TAG, "onResolverError: " + resolverError.message);
             if (resolverError instanceof ResolverError.Error error) {
                 onScanError(error.rezolveError.getErrorType(), error.message);
             }
@@ -195,6 +196,7 @@ public class ScanActivity extends AppCompatActivity implements UserAuthenticator
 
         @Override
         public void onReaderException(@NonNull ReaderException readerException) {
+            Log.d(TAG, "onReaderException: "+readerException.getMessage());
             readerException.printStackTrace();
         }
 
