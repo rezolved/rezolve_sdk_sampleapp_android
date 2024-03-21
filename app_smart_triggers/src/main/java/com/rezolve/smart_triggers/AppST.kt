@@ -236,11 +236,11 @@ class AppST : Application(), SspActManagerProvider, MainActivityProvider {
             engagementId: String,
             actId: String
         ) {
-            Log.d(MainActivity.TAG, "notification displayed: $title, $engagementId")
+            Log.d(TAG, "notification displayed: $title, $engagementId")
         }
 
         override fun onSelected(sspObject: SspObject): Boolean {
-            Log.d(MainActivity.TAG, "notification selected: ${sspObject.title}, ${sspObject.engagementId}")
+            Log.d(TAG, "notification selected: ${sspObject.title}, ${sspObject.engagementId}")
             if (sspObject is SspAct) {
                 navigateToSspActView(sspObject)
             } else {
@@ -250,7 +250,7 @@ class AppST : Application(), SspActManagerProvider, MainActivityProvider {
         }
 
         override fun onError(error: RezolveError, engagementId: String) {
-            Log.d(MainActivity.TAG, "notification error: ${error.message}, $engagementId")
+            Log.d(TAG, "notification error: ${error.message}, $engagementId")
         }
     }
 

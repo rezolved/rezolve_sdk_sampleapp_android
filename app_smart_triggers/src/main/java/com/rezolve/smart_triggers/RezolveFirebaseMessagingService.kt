@@ -9,12 +9,12 @@ class RezolveFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        RezLog.d("RezolveFirebaseMessagingService","onMessageReceived: $message")
+        RezLog.d("${AppST.TAG} $TAG", "onMessageReceived: $message")
         SdkProvider.pushNotificationProvider.onMessageReceived(message)
     }
 
     override fun onNewToken(token: String) {
-        Log.d(TAG, "Refreshed token: $token")
+        Log.d("${AppST.TAG} $TAG", "Refreshed token: $token")
         SdkProvider.pushNotificationProvider.updateToken(token)
     }
 

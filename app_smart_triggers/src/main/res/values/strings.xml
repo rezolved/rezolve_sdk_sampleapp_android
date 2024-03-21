@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">app_smart_triggers</string>
+    <string name="missing_location_permission">Unable to register geozones without required location permissions</string>
 </resources>

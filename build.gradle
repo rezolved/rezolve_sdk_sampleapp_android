@@ -2,8 +2,8 @@
 
 buildscript {
     ext {
-        rezolveSdkVersion = "2812-develop-0410e94"
-        rezolveSdkScanVersion = "2186-feature-RR-21538-0582fce"
+        rezolveSdkVersion = "1001-claro_merge-3a16f2f"
+        rezolveSdkScanVersion = "2162-claro-1410cba"
         jjwtVersion = "0.11.5"
         rxJavaVersion = "2.2.8"
         rxAndroidVersion = "2.1.1"
@@ -64,6 +64,8 @@ allprojects {
         mavenLocal()
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        jcenter()
         maven {
             url NEXUS_REZOLVE_REPO_URL_PUBLIC
             credentials {
