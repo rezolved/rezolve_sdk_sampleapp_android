@@ -38,6 +38,7 @@ import com.rezolve.sdk.ssp.helper.NotificationProperties
 import com.rezolve.sdk.ssp.managers.SspActManager
 import com.rezolve.sdk.ssp.model.SspAct
 import com.rezolve.sdk.ssp.model.SspObject
+import com.rezolve.sdk.ssp.provider.GeofenceDetectorProvider
 import com.rezolve.shared.MainActivityProvider
 import com.rezolve.shared.SspActManagerProvider
 import com.rezolve.shared.authentication.AuthenticationServiceProvider
@@ -147,7 +148,6 @@ class AppST : Application(), SspActManagerProvider, MainActivityProvider {
         val geofenceDetector = GoogleGeofenceDetector.Builder()
             .transitionTypes(GoogleGeofenceDetector.TRANSITION_TYPE_ENTER or GoogleGeofenceDetector.TRANSITION_TYPE_EXIT)
             .build(this)
-        geofenceDetector.unregisterAll()
 
         RXPSdkDatabaseProvider.database = RXPSdkDatabase.getDatabase(context = applicationContext)
 

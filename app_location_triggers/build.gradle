@@ -10,7 +10,6 @@ android {
     namespace 'sb.rezolve.app.sandbox'
 
     defaultConfig {
-//        applicationId "sb.rezolve.app.sandbox"
         minSdkVersion 21
         targetSdkVersion 34
         versionCode 1

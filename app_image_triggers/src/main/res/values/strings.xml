@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">app_image_triggers</string>
+
+    <string name="select_merchant_title">Select merchant</string>
+    <string name="select_category_title">Select Category</string>
+    <string name="missing_merchants">No merchants found</string>
+    <string name="missing_category">No category found</string>
+    <string name="empty_list">empty list</string>
+
+    <!-- Messages -->
+    <string name="msg_not_possible_to_fetch_categories">Can\'t fetch categories</string>
+    <string name="msg_category_not_found_in_merchant">Category not found for merchant \'%s\'</string>
+    <string name="msg_missing_displayproductlist_in_category">Can\'t get list of DisplayProducts from given Category object</string>
+
+</resources>

@@ -2,8 +2,8 @@
 
 buildscript {
     ext {
-        rezolveSdkVersion = "1001-claro_merge-3a16f2f"
-        rezolveSdkScanVersion = "2162-claro-1410cba"
+        rezolveSdkVersion = "1001-claro_merge-eabc8e1"
+        rezolveSdkScanVersion = "2192-claro-c5b3adf"
         jjwtVersion = "0.11.5"
         rxJavaVersion = "2.2.8"
         rxAndroidVersion = "2.1.1"
